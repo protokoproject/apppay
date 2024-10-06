@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Mobile Specific Metas -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover"
+    />
+    <title>Pembayaran Tagihan Sukses</title>
+    <!-- Favicon and Touch Icons  -->
+    <link rel="shortcut icon" href="images/logo.png" />
+    <link rel="apple-touch-icon-precomposed" href="images/logo.png" />
+    <!-- Font -->
+    <link rel="stylesheet" href="fonts/fonts.css" />
+    <!-- Icons -->
+    <link rel="stylesheet" href="fonts/icons-alipay.css" />
+    <link rel="stylesheet" href="styles/bootstrap.css" />
+
+    <link rel="stylesheet" type="text/css" href="styles/styles.css" />
+    <link
+      rel="manifest"
+      href="_manifest.json"
+      data-pwa-version="set_in_manifest_and_pwa_js"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="192x192"
+      href="app/icons/icon-192x192.png"
+    />
+    <style>
+      /* Default behavior for larger screens (like laptop) */
+      .bottom-navigation-bar .tf-btn {
+        margin-bottom: 0;
+      }
+
+      /* Media query for screens smaller than 992px (Bootstrap's "lg" breakpoint) */
+      @media (max-width: 991px) {
+        .bottom-navigation-bar .col-lg-6 {
+          margin-bottom: 20px; /* Add spacing between buttons */
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg_surface_color">
+    <!-- preloade -->
+    <div class="preload preload-container">
+      <div class="preload-logo">
+        <div class="spinner"></div>
+      </div>
+    </div>
+    <!-- /preload -->
+    <div class="header is-fixed">
+      <div class="tf-container">
+        <div
+          class="tf-statusbar d-flex justify-content-center align-items-center"
+        >
+          <a href="#" class="back-btn"> <i class="icon-left"></i> </a>
+          <h3>Tagihan</h3>
+        </div>
+      </div>
+    </div>
+    <div id="app-wrap">
+      <div class="bill-payment-content">
+        <div class="tf-container">
+          <div class="wrapper-bill">
+            <div class="archive-top">
+              <span class="circle-box lg bg-circle check-icon"> </span>
+              <h1><a href="#" class="success_color">Rp. 500.000</a></h1>
+              <h3 class="mt-2 fw_6">Pembayaran Tagihan Berhasil</h3>
+              <p class="fw_4 mt-2">2024-09-05 18:55:30</p>
+            </div>
+            <div class="dashed-line"></div>
+            <div class="archive-bottom">
+              <h2 class="text-center">Keterangan</h2>
+              <ul>
+                <li class="list-info-bill">
+                  No Transaksi <span>PD123456789</span>
+                </li>
+                <li class="list-info-bill">
+                  Nama <span>Kevin Alexander</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-navigation-bar st1 bottom-btn-fixed">
+      <div class="tf-container">
+        <div class="row">
+          <div class="col-lg-6">
+            <a href="home.html" class="tf-btn accent large">Download</a>
+          </div>
+          <div class="col-lg-6">
+            <a href="home.html" class="tf-btn accent large">Kembali Ke Home</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="javascript/jquery.min.js"></script>
+    <script type="text/javascript" src="javascript/bootstrap.min.js"></script>
+    <script type="text/javascript" src="javascript/count-down.js"></script>
+    <script type="text/javascript" src="javascript/main.js"></script>
+  </body>
+</html>
