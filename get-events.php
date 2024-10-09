@@ -12,7 +12,7 @@ if ($connection->connect_error) {
 }
 
 // Ambil data event dari tabel di database
-$sql = "SELECT id, title, start_date, end_date FROM tb_events"; // Sesuaikan nama tabel dan kolom
+$sql = "SELECT id, title, start_date, DATE_ADD(end_date, INTERVAL 1 DAY) AS end_date FROM tb_events";
 $result = $connection->query($sql);
 
 $events = [];
