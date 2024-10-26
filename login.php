@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Mobile Specific Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
-    <title>Login</title>
+    <title>SIMAS | Masuk</title>
     <!-- Favicon and Touch Icons  -->
     <link rel="shortcut icon" href="images/logo.png" />
     <link rel="apple-touch-icon-precomposed" href="images/logo.png" />
@@ -34,28 +34,26 @@
     <div class="mt-7 login-section">
         <div class="tf-container">
             <form class="tf-form" action="home.html">
-                    <h1>Login</h1>
+                    <h1>Masuk</h1>
                     <div class="group-input">
                         <label>Email</label>
-                        <input type="text" placeholder="Example@gmail">
+                        <input type="text" placeholder="simas@gmail.com">
                     </div>
                     <div class="group-input auth-pass-input last">
                         <label>Password</label>
                         <input type="password" class="password-input" placeholder="Password">
                         <a class="icon-eye password-addon" id="password-addon"></a>
                     </div>
-                    <a href="08_reset-password.html" class="auth-forgot-password mt-3">Forgot Password?</a>
+                    <a href="08_reset-password.html" class="auth-forgot-password mt-3">Lupa Password?</a>
 
-                <button type="submit" class="tf-btn accent large">Log In</button>
+                <button type="submit" class="tf-btn accent large">Masuk</button>
 
             </form>
-            <div class="auth-line">Or</div>
+            <div class="auth-line">Atau</div>
             <ul class="bottom socials-login mb-4">
-                <li><a href="home.html"><img src="images/icon-socials/facebook.png" alt="image">Continue with Facebook</a></li>
-                <li><a href="home.html"><img src="images/icon-socials/google.png" alt="image">Continue with Google</a></li>
-                <li><a href="home.html"><img src="images/icon-socials/apple.png" alt="image">Continue with Google</a></li>
+                <li><a href=""><img src="images/icon-socials/google.png" alt="image">Lanjutkan dengan Google</a></li>
             </ul>
-            <p class="mb-9 fw-3 text-center ">Already have a Account? <a href="05_register.html" class="auth-link-rg" >Sign up</a></p>
+            <p class="mb-9 fw-3 text-center ">Belum Memiliki Akun? <a href="register.php" class="auth-link-rg" >Daftar</a></p>
         </div>
     </div>
     
