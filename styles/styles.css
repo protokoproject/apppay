@@ -2355,7 +2355,7 @@ textarea.form-textarea[rows] {
   }
 }
 .boarding-section {
-  background: #1e1e1e;
+  /* background: #1e1e1e; */
   min-height: 310px;
   margin: 0 -45px;
   display: flex;
