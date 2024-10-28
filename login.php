@@ -1,3 +1,39 @@
+<?php
+session_start();
+
+require "koneksi.php";
+
+if (isset($_POST["login"])) {
+  $email = $_POST["email"];
+  $password = $_POST["password"];
+
+  $result = mysqli_query($koneksi, "SELECT * FROM tb_user WHERE email ='$email'");
+
+
+  //cek username
+  if (mysqli_num_rows($result) === 1) {
+    //cek password
+    $row = mysqli_fetch_assoc($result);
+    if (password_verify($password, $row["pass"])) {
+      //set session
+      $_SESSION["login"] = true;
+
+      header(("Location:home.php"));
+      exit;
+    } else {
+      echo "<script>alert('Username atau Password salah');</script>";
+      header("refresh:0;url=login.php");
+      exit;
+    }
+  } else {
+    echo "<script>alert('Username atau Password salah');</script>";
+    header("refresh:0;url=login.php");
+    exit;
+  }
+}
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,20 +69,20 @@
     <!-- /preload -->    
     <div class="mt-7 login-section">
         <div class="tf-container">
-            <form class="tf-form" action="home.html">
+            <form class="tf-form" method="post">
                     <h1>Masuk</h1>
                     <div class="group-input">
                         <label>Email</label>
-                        <input type="text" placeholder="simas@gmail.com">
+                        <input type="email" placeholder="simas@gmail.com" name="email">
                     </div>
                     <div class="group-input auth-pass-input last">
                         <label>Password</label>
-                        <input type="password" class="password-input" placeholder="Password">
+                        <input type="password" class="password-input" placeholder="Password" name="password">
                         <a class="icon-eye password-addon" id="password-addon"></a>
                     </div>
                     <a href="08_reset-password.html" class="auth-forgot-password mt-3">Lupa Password?</a>
 
-                <button type="submit" class="tf-btn accent large">Masuk</button>
+                <button type="submit" class="tf-btn accent large" name="login">Masuk</button>
 
             </form>
             <div class="auth-line">Atau</div>
