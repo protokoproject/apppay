@@ -16,8 +16,8 @@ function registrasi($data)
         $row = mysqli_fetch_assoc($auto);
         $id_app = $row['max_id'] + 1;
 
-        $nm_sekolah = $_POST['nm_sekolah'];
-        $alamat = $_POST['alamat'];
+        $nm_sekolah = addslashes($_POST['nm_sekolah']);
+        $alamat = addslashes($_POST['alamat']);
         $telepon = $_POST['telepon'];
         $logo_app = "app.png";
         $tgl_rilis = date("Y-m-d");
