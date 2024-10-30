@@ -16,6 +16,15 @@ function registrasi($data)
         $row = mysqli_fetch_assoc($auto);
         $id_app = $row['max_id'] + 1;
 
+        $auto2 = mysqli_query($koneksi, "SELECT MAX(id_user) AS max_user FROM tb_user");
+        if (!$auto2) {
+            throw new Exception("Error on selecting max id: " . mysqli_error($koneksi));
+        }
+
+        // Ambil hasil query sebagai array asosiatif
+        $row2 = mysqli_fetch_assoc($auto2);
+        $id_user = $row2['max_user'] + 1;
+
         $nm_sekolah = addslashes($_POST['nm_sekolah']);
         $alamat = addslashes($_POST['alamat']);
         $telepon = $_POST['telepon'];
@@ -24,7 +33,7 @@ function registrasi($data)
         $kab = "3522";
         $nm_user = "admin" . $id_app;
         $kd_sts_user = 2;
-        $username = "-";
+        $username = "admin" . $id_app;
         $email = strtolower(trim($data['email']));
         $password = mysqli_real_escape_string($koneksi, $data["password"]);
         $password2 = mysqli_real_escape_string($koneksi, $data["password2"]);
@@ -55,9 +64,9 @@ function registrasi($data)
         }
 
         // Tambahkan data ke tabel tb_user
-        $insert_user = "INSERT INTO tb_user (id_app, nm_user, kd_sts_user, username, pass, pass_txt, nohp, tgl_lhr, email, tgl_gbng) 
-                        VALUES ('$id_app', '$nm_user', '$kd_sts_user', '$username', '$hashed_password', '$password', '$telepon', '$tgl_rilis', '$email', '$tgl_rilis')";
-        
+        $insert_user = "INSERT INTO tb_user (id_user, id_app, nm_user, kd_sts_user, username, pass, pass_txt, nohp, tgl_lhr, email, tgl_gbng) 
+                        VALUES ('$id_user', '$id_app', '$nm_user', '$kd_sts_user', '$username', '$hashed_password', '$password', '$telepon', '$tgl_rilis', '$email', '$tgl_rilis')";
+
         if (!mysqli_query($koneksi, $insert_user)) {
             throw new Exception("Error inserting into tb_user: " . mysqli_error($koneksi));
         }
