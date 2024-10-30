@@ -48,7 +48,7 @@ if (!isset($_SESSION["login"])) {
 
                     <div class="content">
                         <h3 class="white_color">Welcome To </h3>
-                        <h3 class="white_color fw_4">PSP Mobile</h3>
+                        <h3 class="white_color fw_4">SIMAS</h3>
                     </div>
                 </a>
                 <div class="d-flex align-items-center gap-4">

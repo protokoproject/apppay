@@ -77,7 +77,7 @@ if (isset($_POST['buat_akun'])) {
                 </div>
                 <div class="group-input">
                     <label>Telepon</label>
-                    <input type="text" name="telepon">
+                    <input type="number" name="telepon">
                 </div>
                 <div class="group-input">
                     <label>Password</label>
