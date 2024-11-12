@@ -22,50 +22,95 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
     <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
         .tf-trading-history {
-            position: relative;
-            /* Membuat boundary untuk positioning tombol */
-            padding-right: 60px;
-            /* Memberi ruang agar konten tidak tertutup tombol */
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            width: 100%;
+            padding: 15px;
         }
 
-        .edit-btn,
-        .delete-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            padding: 2px 4px;
-            /* Mengurangi ukuran area klik */
-            font-size: 14px;
-            /* Ukuran ikon lebih kecil */
-            cursor: pointer;
-            border: none;
-            background-color: transparent;
-            /* Hapus background */
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .edit-btn {
-            right: 75px;
-            /* Memberi jarak yang lebih jauh antara edit dan delete */
+        .inner-left {
+            display: flex;
+            align-items: center;
         }
 
-        .delete-btn {
-            right: 10px;
+        .icon-box {
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: #f2f2f2;
+            border-radius: 50%;
         }
 
-
-        .edit-btn,
-        .delete-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
+        .icon-box i {
+            font-size: 20px;
             color: #333;
         }
 
-        .edit-btn:hover,
-        .delete-btn:hover {
-            color: #007bff;
-            /* Ubah warna pada hover */
+        .content h4 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .content p {
+            margin: 0;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .num-val {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            /* Space between edit and delete buttons */
+        }
+
+        .num-val a {
+            color: #333;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+        .num-val a i {
+            cursor: pointer;
+        }
+
+        .tf-navigation-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            background-color: #fff;
+        }
+
+        .tf-navigation-bar li {
+            list-style: none;
+        }
+
+        .tf-navigation-bar a {
+            text-align: center;
+            color: #717171;
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .tf-navigation-bar .active a {
+            color: #000;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -94,29 +139,35 @@
                 </div>
                 <div class="trading-month">
                     <button class="mb-3 tf-btn accent small" style="width: 20%;" onclick="window.location.href='tambah.php'">Tambah Data</button>
-                    <div class="group-trading-history mb-5">
+                    <div class="group-trading-history">
                         <?php
                         include "../../koneksi.php";
 
                         $sql = mysqli_query($koneksi, "SELECT * FROM tb_menu");
-                        while($data = mysqli_fetch_array($sql)){
+                        while ($data = mysqli_fetch_array($sql)) {
                         ?>
-                        <a class="tf-trading-history" href="61_filter-research.html">
-                            <div class="inner-left">
-                                <div class="icon-box">
-                                    <i class="<?php echo $data['icon_menu']; ?>"></i>
+                            <a class="tf-trading-history p-0" href="edit.php?kd_menu=<?php echo $data['kd_menu']; ?>">
+                                <div class="container">
+                                    <div class="inner-left">
+                                        <div class="icon-box">
+                                            <i class="<?php echo $data['icon_menu']; ?>"></i>
+                                        </div>
+                                        <div class="content">
+                                            <h4><?php echo $data['nm_menu']; ?></h4>
+                                        </div>
+                                    </div>
+                                    <div class="num-val">
+
+                                        <a href="edit.php?kd_menu=<?php echo $data['kd_menu']; ?>"" style="padding-right: 20px;">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+
+                                        <a href="delete.php?kd_menu=<?php echo $data['kd_menu']; ?>"">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="content">
-                                    <h4><?php echo $data['nm_menu']; ?></h4>
-                                </div>
-                            </div>
-                            <button class="edit-btn" style="width: 15%;" onclick="editValue()">
-                                <i class="fa fa-pencil"></i>
-                            </button>
-                            <button class="delete-btn" style="width: 15%;" onclick="deleteValue()">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </a>
+                            </a>
                         <?php } ?>
                     </div>
                 </div>

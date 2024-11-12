@@ -1,6 +1,11 @@
 <?php
 include "../../koneksi.php";
 
+$kd_menu = $_GET['kd_menu'];
+
+$sql = mysqli_query($koneksi, "SELECT * FROM tb_menu WHERE kd_menu = '$kd_menu'");
+$data = mysqli_fetch_array($sql);
+
 if (isset($_POST['simpan'])) {
     // Mengambil nilai dari input
     $nmmenu = $_POST['nmmenu'];
@@ -8,24 +13,17 @@ if (isset($_POST['simpan'])) {
     $linkmenu = $_POST['linkmenu'];
     $kdkey = $_POST['kdkey'];
 
-    $last_menu = mysqli_query($koneksi, "SELECT MAX(kd_menu) AS last_menu FROM tb_menu");
-    $last_menu_data = mysqli_fetch_assoc($last_menu);
-    $kd_menu = $last_menu_data['last_menu'] + 1;
-    $urut_menu = $last_menu_data['last_menu'] + 1;
-    $gmbr_menu = '';
-    $class_menu = '';
-    $sts_menu = 1;
-    $menu_utama = 0;
-
-    $query = "INSERT INTO tb_menu (kd_menu, nm_menu, icon_menu, link_menu, kd_key, gmbr_menu, sts_menu, urut_menu, menu_utama, class_menu) 
-              VALUES ('$kd_menu', '$nmmenu', '$iconmenu', '$linkmenu', '$kdkey', '$gmbr_menu', '$sts_menu', '$urut_menu', '$menu_utama', '$class_menu')";
+    $query = "UPDATE tb_menu SET nm_menu = '$nmmenu', icon_menu = '$iconmenu', link_menu = '$linkmenu', kd_key = '$kdkey' WHERE kd_menu = '$kd_menu'";
 
     if (mysqli_query($koneksi, $query)) {
-        echo "<script>alert('Data berhasil ditambahkan!');</script>";
-        header("refresh:0, kelolamenu.php");
+        echo "<script>
+                alert('Data berhasil diubah!');
+                setTimeout(function() {
+                    window.location.href = 'kelolamenu.php';
+                }, 1000); // Redirects after 1 second
+              </script>";
     } else {
         echo "<script>alert('Error: " . mysqli_error($koneksi) . "');</script>";
-        header("refresh:0, kelolamenu.php");
     }
 }
 ?>
@@ -37,9 +35,8 @@ if (isset($_POST['simpan'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Mobile Specific Metas -->
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
-    <title>Tambah Menu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
+    <title>Edit Menu</title>
     <!-- Favicon and Touch Icons  -->
     <link rel="shortcut icon" href="../../images/logo.png" />
     <link rel="apple-touch-icon-precomposed" href="../../images/logo.png" />
@@ -67,7 +64,7 @@ if (isset($_POST['simpan'])) {
         <div class="tf-container">
             <div class="tf-statusbar d-flex justify-content-center align-items-center">
                 <a href="#" class="back-btn"> <i class="icon-left"></i> </a>
-                <h3>Tambah Menu</h3>
+                <h3>Edit Menu</h3>
             </div>
         </div>
     </div>
@@ -78,21 +75,21 @@ if (isset($_POST['simpan'])) {
                     <form method="post">
                         <div class="group-input">
                             <label>Nama Menu</label>
-                            <input type="text" placeholder="Nama Menu" name="nmmenu">
+                            <input type="text" placeholder="Nama Menu" name="nmmenu" value="<?php echo $data['nm_menu']; ?>">
                         </div>
                         <div class="group-input">
                             <label>Icon Menu</label>
-                            <input type="text" placeholder="Icon Menu" name="iconmenu">
+                            <input type="text" placeholder="Icon Menu" name="iconmenu" value="<?php echo $data['icon_menu']; ?>">
                         </div>
                         <div class="group-input">
                             <label>Link Menu</label>
-                            <input type="text" placeholder="Link Menu" name="linkmenu">
+                            <input type="text" placeholder="Link Menu" name="linkmenu" value="<?php echo $data['link_menu']; ?>">
                         </div>
                         <div class="group-input">
                             <label>Kode Key</label>
-                            <input type="text" placeholder="Kode Key" name="kdkey">
+                            <input type="text" placeholder="Kode Key" name="kdkey" value="<?php echo $data['kd_key']; ?>">
                         </div>
-                        <button type="submit" class="mb-3 tf-btn accent small" style="width: 20%;" name="simpan">Tambah Data</button>
+                        <button type="submit" class="mb-3 tf-btn accent small" style="width: 20%;" name="simpan">Simpan</button>
                     </form>
                 </div>
             </div>
