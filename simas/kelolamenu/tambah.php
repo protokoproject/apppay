@@ -1,5 +1,5 @@
 <?php
-include "../koneksi.php";
+include "../../koneksi.php";
 
 if (isset($_POST['simpan'])) {
     // Mengambil nilai dari input
@@ -22,8 +22,10 @@ if (isset($_POST['simpan'])) {
 
     if (mysqli_query($koneksi, $query)) {
         echo "<script>alert('Data berhasil ditambahkan!');</script>";
+        header("refresh:0, kelolamenu.php");
     } else {
         echo "<script>alert('Error: " . mysqli_error($koneksi) . "');</script>";
+        header("refresh:0, kelolamenu.php");
     }
 }
 ?>
@@ -39,17 +41,17 @@ if (isset($_POST['simpan'])) {
         content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
     <title>Tambah Menu</title>
     <!-- Favicon and Touch Icons  -->
-    <link rel="shortcut icon" href="../images/logo.png" />
-    <link rel="apple-touch-icon-precomposed" href="../images/logo.png" />
+    <link rel="shortcut icon" href="../../images/logo.png" />
+    <link rel="apple-touch-icon-precomposed" href="../../images/logo.png" />
     <!-- Font -->
-    <link rel="stylesheet" href="../fonts/fonts.css" />
+    <link rel="stylesheet" href="../../fonts/fonts.css" />
     <!-- Icons -->
-    <link rel="stylesheet" href="../fonts/icons-alipay.css">
-    <link rel="stylesheet" href="../styles/bootstrap.css">
-    <link rel="stylesheet" href="../styles/swiper-bundle.min.css">
-    <link rel="stylesheet" type="text/css" href="../styles/styles.css" />
-    <link rel="manifest" href="../_manifest.json" data-pwa-version="set_in_manifest_and_pwa_js">
-    <link rel="apple-touch-icon" sizes="192x192" href="../app/icons/icon-192x192.png">
+    <link rel="stylesheet" href="../../fonts/icons-alipay.css">
+    <link rel="stylesheet" href="../../styles/bootstrap.css">
+    <link rel="stylesheet" href="../../styles/swiper-bundle.min.css">
+    <link rel="stylesheet" type="text/css" href="../../styles/styles.css" />
+    <link rel="manifest" href="../../_manifest.json" data-pwa-version="set_in_manifest_and_pwa_js">
+    <link rel="apple-touch-icon" sizes="192x192" href="../../app/icons/icon-192x192.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
 
@@ -96,8 +98,6 @@ if (isset($_POST['simpan'])) {
             </div>
         </div>
     </div>
-    <div class="bottom-navigation-bar">
-    </div>
     <div class="tf-panel up">
         <div class="panel-box panel-up panel-filter-history">
             <div class="header mb-1 is-fixed">
@@ -111,11 +111,11 @@ if (isset($_POST['simpan'])) {
         </div>
     </div>
 
-    <script type="text/javascript" src="../javascript/jquery.min.js"></script>
-    <script type="text/javascript" src="../javascript/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../javascript/swiper-bundle.min.js"></script>
-    <script type="text/javascript" src="../javascript/swiper.js"></script>
-    <script type="text/javascript" src="../javascript/main.js"></script>
+    <script type="text/javascript" src="../../javascript/jquery.min.js"></script>
+    <script type="text/javascript" src="../../javascript/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../javascript/swiper-bundle.min.js"></script>
+    <script type="text/javascript" src="../../javascript/swiper.js"></script>
+    <script type="text/javascript" src="../../javascript/main.js"></script>
 
 </body>
 
