@@ -158,11 +158,11 @@
                                     </div>
                                     <div class="num-val">
 
-                                        <a href="edit.php?kd_menu=<?php echo $data['kd_menu']; ?>"" style="padding-right: 20px;">
+                                        <a href="edit.php?kd_menu=<?php echo $data['kd_menu']; ?>" style="padding-right: 20px;">
                                             <i class="fa fa-pencil"></i>
                                         </a>
 
-                                        <a href="delete.php?kd_menu=<?php echo $data['kd_menu']; ?>"">
+                                        <a href="delete.php?kd_menu=<?php echo $data['kd_menu']; ?>" onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </div>
