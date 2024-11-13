@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+include "../../koneksi.php";
+
+$sql = mysqli_query($koneksi, "SELECT nm_user, nohp, email FROM tb_user WHERE username = '{$_SESSION['username']}'");
+$data = mysqli_fetch_array($sql);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -38,17 +48,18 @@
         </div>
     </div>
     <div id="app-wrap">
-        <a class="box-profile mt-1" href="account-detail.html">
+        <a class="box-profile mt-1" href="profil-detail.php">
             <div class="inner d-flex align-items-center">
                 <div class="box-avatar">
                     <img src="../../images/user/profile1.jpg" alt="image">
                     <span class="icon-camera-to-take-photos"></span>
                 </div>
                 <div class="info">
-                    <h2 class="fw_8">Themesflat</h2>
-                    <p>0321  0000 2342 2424 <i class="icon-copy1"></i></p>
+                    <h2 class="fw_8"><?php echo $data["nm_user"]; ?></h2>
+                    <h6>@<?php echo $_SESSION["username"]; ?></h6>
                 </div>
             </div>
+
             <span><i class="icon-right"></i></span>
                       
         </a>  
@@ -109,7 +120,7 @@
         </ul>        
         <ul class="box-settings-profile mt-1 mb-8">
             <li>
-                <a href="setting.html" class="list-setting-profile">
+                <a href="../../setting.html" class="list-setting-profile">
                     <span class="icon icon-setting1"></span>
                     <p>Setting</p>
                     <i class="icon-right"></i>

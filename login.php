@@ -17,7 +17,8 @@ if (isset($_POST["login"])) {
     if (password_verify($password, $row["pass"])) {
       //set session
       $_SESSION["login"] = true;
-
+      $_SESSION["username"] = $row["username"]; // Store username in session
+      
       header(("Location:home.php"));
       exit;
     } else {
@@ -81,10 +82,10 @@ if (isset($_POST["login"])) {
           <a class="icon-eye password-addon" id="password-addon"></a>
         </div>
         <a href="08_reset-password.html" class="auth-forgot-password mt-3">Lupa Password?</a>
-        <div class="group-cb mt-3">
+        <!-- <div class="group-cb mt-3">
           <input type="checkbox" class="tf-checkbox">
           <label class="fw_3">Remember Me</label>
-        </div>
+        </div> -->
 
         <button type="submit" class="tf-btn accent large" name="login">Masuk</button>
       </form>
