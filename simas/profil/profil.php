@@ -6,19 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Mobile Specific Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
-    <title>My Account</title>
+    <title>Profil Saya</title>
     <!-- Favicon and Touch Icons  -->
-    <link rel="shortcut icon" href="images/logo.png" />
-    <link rel="apple-touch-icon-precomposed" href="images/logo.png" />
+    <link rel="shortcut icon" href="../../images/logo.png" />
+    <link rel="apple-touch-icon-precomposed" href="../../images/logo.png" />
     <!-- Font -->
-    <link rel="stylesheet" href="fonts/fonts.css" />
+    <link rel="stylesheet" href="../../fonts/fonts.css" />
     <!-- Icons -->
-    <link rel="stylesheet" href="fonts/icons-alipay.css">
-    <link rel="stylesheet" href="styles/bootstrap.css">
-    <link rel="stylesheet" href="styles/swiper-bundle.min.css">
-    <link rel="stylesheet" type="text/css" href="styles/styles.css" />
-    <link rel="manifest" href="_manifest.json" data-pwa-version="set_in_manifest_and_pwa_js">
-    <link rel="apple-touch-icon" sizes="192x192" href="app/icons/icon-192x192.png">
+    <link rel="stylesheet" href="../../fonts/icons-alipay.css">
+    <link rel="stylesheet" href="../../styles/bootstrap.css">
+    <link rel="stylesheet" href="../../styles/swiper-bundle.min.css">
+    <link rel="stylesheet" type="text/css" href="../../styles/styles.css" />
+    <link rel="manifest" href="../../_manifest.json" data-pwa-version="set_in_manifest_and_pwa_js">
+    <link rel="apple-touch-icon" sizes="192x192" href="../../app/icons/icon-192x192.png">
 </head>
 
 <body class="bg_surface_color">
@@ -32,8 +32,8 @@
     <div class="header mb-1 is-fixed">
         <div class="tf-container">
             <div class="tf-statusbar d-flex justify-content-center align-items-center">
-                <a href="#" class="back-btn"> <i class="icon-left"></i> </a>
-                <h3>My Account</h3>
+                <a href="../../home.php" class="back-btn"> <i class="icon-left"></i> </a>
+                <h3>Profil Saya</h3>
             </div>
         </div>
     </div>
@@ -41,7 +41,7 @@
         <a class="box-profile mt-1" href="account-detail.html">
             <div class="inner d-flex align-items-center">
                 <div class="box-avatar">
-                    <img src="images/user/profile1.jpg" alt="image">
+                    <img src="../../images/user/profile1.jpg" alt="image">
                     <span class="icon-camera-to-take-photos"></span>
                 </div>
                 <div class="info">
@@ -145,17 +145,17 @@
                         Rewards</a> 
                 </li>
                 <li class="active">
-                    <a class="fw_6 d-flex justify-content-center align-items-center flex-column" href="69_profile.html">
-                        <i class="icon-user-fill"></i> Profile</a> 
+                    <a class="fw_6 d-flex justify-content-center align-items-center flex-column" href="profil.php">
+                        <i class="icon-user-fill"></i> Profil</a> 
                 </li>
             </ul>
         </div>
     </div>
 
 
-    <script type="text/javascript" src="javascript/jquery.min.js"></script>
-    <script type="text/javascript" src="javascript/bootstrap.min.js"></script>
-    <script type="text/javascript" src="javascript/main.js"></script>
+    <script type="text/javascript" src="../../javascript/jquery.min.js"></script>
+    <script type="text/javascript" src="../../javascript/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../javascript/main.js"></script>
 </body>
 
 </html>
