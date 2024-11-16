@@ -11,19 +11,29 @@ if (isset($_POST['simpan'])) {
     $nmmenu = $_POST['nmmenu'];
     $iconmenu = $_POST['iconmenu'];
     $linkmenu = $_POST['linkmenu'];
-    $kdkey = $_POST['kdkey'];
+    $urutmenu = $_POST['urutmenu'] ?? 0; // Default 0 jika tidak diisi
+    $sts_menu = isset($_POST['sts_menu']) ? 1 : 0; // Checkbox: aktif = 1, tidak aktif = 0
+    $kdkey = $_POST['kdkey'] ?? 'utama'; // Default 'utama' jika tidak diisi
 
-    $query = "UPDATE tb_menu SET nm_menu = '$nmmenu', icon_menu = '$iconmenu', link_menu = '$linkmenu', kd_key = '$kdkey' WHERE kd_menu = '$kd_menu'";
+    // Validasi input (Pastikan tidak ada yang kosong kecuali urutmenu)
+    if (empty($nmmenu) || empty($iconmenu) || empty($linkmenu)) {
+        echo "<script>alert('Nama Menu, Icon Menu, dan Link Menu harus diisi!');</script>";
+        echo "<script>window.history.back();</script>";
+        exit;
+    }
+
+    // Query update data
+    $query = "UPDATE tb_menu 
+              SET nm_menu = '$nmmenu', icon_menu = '$iconmenu', link_menu = '$linkmenu', kd_key = '$kdkey', 
+                  urut_menu = '$urutmenu', sts_menu = '$sts_menu' 
+              WHERE kd_menu = '$kd_menu'";
 
     if (mysqli_query($koneksi, $query)) {
-        echo "<script>
-                alert('Data berhasil diubah!');
-                setTimeout(function() {
-                    window.location.href = 'kelolamenu.php';
-                }, 1000); // Redirects after 1 second
-              </script>";
+        echo "<script>alert('Data berhasil diubah!');</script>";
+        header("refresh:0, kelolamenu.php");
     } else {
         echo "<script>alert('Error: " . mysqli_error($koneksi) . "');</script>";
+        header("refresh:0, kelolamenu.php");
     }
 }
 ?>
@@ -86,8 +96,15 @@ if (isset($_POST['simpan'])) {
                             <input type="text" placeholder="Link Menu" name="linkmenu" value="<?php echo $data['link_menu']; ?>">
                         </div>
                         <div class="group-input">
-                            <label>Kode Key</label>
-                            <input type="text" placeholder="Kode Key" name="kdkey" value="<?php echo $data['kd_key']; ?>">
+                            <label>Urut Menu</label>
+                            <input type="text" placeholder="Urut Menu" name="urutmenu" value="<?php echo $data['urut_menu']; ?>">
+                        </div>
+                        <div class="group-input">
+                            <label>Status Menu</label>
+                            <fieldset class="d-flex align-items-center gap-12">
+                                <input class="tf-switch-check" id="switchCheckDefault" type="checkbox" name="sts_menu" <?php echo $data['sts_menu'] ? 'checked' : ''; ?>>
+                                <label for="switchCheckDefault">Aktif</label>
+                            </fieldset>
                         </div>
                         <button type="submit" class="mb-3 tf-btn accent small" style="width: 20%;" name="simpan">Simpan</button>
                     </form>
