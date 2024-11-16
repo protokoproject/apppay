@@ -179,7 +179,7 @@
         <div class="tf-container">
             <ul class="tf-navigation-bar">
                 <li>
-                    <a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="home.html"><i class="icon-home"></i> Home</a>
+                    <a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="../../home.php"><i class="icon-home"></i> Home</a>
                 </li>
                 <li class="active">
                     <a class="fw_6 d-flex justify-content-center align-items-center flex-column" href="58_history.html">
@@ -198,8 +198,8 @@
                         Rewards</a>
                 </li>
                 <li>
-                    <a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="69_profile.html">
-                        <i class="icon-user-outline"></i> Profile</a>
+                    <a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="../profil/profil.php">
+                        <i class="icon-user-outline"></i> Profil</a>
                 </li>
             </ul>
         </div>
