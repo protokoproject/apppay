@@ -76,7 +76,7 @@
             <?php
             include "../../koneksi.php";
 
-            $sql = mysqli_query($koneksi, "SELECT nm_menu, icon_menu, link_menu FROM tb_menu WHERE sts_menu = 1 ORDER BY kd_menu ASC");
+            $sql = mysqli_query($koneksi, "SELECT nm_menu, icon_menu, link_menu FROM tb_menu WHERE sts_menu = '1' ORDER BY kd_menu ASC");
             while($data = mysqli_fetch_array($sql)){
             ?>
             <li>
