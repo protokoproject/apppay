@@ -10,24 +10,24 @@
     />
     <title>Menu Lengkap</title>
     <!-- Favicon and Touch Icons  -->
-    <link rel="shortcut icon" href="images/logo.png" />
-    <link rel="apple-touch-icon-precomposed" href="images/logo.png" />
+    <link rel="shortcut icon" href="../../images/logo.png" />
+    <link rel="apple-touch-icon-precomposed" href="../../images/logo.png" />
     <!-- Font -->
-    <link rel="stylesheet" href="fonts/fonts.css" />
+    <link rel="stylesheet" href="../../fonts/fonts.css" />
     <!-- Icons -->
-    <link rel="stylesheet" href="fonts/icons-alipay.css" />
-    <link rel="stylesheet" href="styles/bootstrap.css" />
-    <link rel="stylesheet" href="styles/swiper-bundle.min.css" />
-    <link rel="stylesheet" type="text/css" href="styles/styles.css" />
+    <link rel="stylesheet" href="../../fonts/icons-alipay.css" />
+    <link rel="stylesheet" href="../../styles/bootstrap.css" />
+    <link rel="stylesheet" href="../../styles/swiper-bundle.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../styles/styles.css" />
     <link
       rel="manifest"
-      href="_manifest.json"
+      href="../../_manifest.json"
       data-pwa-version="set_in_manifest_and_pwa_js"
     />
     <link
       rel="apple-touch-icon"
       sizes="192x192"
-      href="app/icons/icon-192x192.png"
+      href="../../app/icons/icon-192x192.png"
     />
     <link
       rel="stylesheet"
@@ -73,102 +73,21 @@
             <h3>Menu Lengkap</h3>
           </div>
           <ul class="box-service mt-3">
+            <?php
+            include "../../koneksi.php";
+
+            $sql = mysqli_query($koneksi, "SELECT nm_menu, icon_menu, link_menu FROM tb_menu WHERE sts_menu = 1 ORDER BY kd_menu ASC");
+            while($data = mysqli_fetch_array($sql)){
+            ?>
             <li>
-              <a href="topup.html">
+              <a href="<?php echo $data['link_menu']; ?>">
                 <div class="icon-box bg_color_1">
-                  <i class="fa-solid fa-wallet fa-2x"></i>
+                  <i class="<?php echo $data['icon_menu']; ?>"></i>
                 </div>
-                Top Up
+                <?php echo $data['nm_menu']; ?>
               </a>
             </li>
-            <li>
-              <a href="tagihan.html">
-                <div class="icon-box bg_color_2">
-                  <i class="fas fa-file-invoice fa-2x"></i>
-                </div>
-                Tagihan
-              </a>
-            </li>
-            <li>
-              <a href="mutasi.html">
-                <div class="icon-box bg_color_3">
-                  <i class="fas fa-history fa-2x"></i>
-                </div>
-                Mutasi
-              </a>
-            </li>
-            <li>
-              <a href="transaksi.html">
-                <div class="icon-box bg_color_4">
-                  <i class="fas fa-exchange-alt fa-2x"></i>
-                </div>
-                Transaksi
-              </a>
-            </li>
-            <li>
-              <a href="absensi.html">
-                <div class="icon-box bg_color_5">
-                  <i class="fa-solid fa-user-clock fa-2x"></i>
-                </div>
-                Absen
-              </a>
-            </li>
-            <li>
-              <a href="kalender.html">
-                <div class="icon-box bg_color_6">
-                  <i class="fa-solid fa-calendar-alt fa-2x"></i>
-                </div>
-                Kalender Akademik
-              </a>
-            </li>
-            <li>
-              <a href="jadwal.html">
-                <div class="icon-box bg_color_7">
-                  <i class="fa-solid fa-book fa-2x"></i>
-                </div>
-                Jadwal Pelajaran
-              </a>
-            </li>
-            <li>
-              <a href="donasi.html">
-                <div class="icon-box bg_color_8">
-                  <i class="fa-solid fa-hand-holding-heart fa-2x"></i>
-                </div>
-                Donasi
-              </a>
-            </li>
-            <li>
-              <a href="simas/kelolamenu/kelolamenu.php">
-                <div class="icon-box bg_color_8">
-                  <i class="fa-solid fa-briefcase fa-2x"></i>
-                </div>
-                Kelola Menu
-              </a>
-            </li>
-            <li>
-              <a href="">
-                <div class="icon-box bg_color_8">
-                  <i class="fa-solid fa-hand-holding-heart fa-2x"></i>
-                </div>
-                Menu Lain
-              </a>
-            </li>
-            <li>
-              <a href="">
-                <div class="icon-box bg_color_8">
-                  <i class="fa-solid fa-hand-holding-heart fa-2x"></i>
-                </div>
-                Menu Lain
-              </a>
-            </li>
-            <li>
-              <a href="">
-                <div class="icon-box bg_color_8">
-                  <i class="fa-solid fa-hand-holding-heart fa-2x"></i>
-                </div>
-                Menu Lain
-              </a>
-            </li>
+            <?php } ?>
           </ul>
         </div>
       </div>
@@ -3717,13 +3636,13 @@
       </div>
     </div>
 
-    <script type="text/javascript" src="javascript/jquery.min.js"></script>
-    <script type="text/javascript" src="javascript/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../javascript/jquery.min.js"></script>
+    <script type="text/javascript" src="../../javascript/bootstrap.min.js"></script>
     <script
       type="text/javascript"
-      src="javascript/swiper-bundle.min.js"
+      src="../../javascript/swiper-bundle.min.js"
     ></script>
-    <script type="text/javascript" src="javascript/swiper.js"></script>
-    <script type="text/javascript" src="javascript/main.js"></script>
+    <script type="text/javascript" src="../../javascript/swiper.js"></script>
+    <script type="text/javascript" src="../../javascript/main.js"></script>
   </body>
 </html>
