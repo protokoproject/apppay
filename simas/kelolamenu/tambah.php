@@ -6,20 +6,27 @@ if (isset($_POST['simpan'])) {
     $nmmenu = $_POST['nmmenu'];
     $iconmenu = $_POST['iconmenu'];
     $linkmenu = $_POST['linkmenu'];
-    $kdkey = $_POST['kdkey'];
+    $urutmenu = $_POST['urutmenu'] ?? 0; // Jika tidak diisi, default 0
+    $sts_menu = isset($_POST['sts_menu']) ? 1 : 0; // Checkbox: aktif = 1, tidak aktif = 0
+    $kdkey = $_POST['kdkey'] ?? 'utama'; // Default 'utama' jika tidak diisi
 
+    // Validasi input (Pastikan tidak ada yang kosong kecuali urutmenu)
+    if (empty($nmmenu) || empty($iconmenu) || empty($linkmenu)) {
+        echo "<script>alert('Nama Menu, Icon Menu, dan Link Menu harus diisi!');</script>";
+        echo "<script>window.history.back();</script>";
+        exit;
+    }
+
+    // Mendapatkan kd_menu terakhir
     $last_menu = mysqli_query($koneksi, "SELECT MAX(kd_menu) AS last_menu FROM tb_menu");
     $last_menu_data = mysqli_fetch_assoc($last_menu);
     $kd_menu = $last_menu_data['last_menu'] + 1;
-    $urut_menu = $last_menu_data['last_menu'] + 1;
-    $gmbr_menu = '';
-    $class_menu = '';
-    $sts_menu = 1;
-    $menu_utama = 0;
 
+    // Menyimpan data ke database
     $query = "INSERT INTO tb_menu (kd_menu, nm_menu, icon_menu, link_menu, kd_key, gmbr_menu, sts_menu, urut_menu, menu_utama, class_menu) 
-              VALUES ('$kd_menu', '$nmmenu', '$iconmenu', '$linkmenu', '$kdkey', '$gmbr_menu', '$sts_menu', '$urut_menu', '$menu_utama', '$class_menu')";
+              VALUES ('$kd_menu', '$nmmenu', '$iconmenu', '$linkmenu', '$kdkey', '', '$sts_menu', '$urutmenu', 0, '')";
 
+    // Eksekusi query
     if (mysqli_query($koneksi, $query)) {
         echo "<script>alert('Data berhasil ditambahkan!');</script>";
         header("refresh:0, kelolamenu.php");
@@ -37,8 +44,7 @@ if (isset($_POST['simpan'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Mobile Specific Metas -->
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
     <title>Tambah Menu</title>
     <!-- Favicon and Touch Icons  -->
     <link rel="shortcut icon" href="../../images/logo.png" />
@@ -89,8 +95,15 @@ if (isset($_POST['simpan'])) {
                             <input type="text" placeholder="Link Menu" name="linkmenu">
                         </div>
                         <div class="group-input">
-                            <label>Kode Key</label>
-                            <input type="text" placeholder="Kode Key" name="kdkey">
+                            <label>Urut Menu</label>
+                            <input type="text" placeholder="Urut Menu" name="urutmenu">
+                        </div>
+                        <div class="group-input">
+                            <label>Status Menu</label>
+                            <fieldset class="d-flex align-items-center gap-12">
+                                <input class="tf-switch-check" id="switchCheckDefault" type="checkbox" name="sts_menu">
+                                <label for="switchCheckDefault">Aktif</label>
+                            </fieldset>
                         </div>
                         <button type="submit" class="mb-3 tf-btn accent small" style="width: 20%;" name="simpan">Tambah Data</button>
                     </form>
