@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include "koneksi.php";
+include "conn/koneksi.php";
 
 if (!isset($_SESSION["login"])) {
     header("Location: login.php");
@@ -91,7 +91,7 @@ if (!isset($_SESSION["login"])) {
         <div class="tf-container">
             <div class="tf-title d-flex justify-content-between">
                 <h3 class="fw_6">Menu</h3>
-                <a href="simas/menu_lengkap/menu_lengkap.php" class="primary_color fw_6">View All<i class="fas fa-arrow-right ms-1"></i></a>
+                <a href="menu/menu_lengkap/menu_lengkap.php" class="primary_color fw_6">View All<i class="fas fa-arrow-right ms-1"></i></a>
             </div>
             <ul class="box-service mt-3">
                 <li>

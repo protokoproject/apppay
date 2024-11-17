@@ -1,5 +1,5 @@
 <?php
-require "koneksi.php";
+require "conn/koneksi.php";
 require "function.php";
 
 $sql = mysqli_query($koneksi, "SELECT * FROM tb_app INNER JOIN tb_user ON tb_app.id_app = tb_user.id_app");
