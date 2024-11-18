@@ -94,70 +94,29 @@ if (!isset($_SESSION["login"])) {
                 <a href="menu/menu_lengkap/menu_lengkap.php" class="primary_color fw_6">View All<i class="fas fa-arrow-right ms-1"></i></a>
             </div>
             <ul class="box-service mt-3">
-                <li>
-                    <a href="topup.html">
-                        <div class="icon-box bg_color_1">
-                            <i class="fa-solid fa-wallet fa-2x"></i>
-                        </div>
-                        Top Up
-                    </a>
-                </li>
-                <li>
-                    <a href="tagihan.html">
-                        <div class="icon-box bg_color_2">
-                            <i class="fas fa-file-invoice fa-2x"></i>
-                        </div>
-                        Tagihan
-                    </a>
-                </li>
-                <li>
-                    <a href="mutasi.html">
-                        <div class="icon-box bg_color_3">
-                            <i class="fas fa-history fa-2x"></i>
-                        </div>
-                        Mutasi
-                    </a>
-                </li>
-                <li>
-                    <a href="transaksi.html">
-                        <div class="icon-box bg_color_4">
-                            <i class="fas fa-exchange-alt fa-2x"></i>
-                        </div>
-                        Transaksi
-                    </a>
-                </li>
-                <li>
-                    <a href="absensi.html">
-                        <div class="icon-box bg_color_5">
-                            <i class="fa-solid fa-user-clock fa-2x"></i>
-                        </div>
-                        Absen
-                    </a>
-                </li>
-                <li>
-                    <a href="kalender.html">
-                        <div class="icon-box bg_color_6">
-                            <i class="fa-solid fa-calendar-alt fa-2x"></i>
-                        </div>
-                        Kalender Akademik
-                    </a>
-                </li>
-                <li>
-                    <a href="jadwal.html">
-                        <div class="icon-box bg_color_7">
-                            <i class="fa-solid fa-book fa-2x"></i>
-                        </div>
-                        Jadwal Pelajaran
-                    </a>
-                </li>
-                <li>
-                    <a href="donasi.html">
-                        <div class="icon-box bg_color_8">
-                            <i class="fa-solid fa-hand-holding-heart fa-2x"></i>
-                        </div>
-                        Donasi
-                    </a>
-                </li>
+            <?php
+          include "conn/koneksi.php";
+
+          // Base URL untuk aplikasi
+          $baseDir = "http://localhost/pkl/simas/";
+
+          // Query untuk mengambil data menu
+          $sql = mysqli_query($koneksi, "SELECT nm_menu, icon_menu, link_menu FROM tb_menu WHERE sts_menu = '1' AND kd_key = 'utama' ORDER BY urut_menu ASC LIMIT 8");
+          while ($data = mysqli_fetch_array($sql)) {
+            // Membuat link absolut berdasarkan baseDir dan kolom link_menu
+            $absoluteLink = $baseDir . $data['link_menu'];
+          ?>
+            <li>
+              <a href="<?php echo $absoluteLink; ?>">
+                <div class="icon-box bg_color_1">
+                  <i class="<?php echo $data['icon_menu']; ?>"></i>
+                </div>
+                <?php echo $data['nm_menu']; ?>
+              </a>
+            </li>
+          <?php
+          }
+          ?>
             </ul>
         </div>
     </div>
