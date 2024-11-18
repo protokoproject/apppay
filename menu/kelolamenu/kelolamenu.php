@@ -126,7 +126,7 @@
     <div class="header is-fixed">
         <div class="tf-container">
             <div class="tf-statusbar d-flex justify-content-center align-items-center">
-                <a href="#" class="back-btn"> <i class="icon-left"></i> </a>
+                <a href="../menu_lengkap/menu_lengkap.php" class="back-btn"> <i class="icon-left"></i> </a>
                 <h3>Kelola Menu</h3>
             </div>
         </div>
@@ -138,7 +138,10 @@
 
                 </div>
                 <div class="trading-month">
-                    <button class="mb-3 tf-btn accent small" style="width: 20%;" onclick="window.location.href='tambah.php'">Tambah Data</button>
+                    <button class="mb-3 tf-btn accent small" style="width: 20%;">
+                        <a href="tambah.php" style="color: white; text-decoration: none;" onmouseover="this.style.color='#533dea'" onmouseout="this.style.color='white'">Tambah Data</a>
+                    </button>
+
                     <div class="group-trading-history">
                         <?php
                         include "../../conn/koneksi.php";
