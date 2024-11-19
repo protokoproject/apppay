@@ -271,11 +271,11 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="" class="btn btn-primary btn-sm">
+                                        <a href="edit.php?kd_sts_user=<?php echo $data['kd_sts_user']; ?>" class="btn btn-primary btn-sm">
                                             <i class="fa fa-pencil"></i>
                                         </a>
-                                        <a href="" class="btn btn-danger btn-sm"
-                                            onclick="">
+                                        <a href="delete.php?kd_sts_user=<?php echo $data['kd_sts_user']; ?>" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </td>
