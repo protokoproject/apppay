@@ -31,6 +31,13 @@
             background-color: #fff;
         }
 
+        /* Remove default border collapse conflict */
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6;
+            /* Set border color for all sides */
+        }
+
         .table th {
             text-align: center;
             vertical-align: middle;
@@ -38,15 +45,14 @@
             font-size: 14px;
             background-color: #f8f9fa;
             color: #333;
-            border-bottom: 2px solid #dee2e6;
+            padding: 10px;
         }
 
         .table td {
             text-align: center;
             vertical-align: middle;
             font-size: 14px;
-            border-bottom: 1px solid #dee2e6;
-            padding: 8px;
+            padding: 10px;
         }
 
         /* Status Badge Styling */
@@ -68,7 +74,6 @@
             color: #fff;
         }
 
-        /* Edit Button Styling */
         .btn-primary {
             font-size: 12px;
             padding: 5px 8px;
@@ -76,12 +81,10 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background-color: transparent;
-            /* Hilangkan background */
+            background-color: #28a745;
+            /* Green for Edit */
             border: none;
-            /* Hilangkan border */
-            color: #007bff;
-            /* Sesuaikan warna teks (biru untuk edit) */
+            color: #fff;
         }
 
         .btn-primary i {
@@ -97,12 +100,10 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background-color: transparent;
-            /* Hilangkan background */
+            background-color: #dc3545;
+            /* Red for Delete */
             border: none;
-            /* Hilangkan border */
-            color: #dc3545;
-            /* Sesuaikan warna teks (merah untuk delete) */
+            color: #fff;
         }
 
         .btn-danger i {
@@ -111,13 +112,13 @@
 
         /* Hover Effects */
         .btn-primary:hover {
-            color: #0056b3;
-            /* Warna teks saat hover */
+            background-color: #218838;
+            /* Darker green on hover */
         }
 
         .btn-danger:hover {
-            color: #bd2130;
-            /* Warna teks saat hover */
+            background-color: #c82333;
+            /* Darker red on hover */
         }
 
         /* Table Row Hover Effect */
@@ -130,7 +131,11 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
-        
+
+        /* Modal Custom Styles */
+        #staticBackdrop .modal-dialog {
+            max-width: 60%;
+        }
     </style>
 </head>
 
@@ -157,7 +162,7 @@
 
                 </div>
                 <div class="trading-month">
-                    <table class="table table-hover">
+                    <table class="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>Nama User</th>
@@ -168,87 +173,114 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Nama User</td>
-                                <td>Keterangan</td>
-                                <td>Status</td>
-                                <td style="justify-content: center; display: flex;">
-                                    <!-- Button trigger modal -->
-                                    <button type="button" class="tf-btn accent" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop" style="width: 50%;"><i class="fa-solid fa-gear"></i>
-                                        Atur
-                                    </button>
+                            <?php
+                            include "../../conn/koneksi.php";
 
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
-                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
-                                        aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="staticBackdropLabel">Master Pengguna</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <table class="table table-bordered">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Nama Menu</th>
-                                                                <th>View</th>
-                                                                <th>Tambah</th>
-                                                                <th>Edit</th>
-                                                                <th>Hapus</th>
-                                                                <th>Lainnya</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>Nama Menu</td>
-                                                                <td><fieldset class="d-flex align-items-center gap-12" >
-                                                                    <input class="tf-switch-check" id="switchCheckDefault" type="checkbox">
-                                                                    <label  for="switchCheckDefault"></label>
-                                                                </fieldset></td>
-                                                                <td><fieldset class="d-flex align-items-center gap-12" >
-                                                                    <input class="tf-switch-check" id="switchCheckDefault" type="checkbox">
-                                                                    <label  for="switchCheckDefault"></label>
-                                                                </fieldset></td>
-                                                                <td><fieldset class="d-flex align-items-center gap-12" >
-                                                                    <input class="tf-switch-check" id="switchCheckDefault" type="checkbox">
-                                                                    <label  for="switchCheckDefault"></label>
-                                                                </fieldset></td>
-                                                                <td><fieldset class="d-flex align-items-center gap-12" >
-                                                                    <input class="tf-switch-check" id="switchCheckDefault" type="checkbox">
-                                                                    <label  for="switchCheckDefault"></label>
-                                                                </fieldset></td>
-                                                                <td><fieldset class="d-flex align-items-center gap-12" >
-                                                                    <input class="tf-switch-check" id="switchCheckDefault" type="checkbox">
-                                                                    <label  for="switchCheckDefault"></label>
-                                                                </fieldset></td>
-                                                                
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Tutup</button>
-                                                    <button type="button" class="tf-btn accent">Simpan</button>
+                            $sql = mysqli_query($koneksi, "SELECT * FROM tb_sts_user");
+                            while ($data = mysqli_fetch_array($sql)) {
+                            ?>
+                                <tr>
+                                    <td><?php echo $data['nm_sts_user']; ?></td>
+                                    <td><?php echo $data['ket_sts_user']; ?></td>
+                                    <td>
+                                        <?php
+                                        if ($data['st_sts_user'] == 1) {
+                                            echo '<span class="badge bg-success" style="text-transform: none;">' . ucfirst(strtolower('aktif')) . '</span>';
+                                        } else {
+                                            echo '<span class="badge bg-danger" style="text-transform: none;">' . ucfirst(strtolower('tidak')) . '</span>';
+                                        }
+                                        ?>
+                                    </td>
+                                    <td style="justify-content: center; display: flex;">
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="tf-btn accent" data-bs-toggle="modal"
+                                            data-bs-target="#staticBackdrop" style="width: 50%; height:15px;"><i class="fa-solid fa-gear"></i>
+                                            Atur
+                                        </button>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="staticBackdropLabel">Master Pengguna</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered table-hover">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Nama Menu</th>
+                                                                        <th>View</th>
+                                                                        <th>Tambah</th>
+                                                                        <th>Edit</th>
+                                                                        <th>Hapus</th>
+                                                                        <th>Lainnya</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <?php
+                                                                    $mysql = mysqli_query($koneksi, "SELECT * FROM tb_menu");
+                                                                    while ($tampil = mysqli_fetch_array($mysql)) {
+                                                                    ?>
+                                                                        <tr>
+                                                                            <td><?php echo $tampil['nm_menu']; ?></td>
+                                                                            <td>
+                                                                                <fieldset class="d-flex justify-content-center">
+                                                                                    <input class="tf-switch-check" id="switchCheckDefault" type="checkbox">
+                                                                                    <label for="switchCheckDefault"></label>
+                                                                                </fieldset>
+                                                                            </td>
+                                                                            <td>
+                                                                                <fieldset class="d-flex justify-content-center">
+                                                                                    <input class="tf-switch-check" id="switchCheckDefault" type="checkbox">
+                                                                                    <label for="switchCheckDefault"></label>
+                                                                                </fieldset>
+                                                                            </td>
+                                                                            <td>
+                                                                                <fieldset class="d-flex justify-content-center">
+                                                                                    <input class="tf-switch-check" id="switchCheckDefault" type="checkbox">
+                                                                                    <label for="switchCheckDefault"></label>
+                                                                                </fieldset>
+                                                                            </td>
+                                                                            <td>
+                                                                                <fieldset class="d-flex justify-content-center">
+                                                                                    <input class="tf-switch-check" id="switchCheckDefault" type="checkbox">
+                                                                                    <label for="switchCheckDefault"></label>
+                                                                                </fieldset>
+                                                                            </td>
+                                                                            <td>
+                                                                                <fieldset class="d-flex justify-content-center">
+                                                                                    <input class="tf-switch-check" id="switchCheckDefault" type="checkbox">
+                                                                                    <label for="switchCheckDefault"></label>
+                                                                                </fieldset>
+                                                                            </td>
+                                                                        </tr>
+                                                                    <?php } ?>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="tf-btn secondary" data-bs-dismiss="modal" style="height: 40px;">Tutup</button>
+                                                        <button type="button" class="tf-btn accent" style="height: 40px;">Simpan</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a href="edit.php?id=1" class="btn btn-primary btn-sm">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-                                    <a href="delete.php?id=1" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Yakin ingin menghapus?')">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td>
+                                        <a href="" class="btn btn-primary btn-sm">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+                                        <a href="" class="btn btn-danger btn-sm"
+                                            onclick="">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>
