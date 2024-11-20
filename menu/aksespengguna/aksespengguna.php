@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Mobile Specific Metas -->
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
     <title>Akses Pengguna</title>
     <!-- Favicon and Touch Icons  -->
     <link rel="shortcut icon" href="../../images/logo.png" />
@@ -178,6 +177,7 @@
 
                             $sql = mysqli_query($koneksi, "SELECT * FROM tb_sts_user");
                             while ($data = mysqli_fetch_array($sql)) {
+                                $kd_sts_user = $data['kd_sts_user'];
                             ?>
                                 <tr>
                                     <td><?php echo $data['nm_sts_user']; ?></td>
@@ -185,97 +185,100 @@
                                     <td>
                                         <?php
                                         if ($data['st_sts_user'] == 1) {
-                                            echo '<span class="badge bg-success" style="text-transform: none;">' . ucfirst(strtolower('aktif')) . '</span>';
+                                            echo '<span class="badge bg-success" style="text-transform: none;">Aktif</span>';
                                         } else {
-                                            echo '<span class="badge bg-danger" style="text-transform: none;">' . ucfirst(strtolower('tidak')) . '</span>';
+                                            echo '<span class="badge bg-danger" style="text-transform: none;">Tidak</span>';
                                         }
                                         ?>
                                     </td>
                                     <td style="justify-content: center; display: flex;">
                                         <!-- Button trigger modal -->
-                                        <button type="button" class="tf-btn accent" data-bs-toggle="modal"
-                                            data-bs-target="#staticBackdrop" style="width: 50%; height:15px;"><i class="fa-solid fa-gear"></i>
-                                            Atur
+                                        <button type="button" class="tf-btn accent" data-bs-toggle="modal" data-bs-target="#modalRoleAkses<?php echo $kd_sts_user; ?>" style="width: 50%; height:15px;">
+                                            <i class="fa-solid fa-gear"></i> Atur
                                         </button>
 
                                         <!-- Modal -->
-                                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                        <div class="modal fade" id="modalRoleAkses<?php echo $kd_sts_user; ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="staticBackdropLabel">Master Pengguna</h5>
+                                                        <h5 class="modal-title" id="staticBackdropLabel">Role Akses untuk <?php echo $data['nm_sts_user']; ?></h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <div class="table-responsive">
-                                                            <table class="table table-bordered table-hover">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Nama Menu</th>
-                                                                        <th>View</th>
-                                                                        <th>Tambah</th>
-                                                                        <th>Edit</th>
-                                                                        <th>Hapus</th>
-                                                                        <th>Lainnya</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <?php
-                                                                    $mysql = mysqli_query($koneksi, "SELECT * FROM tb_menu");
-                                                                    while ($tampil = mysqli_fetch_array($mysql)) {
-                                                                    ?>
+                                                        <form method="POST" action="update_role_akses.php">
+                                                            <input type="hidden" name="kd_sts_user" value="<?php echo $kd_sts_user; ?>">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-bordered table-hover">
+                                                                    <thead>
                                                                         <tr>
-                                                                            <td><?php echo $tampil['nm_menu']; ?></td>
-                                                                            <td>
-                                                                                <fieldset class="d-flex justify-content-center">
-                                                                                    <input class="tf-switch-check" id="switchCheckDefault" type="checkbox">
-                                                                                    <label for="switchCheckDefault"></label>
-                                                                                </fieldset>
-                                                                            </td>
-                                                                            <td>
-                                                                                <fieldset class="d-flex justify-content-center">
-                                                                                    <input class="tf-switch-check" id="switchCheckDefault" type="checkbox">
-                                                                                    <label for="switchCheckDefault"></label>
-                                                                                </fieldset>
-                                                                            </td>
-                                                                            <td>
-                                                                                <fieldset class="d-flex justify-content-center">
-                                                                                    <input class="tf-switch-check" id="switchCheckDefault" type="checkbox">
-                                                                                    <label for="switchCheckDefault"></label>
-                                                                                </fieldset>
-                                                                            </td>
-                                                                            <td>
-                                                                                <fieldset class="d-flex justify-content-center">
-                                                                                    <input class="tf-switch-check" id="switchCheckDefault" type="checkbox">
-                                                                                    <label for="switchCheckDefault"></label>
-                                                                                </fieldset>
-                                                                            </td>
-                                                                            <td>
-                                                                                <fieldset class="d-flex justify-content-center">
-                                                                                    <input class="tf-switch-check" id="switchCheckDefault" type="checkbox">
-                                                                                    <label for="switchCheckDefault"></label>
-                                                                                </fieldset>
-                                                                            </td>
+                                                                            <th>Nama Menu</th>
+                                                                            <th>View</th>
+                                                                            <th>Tambah</th>
+                                                                            <th>Edit</th>
+                                                                            <th>Hapus</th>
+                                                                            <th>Lainnya</th>
                                                                         </tr>
-                                                                    <?php } ?>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="tf-btn secondary" data-bs-dismiss="modal" style="height: 40px;">Tutup</button>
-                                                        <button type="button" class="tf-btn accent" style="height: 40px;">Simpan</button>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <?php
+                                                                        $query = "
+                                                            SELECT 
+                                                                tb_menu.kd_menu,
+                                                                tb_menu.nm_menu, 
+                                                                tb_role_akses.view_menu, 
+                                                                tb_role_akses.tmbh_menu, 
+                                                                tb_role_akses.edit_menu, 
+                                                                tb_role_akses.hapus_menu, 
+                                                                tb_role_akses.lainnya 
+                                                            FROM 
+                                                                tb_role_akses
+                                                            INNER JOIN tb_menu ON tb_role_akses.kd_menu = tb_menu.kd_menu
+                                                            WHERE tb_role_akses.kd_sts_user = '$kd_sts_user'
+                                                        ";
+
+                                                                        $roleAkses = mysqli_query($koneksi, $query);
+                                                                        while ($row = mysqli_fetch_array($roleAkses)) {
+                                                                            $kd_menu = $row['kd_menu'];
+                                                                        ?>
+                                                                            <tr>
+                                                                                <td><?php echo $row['nm_menu']; ?></td>
+                                                                                <td>
+                                                                                    <input type="hidden" name="kd_menu[]" value="<?php echo $kd_menu; ?>">
+                                                                                    <input class="tf-switch-check" name="view_menu[<?php echo $kd_menu; ?>]" type="checkbox" value="1" <?php echo ($row['view_menu'] == 1) ? 'checked' : ''; ?>>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input class="tf-switch-check" name="tmbh_menu[<?php echo $kd_menu; ?>]" type="checkbox" value="1" <?php echo ($row['tmbh_menu'] == 1) ? 'checked' : ''; ?>>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input class="tf-switch-check" name="edit_menu[<?php echo $kd_menu; ?>]" type="checkbox" value="1" <?php echo ($row['edit_menu'] == 1) ? 'checked' : ''; ?>>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input class="tf-switch-check" name="hapus_menu[<?php echo $kd_menu; ?>]" type="checkbox" value="1" <?php echo ($row['hapus_menu'] == 1) ? 'checked' : ''; ?>>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input class="tf-switch-check" name="lainnya[<?php echo $kd_menu; ?>]" type="checkbox" value="1" <?php echo ($row['lainnya'] == 1) ? 'checked' : ''; ?>>
+                                                                                </td>
+                                                                            </tr>
+                                                                        <?php } ?>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="tf-btn secondary" data-bs-dismiss="modal" style="height: 40px;">Tutup</button>
+                                                                <button type="submit" class="tf-btn accent" style="height: 40px;">Simpan</button>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="edit.php?kd_sts_user=<?php echo $data['kd_sts_user']; ?>" class="btn btn-primary btn-sm">
+                                        <a href="edit.php?kd_sts_user=<?php echo $kd_sts_user; ?>" class="btn btn-primary btn-sm">
                                             <i class="fa fa-pencil"></i>
                                         </a>
-                                        <a href="delete.php?kd_sts_user=<?php echo $data['kd_sts_user']; ?>" class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">
+                                        <a href="delete.php?kd_sts_user=<?php echo $kd_sts_user; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </td>
@@ -292,8 +295,7 @@
         <div class="tf-container">
             <ul class="tf-navigation-bar">
                 <li>
-                    <a class="fw_4 d-flex justify-content-center align-items-center flex-column"
-                        href="../../home.php"><i class="icon-home"></i> Home</a>
+                    <a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="../../home.php"><i class="icon-home"></i> Home</a>
                 </li>
                 <li class="active">
                     <a class="fw_6 d-flex justify-content-center align-items-center flex-column" href="58_history.html">
@@ -307,15 +309,12 @@
                     <a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="62_rewards.html">
                         <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="12.25" cy="12" r="9.5" stroke="#717171" />
-                            <path
-                                d="M17.033 11.5318C17.2298 11.3316 17.2993 11.0377 17.2144 10.7646C17.1293 10.4914 16.9076 10.2964 16.6353 10.255L14.214 9.88781C14.1109 9.87213 14.0218 9.80462 13.9758 9.70702L12.8933 7.41717C12.7717 7.15989 12.525 7 12.2501 7C11.9754 7 11.7287 7.15989 11.6071 7.41717L10.5244 9.70723C10.4784 9.80483 10.3891 9.87234 10.286 9.88802L7.86469 10.2552C7.59257 10.2964 7.3707 10.4916 7.2856 10.7648C7.2007 11.038 7.27018 11.3318 7.46702 11.532L9.2189 13.3144C9.29359 13.3905 9.32783 13.5 9.31021 13.607L8.89692 16.1239C8.86027 16.3454 8.91594 16.5609 9.0533 16.7308C9.26676 16.9956 9.6394 17.0763 9.93735 16.9128L12.1027 15.7244C12.1932 15.6749 12.3072 15.6753 12.3975 15.7244L14.563 16.9128C14.6684 16.9707 14.7807 17 14.8966 17C15.1083 17 15.3089 16.9018 15.4469 16.7308C15.5845 16.5609 15.6399 16.345 15.6033 16.1239L15.1898 13.607C15.1722 13.4998 15.2064 13.3905 15.2811 13.3144L17.033 11.5318Z"
-                                stroke="#717171" stroke-width="1.25" />
+                            <path d="M17.033 11.5318C17.2298 11.3316 17.2993 11.0377 17.2144 10.7646C17.1293 10.4914 16.9076 10.2964 16.6353 10.255L14.214 9.88781C14.1109 9.87213 14.0218 9.80462 13.9758 9.70702L12.8933 7.41717C12.7717 7.15989 12.525 7 12.2501 7C11.9754 7 11.7287 7.15989 11.6071 7.41717L10.5244 9.70723C10.4784 9.80483 10.3891 9.87234 10.286 9.88802L7.86469 10.2552C7.59257 10.2964 7.3707 10.4916 7.2856 10.7648C7.2007 11.038 7.27018 11.3318 7.46702 11.532L9.2189 13.3144C9.29359 13.3905 9.32783 13.5 9.31021 13.607L8.89692 16.1239C8.86027 16.3454 8.91594 16.5609 9.0533 16.7308C9.26676 16.9956 9.6394 17.0763 9.93735 16.9128L12.1027 15.7244C12.1932 15.6749 12.3072 15.6753 12.3975 15.7244L14.563 16.9128C14.6684 16.9707 14.7807 17 14.8966 17C15.1083 17 15.3089 16.9018 15.4469 16.7308C15.5845 16.5609 15.6399 16.345 15.6033 16.1239L15.1898 13.607C15.1722 13.4998 15.2064 13.3905 15.2811 13.3144L17.033 11.5318Z" stroke="#717171" stroke-width="1.25" />
                         </svg>
                         Rewards</a>
                 </li>
                 <li>
-                    <a class="fw_4 d-flex justify-content-center align-items-center flex-column"
-                        href="../profil/profil.php">
+                    <a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="../profil/profil.php">
                         <i class="icon-user-outline"></i> Profil</a>
                 </li>
             </ul>
