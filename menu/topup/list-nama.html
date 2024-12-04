@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover" />
+    <title>Topup</title>
+    <!-- Favicon and Touch Icons  -->
+    <link rel="shortcut icon" href="../../images/logo.png" />
+    <link rel="apple-touch-icon-precomposed" href="../../images/logo.png" />
+    <!-- Font -->
+    <link rel="stylesheet" href="../../fonts/fonts.css" />
+    <!-- Icons -->
+    <link rel="stylesheet" href="../../fonts/icons-alipay.css" />
+    <link rel="stylesheet" href="../../styles/bootstrap.css" />
+    <link rel="stylesheet" href="../../styles/swiper-bundle.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../styles/styles.css" />
+    <link rel="manifest" href="../../_manifest.json" data-pwa-version="set_in_manifest_and_pwa_js" />
+    <link rel="apple-touch-icon" sizes="192x192" href="../../app/icons/icon-192x192.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <style>
+        .list-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .list-group {
+            border-radius: 8px;
+            background-color: #fff;
+            /* Warna latar putih */
+            padding: 20px;
+        }
+
+        .list-group-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 8px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .list-group-item.active {
+            background-color: #007bff;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .list-group-item i {
+            margin-right: 10px;
+            font-size: 18px;
+            color: #007bff;
+        }
+
+        .list-group-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: #f8f9fa;
+        }
+
+        .list-group-item.active i {
+            color: #fff;
+        }
+
+        .list-group-item span {
+            flex-grow: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- preloade -->
+    <div class="preload preload-container">
+        <div class="preload-logo">
+            <div class="spinner"></div>
+        </div>
+    </div>
+    <!-- /preload -->
+    <div class="app-header st1">
+        <div class="tf-container">
+            <div class="tf-topbar d-flex justify-content-center align-items-center">
+                <a href="home.php" class="back-btn"><i class="icon-left white_color"></i></a>
+                <h3 class="white_color">Top Up</h3>
+            </div>
+        </div>
+    </div>
+    <div class="card-secton topup-content">
+        <div class="tf-container">
+        </div>
+        <div class="bottom-navigation-bar">
+           
+        </div>
+    </div>
+
+    <div class="amount-money mt-9">
+        <div class="tf-container">
+            <div class="list-wrapper">
+                <div class="list-group" style="width: 75%;">
+                    <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                        <i class="fas fa-users"></i> <span>Pilih Nama Siswa</span>
+                    </a>
+                    <a href="topup.html" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user"></i> <span>Asep Simanjuntak</span>
+                    </a>
+                    <a href="topup.html" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user"></i> <span>John Doe</span>
+                    </a>
+                    <a href="topup.html" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user"></i> <span>Kevin Alexander</span>
+                    </a>
+                    <a href="topup.html" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user"></i> <span>Ismail Bin Slamet</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tf-panel up">
+        <div class="panel_overlay"></div>
+        <div class="panel-box panel-up wrap-content-panel">
+            <div class="heading">
+                <div class="tf-container">
+                    <div class="d-flex align-items-center position-relative justify-content-center">
+                        <i class="icon-close1 clear-panel"></i>
+                        <h3>Konfirmasi Top Up</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="main-topup">
+                <div class="tf-container">
+                    <h3>Pilih Sumber</h3>
+                    <div class="tf-card-block d-flex align-items-center justify-content-between">
+                        <div class="inner d-flex align-items-center">
+                            <div class="logo-img">
+                                <img src="images/logo-banks/card-visa3.png" alt="image" />
+                            </div>
+                            <div class="content">
+                                <h4><a href="#" class="fw_6">Mastercard</a></h4>
+                                <p>**** **** **** 7576</p>
+                            </div>
+                        </div>
+                        <i class="icon-right"></i>
+                    </div>
+                    <ul class="info">
+                        <li>
+                            <h4 class="secondary_color fw_4 d-flex justify-content-between align-items-center">
+                                Jumlah
+                                <a href="#" class="on_surface_color fw_7">Rp. 200.000</a>
+                            </h4>
+                        </li>
+                        <li>
+                            <h4 class="secondary_color fw_4 d-flex justify-content-between align-items-center">
+                                Biaya admin <a href="#" class="success_color fw_7">Gratis</a>
+                            </h4>
+                        </li>
+                    </ul>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="total">
+                            <h4 class="secondary_color fw_4">Total</h4>
+                            <h2>Rp. 200.000</h2>
+                        </div>
+                        <a href="enter-pin.html" class="tf-btn accent large"><i class="icon-secure1"></i> Mengisi
+                            Ulang</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="../../javascript/jquery.min.js"></script>
+    <script type="text/javascript" src="../../javascript/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../javascript/main.js"></script>
+</body>
+
+</html>
