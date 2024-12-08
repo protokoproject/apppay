@@ -24,16 +24,18 @@ if (isset($_POST['simpan'])) {
 
     // Menyimpan data ke database
     $query = "INSERT INTO tb_menu (kd_menu, nm_menu, icon_menu, link_menu, kd_key, gmbr_menu, sts_menu, urut_menu, menu_utama, class_menu) 
-              VALUES ('$kd_menu', '$nmmenu', '$iconmenu', '$linkmenu', '$kdkey', '', '$sts_menu', '$urutmenu', 0, '')";
+          VALUES ('$kd_menu', '$nmmenu', '$iconmenu', '$linkmenu', '$kdkey', '', '$sts_menu', '$urutmenu', '0', '')";
 
     // Eksekusi query
     if (mysqli_query($koneksi, $query)) {
         echo "<script>alert('Data berhasil ditambahkan!');</script>";
         header("refresh:0, kelolamenu.php");
     } else {
-        echo "<script>alert('Error: " . mysqli_error($koneksi) . "');</script>";
-        header("refresh:0, kelolamenu.php");
+        error_log("Error executing query: " . mysqli_error($koneksi));
+        echo "<script>alert('Terjadi kesalahan saat menambahkan data!');</script>";
+        echo "<script>console.log('Error: " . addslashes(mysqli_error($koneksi)) . "');</script>";
     }
+    
 }
 ?>
 
