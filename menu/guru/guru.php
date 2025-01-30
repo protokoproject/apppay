@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Mobile Specific Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
-    <title>Kelola Aplikasi</title>
+    <title>Guru</title>
     <!-- Favicon and Touch Icons  -->
     <link rel="shortcut icon" href="../../images/logo.png" />
     <link rel="apple-touch-icon-precomposed" href="../../images/logo.png" />
@@ -127,7 +127,7 @@
         <div class="tf-container">
             <div class="tf-statusbar d-flex justify-content-center align-items-center">
                 <a href="../menu_lengkap/menu_lengkap.php" class="back-btn"> <i class="icon-left"></i> </a>
-                <h3>Kelola Aplikasi</h3>
+                <h3>Guru</h3>
             </div>
         </div>
     </div>
@@ -137,54 +137,44 @@
                 <div class="trading-month">
 
                 </div>
-                <div class="tf-container">
-                    <div class="trading-month">
-                        <button class="mb-3 tf-btn accent small" style="width: 20%;">
-                            <a href="tambah.php" style="color: white; text-decoration: none;" onmouseover="this.style.color='#533dea'" onmouseout="this.style.color='white'">Tambah Data</a>
-                        </button>
-                        <table border="1" style="width: 100%; border-collapse: collapse; text-align: left;">
+                <div class="trading-month">
+                    <button class="mb-3 tf-btn accent small" style="width: 20%;">
+                        <a href="tambah.php" style="color: white; text-decoration: none;" onmouseover="this.style.color='#533dea'" onmouseout="this.style.color='white'">Tambah Data</a>
+                    </button>
+
+                    <div class="group-trading-history">
+                        <table class="table table-striped">
                             <thead>
-                                <tr style="background-color: #f2f2f2;">
-                                    <th style="padding: 10px;">No</th>
-                                    <th style="padding: 10px;">Nama Aplikasi</th>
-                                    <th style="padding: 10px;">Logo Aplikasi</th>
-                                    <th style="padding: 10px;">Tanggal Rilis</th>
-                                    <th style="padding: 10px;">Alamat</th>
-                                    <th style="padding: 10px;">No Telepon</th>
-                                    <th style="padding: 10px;">Aksi</th>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Spesialis Mata Pelajaran</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 include "../../conn/koneksi.php";
                                 $no = 1;
-
-                                $sql = mysqli_query($koneksi, "SELECT * FROM tb_app");
-                                while ($data = mysqli_fetch_array($sql)) {
-                                    echo "<tr>";
-                                    echo "<td style='padding: 10px;'>" . ($no++) . "</td>";
-                                    echo "<td style='padding: 10px;'>{$data['nm_app']}</td>";
-                                    echo "<td style='padding: 10px;'>{$data['logo_app']}</td>";
-                                    echo "<td style='padding: 10px;'>{$data['tgl_rilis']}</td>";
-                                    echo "<td style='padding: 10px;'>{$data['almt']}</td>";
-                                    echo "<td style='padding: 10px;'>{$data['no_telp']}</td>";
-                                    echo "<td style='padding: 10px;'>
-                                    <a href='edit.php?id={$data['id_app']}' style='margin-right: 10px;'>
-                                        <i class='fa fa-pencil'></i>
-                                    </a>
-                                    <a href='delete.php?id={$data['id_app']}' onclick=\"return confirm('Apakah Anda yakin ingin menghapus data ini?')\">
-                                        <i class='fa fa-trash'></i>
-                                    </a>
-                                </td>";
-                                    echo "</tr>";
-                                }
+                                $sql = mysqli_query($koneksi, "SELECT * FROM t_guru");
+                                while ($hasil = mysqli_fetch_array($sql)) {
                                 ?>
-
+                                    <tr>
+                                        <td><?php echo $no++; ?></td>
+                                        <td><?php echo $hasil['sp_mapel']; ?></td>
+                                        <td>
+                                            <a href="edit.php?id=<?php echo $hasil['id_guru']; ?>" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i> <!-- Ikon Edit -->
+                                            </a>
+                                            <a href="delete.php?id=<?php echo $hasil['id_guru']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
+                                                <i class="fas fa-trash-alt"></i> <!-- Ikon Hapus -->
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

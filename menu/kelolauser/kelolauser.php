@@ -145,7 +145,7 @@
                         <table border="1" style="width: 100%; border-collapse: collapse; text-align: left;">
                             <thead>
                                 <tr style="background-color: #f2f2f2;">
-                                    <th style="padding: 10px;">ID</th>
+                                    <th style="padding: 10px;">No</th>
                                     <th style="padding: 10px;">Nama</th>
                                     <th style="padding: 10px;">Email</th>
                                     <th style="padding: 10px;">No HP</th>
@@ -156,11 +156,12 @@
                             <tbody>
                                 <?php
                                 include "../../conn/koneksi.php";
+                                $no = 1;
 
                                 $sql = mysqli_query($koneksi, "SELECT * FROM tb_user");
                                 while ($data = mysqli_fetch_array($sql)) {
                                     echo "<tr>";
-                                    echo "<td style='padding: 10px;'>{$data['id_user']}</td>";
+                                    echo "<td style='padding: 10px;'>" . ($no) . "</td>";
                                     echo "<td style='padding: 10px;'>{$data['nm_user']}</td>";
                                     echo "<td style='padding: 10px;'>{$data['email']}</td>";
                                     echo "<td style='padding: 10px;'>{$data['nohp']}</td>";
