@@ -24,10 +24,10 @@ if (isset($_POST['simpan'])) {
 
     if (mysqli_query($koneksi, $query)) {
         echo "<script>alert('Data berhasil diubah!');</script>";
-        header("refresh:0, aksespengguna.php");
+        header("refresh:0, akses.php");
     } else {
         echo "<script>alert('Error: " . mysqli_error($koneksi) . "');</script>";
-        header("refresh:0, aksespengguna.php");
+        header("refresh:0, akses.php");
     }
 }
 ?>

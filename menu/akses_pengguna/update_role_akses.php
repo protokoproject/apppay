@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     echo "
         <script>
             alert('Berhasil Mengubah Role Akses');
-            window.location.href = 'aksespengguna.php';
+            window.location.href = 'akses.php';
         </script>
     ";
 }

@@ -7,10 +7,10 @@ $delete = mysqli_query($koneksi, "DELETE FROM tb_sts_user WHERE kd_sts_user ='$k
 
 if($delete){
     echo "<script>alert('Data berhasil dihapus!');</script>";
-    header("refresh:0, aksespengguna.php");
+    header("refresh:0, akses.php");
 } else {
     echo "<script>alert('Error: " . mysqli_error($koneksi) . "');</script>";
-    header("refresh:0, aksespengguna.php");
+    header("refresh:0, akses.php");
 
 }
 ?>
