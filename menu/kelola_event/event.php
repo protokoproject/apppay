@@ -168,10 +168,10 @@
                                         <td><?php echo $start_date; ?></td>
                                         <td><?php echo $end_date; ?></td>
                                         <td>
-                                            <a href="edit.php?id=<?php echo $data['id']; ?>" class="btn btn-warning btn-sm">
+                                            <a href="edit.php?id=<?php echo $data['id_event']; ?>" class="btn btn-warning btn-sm">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <a href="delete.php?id=<?php echo $data['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
+                                            <a href="delete.php?id=<?php echo $data['id_event']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
                                                 <i class="fas fa-trash-alt"></i>
                                             </a>
                                         </td>
