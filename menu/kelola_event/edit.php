@@ -6,7 +6,7 @@ if (isset($_GET['id'])) {
     $id = mysqli_real_escape_string($koneksi, $_GET['id']);
 
     // Query untuk mendapatkan data event berdasarkan ID
-    $query = "SELECT * FROM tb_events WHERE id = '$id'";
+    $query = "SELECT * FROM tb_events WHERE id_event = '$id'";
     $result = mysqli_query($koneksi, $query);
     $event = mysqli_fetch_assoc($result);
 
