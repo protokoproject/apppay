@@ -77,7 +77,7 @@
     <div id="app-wrap">
       <div class="app-section st1 mt-1 mb-5 bg_white_color">
         <div class="container mt-4">
-            <table class="table-attendance">
+            <table class="table table-striped">
               <thead>
                 <tr>
                   <th>Tanggal</th>
