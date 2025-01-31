@@ -143,32 +143,38 @@
                     </button>
 
                     <div class="group-trading-history">
-                        <?php
-                        include "../../conn/koneksi.php";
-
-                        $sql = mysqli_query($koneksi, "SELECT * FROM tb_sts_user");
-                        while ($data = mysqli_fetch_array($sql)) {
-                        ?>
-                            <a class="tf-trading-history p-0" href="edit.php?kd_sts_user=<?php echo $data['kd_sts_user']; ?>">
-                                <div class="container">
-                                    <div class="inner-left">
-                                        <div class="content">
-                                            <h4><?php echo $data['nm_sts_user']; ?></h4>
-                                        </div>
-                                    </div>
-                                    <div class="num-val">
-
-                                        <a href="edit.php?kd_sts_user=<?php echo $data['kd_sts_user']; ?>" style="padding-right: 20px;">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
-
-                                        <a href="delete.php?kd_sts_user=<?php echo $data['kd_sts_user']; ?>" onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </a>
-                        <?php } ?>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Status User</th>
+                                    <th>Keterangan</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                include "../../conn/koneksi.php";
+                                $no = 1;
+                                $sql = mysqli_query($koneksi, "SELECT * FROM tb_sts_user");
+                                while ($data = mysqli_fetch_array($sql)) {
+                                ?>
+                                    <tr>
+                                        <td><?php echo $no++; ?></td>
+                                        <td><?php echo $data['nm_sts_user']; ?></td>
+                                        <td><?php echo $data['ket_sts_user']; ?></td>
+                                        <td>
+                                            <a href="edit.php?kd_sts_user=<?php echo $data['kd_sts_user']; ?>" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i> <!-- Ikon Edit -->
+                                            </a>
+                                            <a href="delete.php?kd_sts_user=<?php echo $data['kd_sts_user']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">
+                                                <i class="fas fa-trash-alt"></i> <!-- Ikon Hapus -->
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
