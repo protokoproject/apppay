@@ -142,42 +142,41 @@
                         <button class="mb-3 tf-btn accent small" style="width: 20%;">
                             <a href="tambah.php" style="color: white; text-decoration: none;" onmouseover="this.style.color='#533dea'" onmouseout="this.style.color='white'">Tambah Data</a>
                         </button>
-                        <table border="1" style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <table class="table table-striped">
                             <thead>
-                                <tr style="background-color: #f2f2f2;">
-                                    <th style="padding: 10px;">No</th>
-                                    <th style="padding: 10px;">Nama</th>
-                                    <th style="padding: 10px;">Email</th>
-                                    <th style="padding: 10px;">No HP</th>
-                                    <th style="padding: 10px;">Tanggal Gabung</th>
-                                    <th style="padding: 10px;">Aksi</th>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama</th>
+                                    <th>Email</th>
+                                    <th>No HP</th>
+                                    <th>Tanggal Gabung</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 include "../../conn/koneksi.php";
                                 $no = 1;
-
                                 $sql = mysqli_query($koneksi, "SELECT * FROM tb_user");
                                 while ($data = mysqli_fetch_array($sql)) {
-                                    echo "<tr>";
-                                    echo "<td style='padding: 10px;'>" . ($no) . "</td>";
-                                    echo "<td style='padding: 10px;'>{$data['nm_user']}</td>";
-                                    echo "<td style='padding: 10px;'>{$data['email']}</td>";
-                                    echo "<td style='padding: 10px;'>{$data['nohp']}</td>";
-                                    echo "<td style='padding: 10px;'>{$data['tgl_gbng']}</td>";
-                                    echo "<td style='padding: 10px;'>
-        <a href='edit.php?id={$data['id_user']}' style='margin-right: 10px;'>
-            <i class='fa fa-pencil'></i>
-        </a>
-        <a href='delete.php?id={$data['id_user']}' onclick=\"return confirm('Apakah Anda yakin ingin menghapus data ini?')\">
-            <i class='fa fa-trash'></i>
-        </a>
-    </td>";
-                                    echo "</tr>";
-                                }
+                                    $tgl_gabung = date("d-m-Y", strtotime($data['tgl_gbng']));
                                 ?>
-
+                                    <tr>
+                                        <td><?php echo $no++; ?></td>
+                                        <td><?php echo $data['nm_user']; ?></td>
+                                        <td><?php echo $data['email']; ?></td>
+                                        <td><?php echo $data['nohp']; ?></td>
+                                        <td><?php echo $tgl_gabung; ?></td>
+                                        <td>
+                                            <a href="edit.php?id=<?php echo $data['id_user']; ?>" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="delete.php?id=<?php echo $data['id_user']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>
