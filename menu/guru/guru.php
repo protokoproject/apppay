@@ -147,6 +147,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
+                                    <th>Nama Guru</th>
                                     <th>Spesialis Mata Pelajaran</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -160,6 +161,7 @@
                                 ?>
                                     <tr>
                                         <td><?php echo $no++; ?></td>
+                                        <td><?php echo $hasil['nm_guru']; ?></td>
                                         <td><?php echo $hasil['sp_mapel']; ?></td>
                                         <td>
                                             <a href="edit.php?id=<?php echo $hasil['id_guru']; ?>" class="btn btn-warning btn-sm">

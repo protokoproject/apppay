@@ -2,6 +2,7 @@
 include "../../conn/koneksi.php";
 
 if (isset($_POST['simpan'])) {
+    $nmguru = $_POST['nmguru'];
     $spmapel = $_POST['spmapel'];
     $auto = mysqli_query($koneksi, "SELECT MAX(id_guru) as max_code FROM t_guru");
     $hasil = mysqli_fetch_array($auto);
@@ -14,7 +15,7 @@ if (isset($_POST['simpan'])) {
     }
 
     $idguru = $urutan;
-    $query = mysqli_query($koneksi, "INSERT INTO t_guru(id_guru, sp_mapel) VALUES ('$idguru', '$spmapel')");
+    $query = mysqli_query($koneksi, "INSERT INTO t_guru(id_guru, nm_guru, sp_mapel) VALUES ('$idguru','$nmguru','$spmapel')");
     if ($query) {
         echo "<script>alert('Data berhasil ditambahkan!')</script>";
         header("refresh:0, guru.php");
@@ -70,6 +71,10 @@ if (isset($_POST['simpan'])) {
             <div class="tf-container">
                 <div class="box-components mt-4">
                     <form method="post">
+                        <div class="group-input mb-3">
+                            <label for="nm_guru" class="form-label">Nama Guru</label>
+                            <input type="text" class="form-control" id="nmguru" placeholder="Nama Guru" name="nmguru">
+                        </div>
                         <div class="group-input mb-3">
                             <label for="spmapel" class="form-label">Spesialis Mata Pelajaran</label>
                             <input type="text" class="form-control" id="spmapel" placeholder="Spesialis Mata Pelajaran" name="spmapel">

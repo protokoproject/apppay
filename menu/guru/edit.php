@@ -2,19 +2,22 @@
 include "../../conn/koneksi.php";
 
 $id = $_GET['id'];
-$sql = mysqli_query($koneksi,"SELECT sp_mapel FROM t_guru WHERE id_guru = '$id'");
+$sql = mysqli_query($koneksi,"SELECT nm_guru, sp_mapel FROM t_guru WHERE id_guru = '$id'");
 $data = mysqli_fetch_array($sql);
 
 if (isset($_POST['simpan'])) {
+    $nmguru = $_POST['nmguru'];
     $spmapel = $_POST['spmapel'];
     
-    $query = mysqli_query($koneksi, "UPDATE t_guru SET sp_mapel ='$spmapel' WHERE id_guru = '$id'");
+    $query = mysqli_query($koneksi, "UPDATE t_guru SET nm_guru='$nmguru', sp_mapel='$spmapel' WHERE id_guru='$id'");
     if ($query) {
         echo "<script>alert('Data berhasil diubah!')</script>";
         header("refresh:0, guru.php");
+        exit;
     } else {
         echo "<script>alert('Data gagal diubah!')</script>";
         header("refresh:0, guru.php");
+        exit;
     }
 }
 ?>
@@ -64,6 +67,10 @@ if (isset($_POST['simpan'])) {
             <div class="tf-container">
                 <div class="box-components mt-4">
                     <form method="post">
+                        <div class="group-input mb-3">
+                            <label for="nm_guru" class="form-label">Nama Guru</label>
+                            <input type="text" class="form-control" id="nmguru" placeholder="Nama Guru" name="nmguru" value="<?php echo $data['nm_guru']?>">
+                        </div>
                         <div class="group-input mb-3">
                             <label for="spmapel" class="form-label">Spesialis Mata Pelajaran</label>
                             <input type="text" class="form-control" id="spmapel" placeholder="Spesialis Mata Pelajaran" name="spmapel" value="<?php echo $data['sp_mapel']?>">
