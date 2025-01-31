@@ -13,23 +13,53 @@ if (isset($_POST['simpan'])) {
         exit;
     }
 
-    // Mendapatkan kd_sts_user terakhir
-    $last_sts = mysqli_query($koneksi, "SELECT MAX(kd_sts_user) AS last_sts FROM tb_sts_user");
-    $last_sts_data = mysqli_fetch_assoc($last_sts);
-    $kd_sts_user = $last_sts_data['last_sts'] + 1;
+    // Memulai transaksi
+    mysqli_begin_transaction($koneksi);
 
-    // Menyimpan data ke database
-    $query = "INSERT INTO tb_sts_user (kd_sts_user, nm_sts_user, st_sts_user, ket_sts_user) 
-              VALUES ('$kd_sts_user', '$nm_sts_user', '1', '$ket_sts_user')";
+    try {
+        // Mendapatkan kd_sts_user terakhir
+        $last_sts = mysqli_query($koneksi, "SELECT MAX(kd_sts_user) AS last_sts FROM tb_sts_user");
+        $last_sts_data = mysqli_fetch_assoc($last_sts);
+        $kd_sts_user = $last_sts_data['last_sts'] ? $last_sts_data['last_sts'] + 1 : 1;
 
-    // Eksekusi query
-    if (mysqli_query($koneksi, $query)) {
+        // Menyimpan data ke tb_sts_user
+        $query = "INSERT INTO tb_sts_user (kd_sts_user, nm_sts_user, st_sts_user, ket_sts_user) 
+                  VALUES ('$kd_sts_user', '$nm_sts_user', '1', '$ket_sts_user')";
+
+        if (!mysqli_query($koneksi, $query)) {
+            throw new Exception("Gagal menambahkan ke tb_sts_user: " . mysqli_error($koneksi));
+        }
+
+        // Ambil semua kd_menu dari tb_menu dan tambahkan ke tb_role_akses
+        $menu_query = mysqli_query($koneksi, "SELECT kd_menu FROM tb_menu");
+
+        if (mysqli_num_rows($menu_query) > 0) {
+            while ($menu = mysqli_fetch_assoc($menu_query)) {
+                $kd_menu = $menu['kd_menu'];
+
+                // Insert default role akses untuk setiap menu
+                $role_query = "INSERT INTO tb_role_akses (kd_sts_user, kd_menu, edit_menu, tmbh_menu, hapus_menu, view_menu, lainnya) 
+                               VALUES ('$kd_sts_user', '$kd_menu', '0', '0', '0', '0', '0')";
+
+                if (!mysqli_query($koneksi, $role_query)) {
+                    throw new Exception("Gagal menambahkan ke tb_role_akses: " . mysqli_error($koneksi));
+                }
+            }
+        } else {
+            throw new Exception("Data di tb_menu tidak ditemukan!");
+        }
+
+        // Commit transaksi jika semua query sukses
+        mysqli_commit($koneksi);
+
         echo "<script>alert('Data berhasil ditambahkan!');</script>";
         header("refresh:0, st_user.php");
-    } else {
-        error_log("Error executing query: " . mysqli_error($koneksi));
-        echo "<script>alert('Terjadi kesalahan saat menambahkan data!');</script>";
-        echo "<script>console.log('Error: " . addslashes(mysqli_error($koneksi)) . "');</script>";
+    } catch (Exception $e) {
+        // Rollback transaksi jika ada error
+        mysqli_rollback($koneksi);
+        error_log($e->getMessage());
+        echo "<script>alert('Terjadi kesalahan: " . addslashes($e->getMessage()) . "');</script>";
+        echo "<script>console.log('Error: " . addslashes($e->getMessage()) . "');</script>";
     }
 }
 ?>

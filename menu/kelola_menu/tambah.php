@@ -2,10 +2,10 @@
 include "../../conn/koneksi.php";
 
 if (isset($_POST['simpan'])) {
-    // Mengambil nilai dari input
-    $nmmenu = $_POST['nmmenu'];
-    $iconmenu = $_POST['iconmenu'];
-    $linkmenu = $_POST['linkmenu'];
+    // Mengambil nilai dari input dan memastikan aman
+    $nmmenu = mysqli_real_escape_string($koneksi, $_POST['nmmenu']);
+    $iconmenu = mysqli_real_escape_string($koneksi, $_POST['iconmenu']);
+    $linkmenu = mysqli_real_escape_string($koneksi, $_POST['linkmenu']);
     $urutmenu = $_POST['urutmenu'] ?? 0; // Jika tidak diisi, default 0
     $sts_menu = isset($_POST['sts_menu']) ? 1 : 0; // Checkbox: aktif = 1, tidak aktif = 0
     $kdkey = $_POST['kdkey'] ?? 'utama'; // Default 'utama' jika tidak diisi
@@ -20,24 +20,38 @@ if (isset($_POST['simpan'])) {
     // Mendapatkan kd_menu terakhir
     $last_menu = mysqli_query($koneksi, "SELECT MAX(kd_menu) AS last_menu FROM tb_menu");
     $last_menu_data = mysqli_fetch_assoc($last_menu);
-    $kd_menu = $last_menu_data['last_menu'] + 1;
+    $kd_menu = $last_menu_data['last_menu'] ? $last_menu_data['last_menu'] + 1 : 1; // Jika NULL, mulai dari 1
 
-    // Menyimpan data ke database
-    $query = "INSERT INTO tb_menu (kd_menu, nm_menu, icon_menu, link_menu, kd_key, gmbr_menu, sts_menu, urut_menu, menu_utama, class_menu) 
-          VALUES ('$kd_menu', '$nmmenu', '$iconmenu', '$linkmenu', '$kdkey', '', '$sts_menu', '$urutmenu', '0', '')";
+    // Menyimpan data ke tb_menu
+    $query_menu = "INSERT INTO tb_menu (kd_menu, nm_menu, icon_menu, link_menu, kd_key, gmbr_menu, sts_menu, urut_menu, menu_utama, class_menu) 
+                   VALUES ('$kd_menu', '$nmmenu', '$iconmenu', '$linkmenu', '$kdkey', '', '$sts_menu', '$urutmenu', '0', '')";
 
-    // Eksekusi query
-    if (mysqli_query($koneksi, $query)) {
+    if (mysqli_query($koneksi, $query_menu)) {
+        // Ambil semua kd_sts_user dari tb_sts_user
+        $result_sts_user = mysqli_query($koneksi, "SELECT kd_sts_user FROM tb_sts_user");
+        if ($result_sts_user) {
+            while ($row = mysqli_fetch_assoc($result_sts_user)) {
+                $kd_sts_user = $row['kd_sts_user'];
+
+                // Insert ke tb_role_akses dengan hak akses default (misal: semua diatur ke '0')
+                $query_role = "INSERT INTO tb_role_akses (kd_sts_user, kd_menu, edit_menu, tmbh_menu, hapus_menu, view_menu, lainnya) 
+                               VALUES ('$kd_sts_user', '$kd_menu', '0', '0', '0', '0', '0')";
+                if (!mysqli_query($koneksi, $query_role)) {
+                    error_log("Error inserting role: " . mysqli_error($koneksi));
+                }
+            }
+        }
+
         echo "<script>alert('Data berhasil ditambahkan!');</script>";
         header("refresh:0, menu.php");
     } else {
         error_log("Error executing query: " . mysqli_error($koneksi));
-        echo "<script>alert('Terjadi kesalahan saat menambahkan data!');</script>";
-        echo "<script>console.log('Error: " . addslashes(mysqli_error($koneksi)) . "');</script>";
+        echo "<script>alert('Terjadi kesalahan saat menambahkan data! Cek log untuk detail.');</script>";
     }
-    
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
