@@ -1,19 +1,42 @@
 <?php
 include "../../conn/koneksi.php";
+session_start();
 
 $id = $_GET['id'];
-$sql = mysqli_query($koneksi,"SELECT nm_guru, sp_mapel FROM t_guru WHERE id_guru = '$id'");
+$sql = mysqli_query($koneksi, "SELECT nm_guru, sp_mapel, id_user FROM t_guru WHERE id_guru = '$id'");
 $data = mysqli_fetch_array($sql);
 
 if (isset($_POST['simpan'])) {
     $nmguru = $_POST['nmguru'];
     $spmapel = $_POST['spmapel'];
-    
+
+    // Ambil id_app berdasarkan session username
+    $username_session = $_SESSION['username'];
+    $queryApp = mysqli_query($koneksi, "SELECT id_app FROM tb_user WHERE username = '$username_session'");
+    $rowApp = mysqli_fetch_assoc($queryApp);
+    $id_app = $rowApp['id_app'];
+
+    // Update data di t_guru
     $query = mysqli_query($koneksi, "UPDATE t_guru SET nm_guru='$nmguru', sp_mapel='$spmapel' WHERE id_guru='$id'");
+
     if ($query) {
-        echo "<script>alert('Data berhasil diubah!')</script>";
-        header("refresh:0, guru.php");
-        exit;
+        // Ambil id_user terkait dengan id_guru
+        $id_user = $data['id_user'];
+
+        // Update data di tb_user
+        $nama_parts = explode(" ", trim($nmguru));
+        $username = strtolower($nama_parts[0]) . $id . $id_app;
+        $update_user = mysqli_query($koneksi, "UPDATE tb_user SET nm_user='$nmguru', username='$username', id_app='$id_app' WHERE id_user='$id_user'");
+
+        if ($update_user) {
+            echo "<script>alert('Data berhasil diubah!')</script>";
+            header("refresh:0, guru.php");
+            exit;
+        } else {
+            echo "<script>alert('Data guru berhasil diubah, tetapi update user gagal!')</script>";
+            header("refresh:0, guru.php");
+            exit;
+        }
     } else {
         echo "<script>alert('Data gagal diubah!')</script>";
         header("refresh:0, guru.php");
@@ -69,11 +92,11 @@ if (isset($_POST['simpan'])) {
                     <form method="post">
                         <div class="group-input mb-3">
                             <label for="nm_guru" class="form-label">Nama Guru</label>
-                            <input type="text" class="form-control" id="nmguru" placeholder="Nama Guru" name="nmguru" value="<?php echo $data['nm_guru']?>">
+                            <input type="text" class="form-control" id="nmguru" placeholder="Nama Guru" name="nmguru" value="<?php echo $data['nm_guru'] ?>">
                         </div>
                         <div class="group-input mb-3">
                             <label for="spmapel" class="form-label">Spesialis Mata Pelajaran</label>
-                            <input type="text" class="form-control" id="spmapel" placeholder="Spesialis Mata Pelajaran" name="spmapel" value="<?php echo $data['sp_mapel']?>">
+                            <input type="text" class="form-control" id="spmapel" placeholder="Spesialis Mata Pelajaran" name="spmapel" value="<?php echo $data['sp_mapel'] ?>">
                         </div>
                         <button type="submit" class="btn btn-primary tf-btn accent small" style="width: 20%;" name="simpan">Simpan</button>
                     </form>

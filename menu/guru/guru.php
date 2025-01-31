@@ -157,22 +157,32 @@
                                 include "../../conn/koneksi.php";
                                 $no = 1;
                                 $sql = mysqli_query($koneksi, "SELECT * FROM t_guru");
-                                while ($hasil = mysqli_fetch_array($sql)) {
+                                if (mysqli_num_rows($sql) > 0) {
+                                    while ($hasil = mysqli_fetch_array($sql)) {
                                 ?>
+                                        <tr>
+                                            <td><?php echo $no++; ?></td>
+                                            <td><?php echo $hasil['nm_guru']; ?></td>
+                                            <td><?php echo $hasil['sp_mapel']; ?></td>
+                                            <td>
+                                                <a href="edit.php?id=<?php echo $hasil['id_guru']; ?>" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i> <!-- Ikon Edit -->
+                                                </a>
+                                                <a href="delete.php?id=<?php echo $hasil['id_guru']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
+                                                    <i class="fas fa-trash-alt"></i> <!-- Ikon Hapus -->
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }
+                                } else {
+                                    ?>
                                     <tr>
-                                        <td><?php echo $no++; ?></td>
-                                        <td><?php echo $hasil['nm_guru']; ?></td>
-                                        <td><?php echo $hasil['sp_mapel']; ?></td>
-                                        <td>
-                                            <a href="edit.php?id=<?php echo $hasil['id_guru']; ?>" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-edit"></i> <!-- Ikon Edit -->
-                                            </a>
-                                            <a href="delete.php?id=<?php echo $hasil['id_guru']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
-                                                <i class="fas fa-trash-alt"></i> <!-- Ikon Hapus -->
-                                            </a>
-                                        </td>
+                                        <td colspan="4" class="text-center">Belum Ada Data Guru</td>
                                     </tr>
-                                <?php } ?>
+                                <?php
+                                }
+                                ?>
                             </tbody>
                         </table>
                     </div>
