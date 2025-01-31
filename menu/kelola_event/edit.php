@@ -11,11 +11,11 @@ if (isset($_GET['id'])) {
     $event = mysqli_fetch_assoc($result);
 
     if (!$event) {
-        echo "<script>alert('Event tidak ditemukan!'); window.location.href = 'kalender.html';</script>";
+        echo "<script>alert('Event tidak ditemukan!'); window.location.href = 'event.php';</script>";
         exit;
     }
 } else {
-    echo "<script>alert('ID tidak ditemukan!'); window.location.href = 'kalender.html';</script>";
+    echo "<script>alert('ID tidak ditemukan!'); window.location.href = 'event.php';</script>";
     exit;
 }
 
