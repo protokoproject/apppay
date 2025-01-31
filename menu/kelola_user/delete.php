@@ -13,18 +13,18 @@ if (isset($_GET['id'])) {
     if (mysqli_query($koneksi, $query)) {
         echo "<script>
             alert('Data berhasil dihapus!');
-            window.location.href = 'kelolauser.php'; // Ganti dengan halaman tujuan Anda
+            window.location.href = 'user.php'; // Ganti dengan halaman tujuan Anda
         </script>";
     } else {
         echo "<script>
             alert('Terjadi kesalahan saat menghapus data!');
-            window.location.href = 'kelolauser.php'; // Ganti dengan halaman tujuan Anda
+            window.location.href = 'user.php'; // Ganti dengan halaman tujuan Anda
         </script>";
     }
 } else {
     echo "<script>
         alert('ID user tidak ditemukan!');
-        window.location.href = 'kelolauser.php'; // Ganti dengan halaman tujuan Anda
+        window.location.href = 'user.php'; // Ganti dengan halaman tujuan Anda
     </script>";
 }
 ?>

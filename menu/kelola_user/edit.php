@@ -30,10 +30,10 @@ if (isset($_GET['id'])) {
         $update_query = "UPDATE tb_user SET nm_user='$nm_user', email='$email', nohp='$nohp', kd_bgn='$kd_bgn', id_app='$id_app', kd_sts_user='$kd_sts_user' WHERE id_user='$id_user'";
 
         if (mysqli_query($koneksi, $update_query)) {
-            echo "<script>alert('Data berhasil diperbarui!'); window.location.href='kelolauser.php';</script>";
+            echo "<script>alert('Data berhasil diperbarui!'); window.location.href='user.php';</script>";
             exit;
         } else {
-            echo "<script>alert('Terjadi kesalahan saat memperbarui data!'); window.location.href='kelolauser.php';</script>";
+            echo "<script>alert('Terjadi kesalahan saat memperbarui data!'); window.location.href='user.php';</script>";
             exit;
         }
     }
@@ -61,7 +61,7 @@ $result_status_user = mysqli_query($koneksi, $query_status_user);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Mobile Specific Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
-    <title>Kelola User</title>
+    <title>Kelola Pengguna</title>
     <!-- Favicon and Touch Icons  -->
     <link rel="shortcut icon" href="../../images/logo.png" />
     <link rel="apple-touch-icon-precomposed" href="../../images/logo.png" />

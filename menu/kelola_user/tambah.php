@@ -40,7 +40,7 @@ if (isset($_POST['simpan'])) {
 
 
         if (mysqli_query($koneksi, $sql)) {
-            echo "<script>alert('Data berhasil disimpan!'); window.location.href='kelolauser.php';</script>";
+            echo "<script>alert('Data berhasil disimpan!'); window.location.href='user.php';</script>";
         } else {
             echo "Error: " . $sql . "<br>" . mysqli_error($koneksi);
         }
@@ -58,7 +58,7 @@ if (isset($_POST['simpan'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Mobile Specific Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
-    <title>Kelola User</title>
+    <title>Kelola Pengguna</title>
     <!-- Favicon and Touch Icons  -->
     <link rel="shortcut icon" href="../../images/logo.png" />
     <link rel="apple-touch-icon-precomposed" href="../../images/logo.png" />

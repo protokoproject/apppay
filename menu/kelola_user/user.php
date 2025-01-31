@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Mobile Specific Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
-    <title>Kelola User</title>
+    <title>Kelola Pengguna</title>
     <!-- Favicon and Touch Icons  -->
     <link rel="shortcut icon" href="../../images/logo.png" />
     <link rel="apple-touch-icon-precomposed" href="../../images/logo.png" />
@@ -127,7 +127,7 @@
         <div class="tf-container">
             <div class="tf-statusbar d-flex justify-content-center align-items-center">
                 <a href="../menu_lengkap/menu_lengkap.php" class="back-btn"> <i class="icon-left"></i> </a>
-                <h3>Kelola User</h3>
+                <h3>Kelola Pengguna</h3>
             </div>
         </div>
     </div>
