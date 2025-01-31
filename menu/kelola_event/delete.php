@@ -6,7 +6,7 @@ if (isset($_GET['id'])) {
     $id = mysqli_real_escape_string($koneksi, $_GET['id']);
 
     // Query untuk menghapus data event
-    $sql = "DELETE FROM tb_events WHERE id = '$id'";
+    $sql = "DELETE FROM tb_events WHERE id_event = '$id'";
 
     // Eksekusi query
     if (mysqli_query($koneksi, $sql)) {
