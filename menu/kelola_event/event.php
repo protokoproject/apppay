@@ -143,32 +143,42 @@
                     </button>
 
                     <div class="group-trading-history">
-                        <?php
-                        include "../../conn/koneksi.php";
-
-                        $sql = mysqli_query($koneksi, "SELECT * FROM tb_events");
-                        while ($data = mysqli_fetch_array($sql)) {
-                        ?>
-                            <a class="tf-trading-history p-0 mt-2" href="edit.php?id=<?php echo $data['id']; ?>">
-                                <div class="container">
-                                    <div class="inner-left">
-                                        <div class="content">
-                                            <h4><?php echo $data['title']; ?></h4>
-                                        </div>
-                                    </div>
-                                    <div class="num-val">
-
-                                        <a href="edit.php?id=<?php echo $data['id']; ?>" style="padding-right: 20px;">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
-
-                                        <a href="delete.php?id=<?php echo $data['id']; ?>" onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </a>
-                        <?php } ?>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Judul Event</th>
+                                    <th>Tanggal Mulai</th>
+                                    <th>Tanggal Berakhir</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                include "../../conn/koneksi.php";
+                                $no = 1;
+                                $sql = mysqli_query($koneksi, "SELECT * FROM tb_events");
+                                while ($data = mysqli_fetch_array($sql)) {
+                                    $start_date = date("d-m-Y", strtotime($data['start_date']));
+                                    $end_date = date("d-m-Y", strtotime($data['end_date']));
+                                ?>
+                                    <tr>
+                                        <td><?php echo $no++; ?></td>
+                                        <td><?php echo $data['title']; ?></td>
+                                        <td><?php echo $start_date; ?></td>
+                                        <td><?php echo $end_date; ?></td>
+                                        <td>
+                                            <a href="edit.php?id=<?php echo $data['id']; ?>" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="delete.php?id=<?php echo $data['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
