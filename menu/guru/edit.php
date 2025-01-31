@@ -96,7 +96,23 @@ if (isset($_POST['simpan'])) {
                         </div>
                         <div class="group-input mb-3">
                             <label for="spmapel" class="form-label">Spesialis Mata Pelajaran</label>
-                            <input type="text" class="form-control" id="spmapel" placeholder="Spesialis Mata Pelajaran" name="spmapel" value="<?php echo $data['sp_mapel'] ?>">
+                            <select class="form-select" id="spmapel" name="spmapel">
+                                <option value="" disabled>Pilih Mata Pelajaran</option>
+                                <?php
+                                include "../../conn/koneksi.php";
+
+                                // Ambil daftar mata pelajaran dari database
+                                $mapel_query = mysqli_query($koneksi, "SELECT nm_mapel FROM t_mapel");
+
+                                // Pastikan nilai sebelumnya tersimpan
+                                $selected_mapel = isset($data['sp_mapel']) ? $data['sp_mapel'] : '';
+
+                                while ($mapel = mysqli_fetch_array($mapel_query)) {
+                                    $selected = ($mapel['nm_mapel'] == $selected_mapel) ? "selected" : "";
+                                    echo "<option value='" . $mapel['nm_mapel'] . "' $selected>" . $mapel['nm_mapel'] . "</option>";
+                                }
+                                ?>
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-primary tf-btn accent small" style="width: 20%;" name="simpan">Simpan</button>
                     </form>
