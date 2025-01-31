@@ -29,7 +29,7 @@ if (isset($_POST['simpan'])) {
     // Eksekusi query
     if (mysqli_query($koneksi, $query)) {
         echo "<script>alert('Data berhasil ditambahkan!');</script>";
-        header("refresh:0, kelolamenu.php");
+        header("refresh:0, menu.php");
     } else {
         error_log("Error executing query: " . mysqli_error($koneksi));
         echo "<script>alert('Terjadi kesalahan saat menambahkan data!');</script>";

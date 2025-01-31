@@ -29,10 +29,10 @@ if (isset($_POST['simpan'])) {
 
     if (mysqli_query($koneksi, $query)) {
         echo "<script>alert('Data berhasil diubah!');</script>";
-        header("refresh:0, kelolamenu.php");
+        header("refresh:0, menu.php");
     } else {
         echo "<script>alert('Error: " . mysqli_error($koneksi) . "');</script>";
-        header("refresh:0, kelolamenu.php");
+        header("refresh:0, menu.php");
     }
 }
 ?>
