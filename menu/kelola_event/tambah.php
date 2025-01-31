@@ -1,4 +1,5 @@
 <?php
+session_start(); // Pastikan session dimulai
 include '../../conn/koneksi.php';
 
 // Cek apakah form disubmit
@@ -7,6 +8,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $start_date = mysqli_real_escape_string($koneksi, $_POST['start_date']);
     $end_date = mysqli_real_escape_string($koneksi, $_POST['end_date']);
 
+    // Pastikan username ada dalam session
+    if (!isset($_SESSION['username'])) {
+        echo "<script>alert('Anda harus login terlebih dahulu!'); window.location.href = 'login.php';</script>";
+        exit;
+    }
+
+    // Ambil id_user dari tb_user berdasarkan username dalam session
+    $username = $_SESSION['username'];
+    $query_user = "SELECT id_user FROM tb_user WHERE username = '$username'";
+    $result_user = mysqli_query($koneksi, $query_user);
+    $row_user = mysqli_fetch_assoc($result_user);
+
+    if (!$row_user) {
+        echo "<script>alert('User tidak ditemukan!'); window.history.back();</script>";
+        exit;
+    }
+
+    $id_user = $row_user['id_user'];
+
+    // Ambil ID event terakhir
+    $auto = mysqli_query($koneksi, "SELECT MAX(id_event) as max_code FROM tb_events");
+    $hasil = mysqli_fetch_array($auto);
+    $code = $hasil['max_code'];
+
+    $id_event = $code ? (int)$code + 1 : 1; // Jika tabel kosong, mulai dari 1
+
     // Validasi input
     if (empty($title) || empty($start_date) || empty($end_date)) {
         echo "<script>alert('Semua kolom harus diisi!');</script>";
@@ -14,7 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Query untuk memasukkan data ke tabel tb_events
-    $sql = "INSERT INTO tb_events (title, start_date, end_date) VALUES ('$title', '$start_date', '$end_date')";
+    $sql = "INSERT INTO tb_events (id_event, id_user, title, start_date, end_date) 
+            VALUES ('$id_event', '$id_user', '$title', '$start_date', '$end_date')";
 
     // Eksekusi query
     if (mysqli_query($koneksi, $sql)) {
@@ -23,7 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             window.location.href = 'event.php';
         </script>";
     } else {
-        // Escaping error message for JavaScript
         $error_message = addslashes(mysqli_error($koneksi));
         echo "<script>
             alert('Terjadi kesalahan saat menambahkan data: $error_message');
@@ -32,6 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
