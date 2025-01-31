@@ -12,7 +12,7 @@ if (isset($_GET['kd_sts_user'])) {
         $data = mysqli_fetch_assoc($result);
     } else {
         echo "<script>alert('Data tidak ditemukan!');</script>";
-        echo "<script>window.location.href='statususer.php';</script>";
+        echo "<script>window.location.href='st_user.php';</script>";
         exit;
     }
 }
@@ -37,7 +37,7 @@ if (isset($_POST['update'])) {
 
     if (mysqli_query($koneksi, $query)) {
         echo "<script>alert('Data berhasil diperbarui!');</script>";
-        header("refresh:0, statususer.php");
+        header("refresh:0, st_user.php");
     } else {
         error_log("Error executing query: " . mysqli_error($koneksi));
         echo "<script>alert('Terjadi kesalahan saat memperbarui data!');</script>";
