@@ -143,35 +143,38 @@
                     </button>
 
                     <div class="group-trading-history">
-                        <?php
-                        include "../../conn/koneksi.php";
-
-                        $sql = mysqli_query($koneksi, "SELECT * FROM tb_menu");
-                        while ($data = mysqli_fetch_array($sql)) {
-                        ?>
-                            <a class="tf-trading-history p-0" href="edit.php?kd_menu=<?php echo $data['kd_menu']; ?>">
-                                <div class="container">
-                                    <div class="inner-left">
-                                        <div class="icon-box">
-                                            <i class="<?php echo $data['icon_menu']; ?>"></i>
-                                        </div>
-                                        <div class="content">
-                                            <h4><?php echo $data['nm_menu']; ?></h4>
-                                        </div>
-                                    </div>
-                                    <div class="num-val">
-
-                                        <a href="edit.php?kd_menu=<?php echo $data['kd_menu']; ?>" style="padding-right: 20px;">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
-
-                                        <a href="delete.php?kd_menu=<?php echo $data['kd_menu']; ?>" onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </a>
-                        <?php } ?>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Menu</th>
+                                    <th>Ikon</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                include "../../conn/koneksi.php";
+                                $no = 1;
+                                $sql = mysqli_query($koneksi, "SELECT * FROM tb_menu");
+                                while ($data = mysqli_fetch_array($sql)) {
+                                ?>
+                                    <tr>
+                                        <td><?php echo $no++; ?></td>
+                                        <td><?php echo $data['nm_menu']; ?></td>
+                                        <td><i class="<?php echo $data['icon_menu']; ?>"></i></td>
+                                        <td>
+                                            <a href="edit.php?kd_menu=<?php echo $data['kd_menu']; ?>" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="delete.php?kd_menu=<?php echo $data['kd_menu']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
