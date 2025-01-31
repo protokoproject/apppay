@@ -12,7 +12,7 @@ if (isset($_GET['id'])) {
     if (mysqli_query($koneksi, $sql)) {
         echo "<script>
             alert('Event berhasil dihapus!');
-            window.location.href = 'kelolaevent.php';
+            window.location.href = 'event.php';
         </script>";
     } else {
         $error_message = addslashes(mysqli_error($koneksi));
@@ -24,7 +24,7 @@ if (isset($_GET['id'])) {
 } else {
     echo "<script>
         alert('ID tidak ditemukan!');
-        window.location.href = 'kelolaevent.php';
+        window.location.href = 'event.php';
     </script>";
     exit;
 }

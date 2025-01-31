@@ -1,6 +1,24 @@
 <?php
 include '../../conn/koneksi.php';
 
+// Ambil ID event dari parameter GET
+if (isset($_GET['id'])) {
+    $id = mysqli_real_escape_string($koneksi, $_GET['id']);
+
+    // Query untuk mendapatkan data event berdasarkan ID
+    $query = "SELECT * FROM tb_events WHERE id = '$id'";
+    $result = mysqli_query($koneksi, $query);
+    $event = mysqli_fetch_assoc($result);
+
+    if (!$event) {
+        echo "<script>alert('Event tidak ditemukan!'); window.location.href = 'kalender.html';</script>";
+        exit;
+    }
+} else {
+    echo "<script>alert('ID tidak ditemukan!'); window.location.href = 'kalender.html';</script>";
+    exit;
+}
+
 // Cek apakah form disubmit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = mysqli_real_escape_string($koneksi, $_POST['title']);
@@ -13,20 +31,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    // Query untuk memasukkan data ke tabel tb_events
-    $sql = "INSERT INTO tb_events (title, start_date, end_date) VALUES ('$title', '$start_date', '$end_date')";
+    // Query untuk memperbarui data event
+    $sql = "UPDATE tb_events SET title = '$title', start_date = '$start_date', end_date = '$end_date' WHERE id = '$id'";
 
     // Eksekusi query
     if (mysqli_query($koneksi, $sql)) {
         echo "<script>
-            alert('Event berhasil ditambahkan!');
-            window.location.href = 'kelolaevent.php';
+            alert('Event berhasil diperbarui!');
+            window.location.href = 'event.php';
         </script>";
     } else {
-        // Escaping error message for JavaScript
         $error_message = addslashes(mysqli_error($koneksi));
         echo "<script>
-            alert('Terjadi kesalahan saat menambahkan data: $error_message');
+            alert('Terjadi kesalahan saat memperbarui data: $error_message');
             window.history.back();
         </script>";
     }
@@ -80,15 +97,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <form method="post">
                         <div class="group-input">
                             <label>Judul Event</label>
-                            <input type="text" placeholder="Judul Event" name="title" required>
+                            <input type="text" placeholder="Judul Event" name="title" value="<?php echo htmlspecialchars($event['title']); ?>" required>
                         </div>
                         <div class="group-input">
                             <label>Tanggal Mulai</label>
-                            <input type="date" name="start_date" required>
+                            <input type="date" name="start_date" value="<?php echo htmlspecialchars($event['start_date']); ?>" required>
                         </div>
                         <div class="group-input">
                             <label>Tanggal Selesai</label>
-                            <input type="date" name="end_date" required>
+                            <input type="date" name="end_date" value="<?php echo htmlspecialchars($event['end_date']); ?>" required>
                         </div>
                         <button type="submit" class="mb-3 tf-btn accent small" style="width: 20%;" name="simpan">Tambah Data</button>
                     </form>
