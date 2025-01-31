@@ -16,10 +16,10 @@ if(isset($_POST['simpan'])){
     $sql = mysqli_query($koneksi,"INSERT INTO tb_app(id_app, nm_app, logo_app, tgl_rilis, kab, almt, no_telp) VALUES ('$id_app','$nm_app','$logo_app','$tgl_rilis','$kab','$almt','$no_telp')");
     if($sql){
         echo "<script>alert('Data Berhasil Ditambahkan!')</script>";
-        header("refresh:0, kelolaapp.php");
+        header("refresh:0, app.php");
     }else{
         echo"<script>alert(Data Berhasil Gagal Ditambahkan!')</script>";
-        header("refresh:0, kelolaapp.php");
+        header("refresh:0, app.php");
     }
 }
 

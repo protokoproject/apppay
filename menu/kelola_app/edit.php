@@ -14,10 +14,10 @@ if(isset($_POST['simpan'])){
     $sql = mysqli_query($koneksi,"UPDATE tb_app SET nm_app = '$nm_app', almt = '$almt', no_telp = '$no_telp' WHERE id_app = '$id_app'");
     if($sql){
         echo "<script>alert('Data Berhasil Diubah!')</script>";
-        header("refresh:0, kelolaapp.php");
+        header("refresh:0, app.php");
     }else{
         echo"<script>alert(Data Berhasil Gagal Diubah!')</script>";
-        header("refresh:0, kelolaapp.php");
+        header("refresh:0, app.php");
     }
 }
 
