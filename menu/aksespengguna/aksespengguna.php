@@ -161,7 +161,7 @@
 
                 </div>
                 <div class="trading-month">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>Nama User</th>
@@ -209,7 +209,7 @@
                                                         <form method="POST" action="update_role_akses.php">
                                                             <input type="hidden" name="kd_sts_user" value="<?php echo $kd_sts_user; ?>">
                                                             <div class="table-responsive">
-                                                                <table class="table table-bordered table-hover">
+                                                                <table class="table table-striped">
                                                                     <thead>
                                                                         <tr>
                                                                             <th>Nama Menu</th>
@@ -275,11 +275,11 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="edit.php?kd_sts_user=<?php echo $kd_sts_user; ?>" class="btn btn-primary btn-sm">
-                                            <i class="fa fa-pencil"></i>
+                                        <a href="edit.php?kd_sts_user=<?php echo $kd_sts_user; ?>" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                         <a href="delete.php?kd_sts_user=<?php echo $kd_sts_user; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">
-                                            <i class="fa fa-trash"></i>
+                                            <i class="fas fa-trash-alt"></i>
                                         </a>
                                     </td>
                                 </tr>
