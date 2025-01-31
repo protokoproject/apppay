@@ -1,45 +1,32 @@
 <?php
 include "../../conn/koneksi.php";
 
-// Mengecek apakah parameter kd_bgn ada di URL
-if (isset($_GET['kd_bgn'])) {
-    $kd_bagian = $_GET['kd_bgn'];
-
-    // Mendapatkan data bagian berdasarkan kd_bgn
-    $query = "SELECT * FROM tb_bagian WHERE kd_bgn = '$kd_bagian'";
-    $result = mysqli_query($koneksi, $query);
-
-    if ($result && mysqli_num_rows($result) > 0) {
-        $data = mysqli_fetch_assoc($result);
-    } else {
-        echo "<script>alert('Data tidak ditemukan!');</script>";
-        echo "<script>window.location.href = 'kelolabagian.php';</script>";
-        exit;
-    }
-} else {
-    echo "<script>alert('Kode bagian tidak valid!');</script>";
-    echo "<script>window.location.href = 'kelolabagian.php';</script>";
-    exit;
-}
-
-// Proses penyimpanan jika tombol simpan ditekan
 if (isset($_POST['simpan'])) {
+    // Mengambil nilai dari input
     $namaBagian = $_POST['nmbagian'];
 
-    // Validasi input
+    // Validasi input (Pastikan nama bagian tidak kosong)
     if (empty($namaBagian)) {
         echo "<script>alert('Nama Bagian harus diisi!');</script>";
         echo "<script>window.history.back();</script>";
         exit;
     }
 
-    // Mengupdate data bagian
-    $query_update = "UPDATE tb_bagian SET nm_bgn = '$namaBagian' WHERE kd_bgn = '$kd_bagian'";
-    if (mysqli_query($koneksi, $query_update)) {
-        echo "<script>alert('Data berhasil diubah!');</script>";
-        echo "<script>window.location.href = 'kelolabagian.php';</script>";
+    // Mendapatkan kd_bgn terakhir
+    $last_bagian = mysqli_query($koneksi, "SELECT MAX(kd_bgn) AS last_bagian FROM tb_bagian");
+    $last_bagian_data = mysqli_fetch_assoc($last_bagian);
+    $kd_bagian = $last_bagian_data['last_bagian'] + 1;
+
+    // Menyimpan data ke database
+    $query = "INSERT INTO tb_bagian (kd_bgn, nm_bgn) VALUES ('$kd_bagian', '$namaBagian')";
+
+    // Eksekusi query
+    if (mysqli_query($koneksi, $query)) {
+        echo "<script>alert('Data berhasil ditambahkan!');</script>";
+        header("refresh:0, bagian.php");
     } else {
-        echo "<script>alert('Terjadi kesalahan saat mengubah data!');</script>";
+        error_log("Error executing query: " . mysqli_error($koneksi));
+        echo "<script>alert('Terjadi kesalahan saat menambahkan data!');</script>";
         echo "<script>console.log('Error: " . addslashes(mysqli_error($koneksi)) . "');</script>";
     }
 }
@@ -89,12 +76,12 @@ if (isset($_POST['simpan'])) {
         <div class="app-section st1 mt-1 mb-5 bg_white_color">
             <div class="tf-container">
                 <div class="box-components mt-4">
-                <form method="post">
+                    <form method="post">
                         <div class="group-input">
                             <label>Nama Bagian</label>
-                            <input type="text" placeholder="Nama Bagian" name="nmbagian" value="<?php echo htmlspecialchars($data['nm_bgn']); ?>">
+                            <input type="text" placeholder="Nama Bagian" name="nmbagian">
                         </div>
-                        <button type="submit" class="mb-3 tf-btn accent small" style="width: 20%;" name="simpan">Simpan</button>
+                        <button type="submit" class="mb-3 tf-btn accent small" style="width: 20%;" name="simpan">Tambah Data</button>
                     </form>
                 </div>
             </div>

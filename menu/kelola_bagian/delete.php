@@ -26,5 +26,5 @@ if (isset($_GET['kd_bgn'])) {
 }
 
 // Redirect ke halaman kelola bagian setelah proses selesai
-echo "<script>window.location.href = 'kelolabagian.php';</script>";
+echo "<script>window.location.href = 'bagian.php';</script>";
 ?>
