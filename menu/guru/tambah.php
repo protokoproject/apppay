@@ -3,10 +3,16 @@ include "../../conn/koneksi.php";
 session_start(); // Pastikan session sudah dimulai
 
 if (isset($_POST['simpan'])) {
-    $nmguru = $_POST['nmguru'];
-    $spmapel = $_POST['spmapel'];
+    $nmguru = isset($_POST['nmguru']) ? trim($_POST['nmguru']) : '';
+    $spmapel = isset($_POST['spmapel']) ? trim($_POST['spmapel']) : '';
     $tgl_rilis = date("Y-m-d");
-    
+
+    // Validasi input tidak boleh kosong
+    if (empty($nmguru) || empty($spmapel)) {
+        echo "<script>alert('Semua field harus diisi!'); window.history.back();</script>";
+        exit;
+    }
+
     // Ambil id_app berdasarkan session username
     $username_session = $_SESSION['username'];
     $queryApp = mysqli_query($koneksi, "SELECT id_app FROM tb_user WHERE username = '$username_session'");
@@ -18,27 +24,27 @@ if (isset($_POST['simpan'])) {
     $hasil = mysqli_fetch_array($auto);
     $code = $hasil['max_code'];
     $idguru = ($code) ? (int)$code + 1 : 1;
-    
+
     // Ambil ID User terbaru
     $auto2 = mysqli_query($koneksi, "SELECT MAX(id_user) AS max_user FROM tb_user");
     $row2 = mysqli_fetch_assoc($auto2);
     $id_user = $row2['max_user'] + 1;
-    
+
     // Buat username (kombinasi nama depan + id_guru + id_app)
     $nama_parts = explode(" ", $nmguru);
     $username = strtolower($nama_parts[0]) . $idguru . $id_app;
-    
+
     // Hash password
     $password_hash = password_hash("1234", PASSWORD_DEFAULT);
-    
+
     // Insert ke tabel tb_user
     $queryUser = mysqli_query($koneksi, "INSERT INTO tb_user(id_user, id_app, nm_user, kd_sts_user, username, pass, pass_txt, nohp, tgl_lhr, tgl_gbng) 
                                         VALUES ('$id_user', '$id_app', '$nmguru', '8', '$username', '$password_hash', '1234', '', '$tgl_rilis', '$tgl_rilis')");
-    
+
     if ($queryUser) {
         // Insert ke tabel t_guru dengan id_user sebagai kolom terakhir
         $queryGuru = mysqli_query($koneksi, "INSERT INTO t_guru(id_guru, nm_guru, sp_mapel, id_user) VALUES ('$idguru', '$nmguru', '$spmapel', '$id_user')");
-        
+
         if ($queryGuru) {
             echo "<script>alert('Data berhasil ditambahkan!')</script>";
             header("refresh:0, guru.php");
@@ -104,8 +110,18 @@ if (isset($_POST['simpan'])) {
                         </div>
                         <div class="group-input mb-3">
                             <label for="spmapel" class="form-label">Spesialis Mata Pelajaran</label>
-                            <input type="text" class="form-control" id="spmapel" placeholder="Spesialis Mata Pelajaran" name="spmapel">
+                            <select class="form-select" id="spmapel" name="spmapel">
+                                <option value="" selected disabled>Pilih Mata Pelajaran</option>
+                                <?php
+                                include "../../conn/koneksi.php";
+                                $mapel_query = mysqli_query($koneksi, "SELECT nm_mapel FROM t_mapel");
+                                while ($mapel = mysqli_fetch_array($mapel_query)) {
+                                    echo "<option value='" . $mapel['nm_mapel'] . "'>" . $mapel['nm_mapel'] . "</option>";
+                                }
+                                ?>
+                            </select>
                         </div>
+
                         <button type="submit" class="btn btn-primary tf-btn accent small" style="width: 20%;" name="simpan">Tambah Data</button>
                     </form>
                 </div>
