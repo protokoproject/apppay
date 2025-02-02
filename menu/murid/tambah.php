@@ -30,7 +30,7 @@ if (isset($_POST['simpan'])) {
     }
 
     // Validasi unik NISN
-    $cekNISN = mysqli_query($koneksi, "SELECT * FROM t_murid WHERE nisn = $nisn");
+    $cekNISN = mysqli_query($koneksi, "SELECT * FROM t_murid WHERE nisn = '$nisn'");
     if (mysqli_num_rows($cekNISN) > 0) {
         echo "<script>alert('NISN sudah terdaftar. Silakan gunakan NISN lain!'); window.history.back();</script>";
         exit;
