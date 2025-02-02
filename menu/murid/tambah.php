@@ -3,49 +3,60 @@ include "../../conn/koneksi.php";
 session_start(); // Pastikan session sudah dimulai
 
 if (isset($_POST['simpan'])) {
+    // Pastikan semua input di-trim untuk menghindari spasi yang tidak disengaja
     $nmmurid = isset($_POST['nmmurid']) ? trim($_POST['nmmurid']) : '';
-    $nisn = $_POST['nisn'];
-    $saldo = $_POST['saldo'];
-    $kls_aktif = $_POST['kls_aktif'];
-    $id_ortu = $_POST['nm_ortu']; // Ambil id_ortu dari form
+    $nisn = isset($_POST['nisn']) ? trim($_POST['nisn']) : '';
+    $saldo = isset($_POST['saldo']) ? trim($_POST['saldo']) : '';
+    $kls_aktif = isset($_POST['kls_aktif']) ? trim($_POST['kls_aktif']) : '';
+    $id_ortu = isset($_POST['nm_ortu']) ? trim($_POST['nm_ortu']) : '';
     $tgl_rilis = date("Y-m-d");
 
-    // Validasi input
-    if (empty($nmmurid) || empty($nisn) || empty($saldo) || empty($kls_aktif) || empty($id_ortu)) {
+    // Validasi input agar tidak ada yang kosong
+    if ($nmmurid === '' || $nisn === '' || $saldo === '' || $kls_aktif === '' || $id_ortu === '') {
         echo "<script>alert('Semua field harus diisi!'); window.history.back();</script>";
         exit;
     }
 
-    if (!is_numeric($nisn) || strlen($nisn) != 10) {
+    // Validasi format NISN
+    if (!ctype_digit($nisn) || strlen($nisn) != 10) {
         echo "<script>alert('NISN harus berupa 10 digit angka!'); window.history.back();</script>";
         exit;
     }
 
+    // Validasi saldo sebagai angka positif
     if (!is_numeric($saldo) || $saldo < 0) {
         echo "<script>alert('Saldo harus berupa angka positif!'); window.history.back();</script>";
         exit;
     }
 
     // Validasi unik NISN
-    $cekNISN = mysqli_query($koneksi, "SELECT * FROM t_murid WHERE nisn = '$nisn'");
+    $cekNISN = mysqli_query($koneksi, "SELECT * FROM t_murid WHERE nisn = $nisn");
     if (mysqli_num_rows($cekNISN) > 0) {
         echo "<script>alert('NISN sudah terdaftar. Silakan gunakan NISN lain!'); window.history.back();</script>";
         exit;
     }
 
     // Ambil id_app berdasarkan session username
+    if (!isset($_SESSION['username'])) {
+        echo "<script>alert('Session tidak valid. Silakan login kembali.'); window.location.href='login.php';</script>";
+        exit;
+    }
+
     $username_session = $_SESSION['username'];
     $queryApp = mysqli_query($koneksi, "SELECT id_app FROM tb_user WHERE username = '$username_session'");
+    if (!$queryApp || mysqli_num_rows($queryApp) == 0) {
+        echo "<script>alert('Kesalahan dalam mengambil data aplikasi.'); window.history.back();</script>";
+        exit;
+    }
     $rowApp = mysqli_fetch_assoc($queryApp);
     $id_app = $rowApp['id_app'];
 
-    // Ambil ID Murid terbaru
+    // Ambil ID Murid terbaru dan tambahkan 1
     $auto = mysqli_query($koneksi, "SELECT MAX(id_mrd) as max_code FROM t_murid");
-    $hasil = mysqli_fetch_array($auto);
-    $code = $hasil['max_code'];
-    $idmurid = ($code) ? (int)$code + 1 : 1;
+    $hasil = mysqli_fetch_assoc($auto);
+    $idmurid = ($hasil['max_code']) ? (int)$hasil['max_code'] + 1 : 1;
 
-    // Ambil ID User terbaru (dengan perbaikan agar bertambah 1 secara benar)
+    // Ambil ID User terbaru (pastikan bertambah dengan benar)
     $auto2 = mysqli_query($koneksi, "SELECT IFNULL(MAX(id_user), 0) + 1 AS new_user_id FROM tb_user");
     $row2 = mysqli_fetch_assoc($auto2);
     $id_user = $row2['new_user_id'];
@@ -58,7 +69,7 @@ if (isset($_POST['simpan'])) {
     $password_default = "1234";
     $password_hash = password_hash($password_default, PASSWORD_DEFAULT);
 
-    // Insert ke tabel tb_user (pastikan username benar)
+    // Insert ke tabel tb_user
     $queryUser = mysqli_query($koneksi, "INSERT INTO tb_user(id_user, id_app, nm_user, kd_sts_user, username, pass, pass_txt, nohp, tgl_lhr, tgl_gbng) 
                                          VALUES ('$id_user', '$id_app', '$nmmurid', '7', '$username', '$password_hash', '$password_default', '', '$tgl_rilis', '$tgl_rilis')");
 
@@ -66,6 +77,7 @@ if (isset($_POST['simpan'])) {
         // Insert ke tabel t_murid dengan id_ortu
         $queryMurid = mysqli_query($koneksi, "INSERT INTO t_murid(id_mrd, nm_murid, nisn, saldo, kls_aktif, id_ortu, id_user) 
                                               VALUES ('$idmurid','$nmmurid', '$nisn', '$saldo', '$kls_aktif', '$id_ortu', '$id_user')");
+
         if ($queryMurid) {
             echo "<script>alert('Data Murid berhasil ditambahkan!'); window.location.href='murid.php';</script>";
         } else {
