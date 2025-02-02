@@ -75,8 +75,8 @@ if (isset($_POST['simpan'])) {
 
     if ($queryUser) {
         // Insert ke tabel t_murid dengan id_ortu
-        $queryMurid = mysqli_query($koneksi, "INSERT INTO t_murid(id_mrd, nm_murid, nisn, saldo, kls_aktif, id_ortu, id_user) 
-                                              VALUES ('$idmurid','$nmmurid', '$nisn', '$saldo', '$kls_aktif', '$id_ortu', '$id_user')");
+        $queryMurid = mysqli_query($koneksi, "INSERT INTO t_murid(id_mrd, nm_murid, nisn, nim, saldo, kls_aktif, id_ortu, id_user) 
+                                              VALUES ('$idmurid','$nmmurid', '$nisn', 0, '$saldo', '$kls_aktif', '$id_ortu', '$id_user')");
 
         if ($queryMurid) {
             echo "<script>alert('Data Murid berhasil ditambahkan!'); window.location.href='murid.php';</script>";
