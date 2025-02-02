@@ -82,7 +82,7 @@ if (isset($_POST['update'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Mobile Specific Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
-    <title>Tambah Orang Tua</title>
+    <title>Edit Murid</title>
     <!-- Favicon and Touch Icons  -->
     <link rel="shortcut icon" href="../../images/logo.png" />
     <link rel="apple-touch-icon-precomposed" href="../../images/logo.png" />
@@ -110,7 +110,7 @@ if (isset($_POST['update'])) {
         <div class="tf-container">
             <div class="tf-statusbar d-flex justify-content-center align-items-center">
                 <a href="#" class="back-btn"> <i class="icon-left"></i> </a>
-                <h3>Tambah Murid</h3>
+                <h3>Edit Murid</h3>
             </div>
         </div>
     </div>
