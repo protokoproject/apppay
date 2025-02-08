@@ -147,9 +147,10 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama</th>
+                                    <th>Username</th>
                                     <th>Email</th>
+                                    <th>Status</th>
                                     <th>No HP</th>
-                                    <th>Tanggal Gabung</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -157,16 +158,23 @@
                                 <?php
                                 include "../../conn/koneksi.php";
                                 $no = 1;
-                                $sql = mysqli_query($koneksi, "SELECT * FROM tb_user");
+
+                                // Query dengan JOIN untuk mendapatkan nama status user
+                                $sql = mysqli_query($koneksi, "
+    SELECT tb_user.*, tb_sts_user.nm_sts_user 
+    FROM tb_user 
+    JOIN tb_sts_user ON tb_user.kd_sts_user = tb_sts_user.kd_sts_user
+");
+
                                 while ($data = mysqli_fetch_array($sql)) {
-                                    $tgl_gabung = date("d-m-Y", strtotime($data['tgl_gbng']));
                                 ?>
                                     <tr>
                                         <td><?php echo $no++; ?></td>
                                         <td><?php echo $data['nm_user']; ?></td>
+                                        <td><?php echo $data['username']; ?></td>
                                         <td><?php echo $data['email']; ?></td>
+                                        <td><?php echo $data['nm_sts_user']; ?></td> <!-- Menampilkan nama status user -->
                                         <td><?php echo $data['nohp']; ?></td>
-                                        <td><?php echo $tgl_gabung; ?></td>
                                         <td>
                                             <a href="edit.php?id=<?php echo $data['id_user']; ?>" class="btn btn-warning btn-sm">
                                                 <i class="fas fa-edit"></i>

@@ -1,5 +1,12 @@
 <?php
 include "../../conn/koneksi.php";
+session_start(); // Pastikan sesi dimulai
+
+// Ambil id_app berdasarkan session username
+$username_session = $_SESSION['username'];
+$queryApp = mysqli_query($koneksi, "SELECT id_app FROM tb_user WHERE username = '$username_session'");
+$rowApp = mysqli_fetch_assoc($queryApp);
+$id_app = $rowApp['id_app'];
 
 // Query untuk mendapatkan data bagian
 $query_bagian = "SELECT kd_bgn, nm_bgn FROM tb_bagian";
@@ -20,7 +27,6 @@ if (isset($_POST['simpan'])) {
     $password = $_POST['password'];
     $konfirmasi_password = $_POST['konfirmasi_password'];
     $kd_bgn = $_POST['kd_bgn'];
-    $id_app = $_POST['id_app'];
     $kdsts_user = $_POST['kdsts_user'];
 
     if (empty($kdsts_user)) {
@@ -28,16 +34,23 @@ if (isset($_POST['simpan'])) {
         exit;
     }
 
+    // Ambil ID User terbaru
+    $auto2 = mysqli_query($koneksi, "SELECT MAX(id_user) AS max_user FROM tb_user");
+    $row2 = mysqli_fetch_assoc($auto2);
+    $id_user = $row2['max_user'] + 1;
+
+    // Buat username (kombinasi nama depan + id_user + id_app)
+    $nama_parts = explode(" ", $nm_user);
+    $username = strtolower($nama_parts[0]) . $id_user . $id_app;
 
     // Validasi password dan konfirmasi password
     if ($password === $konfirmasi_password) {
         // Enkripsi password sebelum disimpan
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-        // Query untuk menyimpan data ke tabel tb_user
-        $sql = "INSERT INTO tb_user (nm_user, email, nohp, pass, kd_bgn, id_app, kd_sts_user, tgl_lhr, tgl_gbng) 
-        VALUES ('$nm_user', '$email', '$no_hp', '$hashed_password', '$kd_bgn', '$id_app', '$kdsts_user', CURRENT_DATE, CURRENT_DATE)";
-
+        // Query untuk menyimpan data ke tabel tb_user dengan urutan sesuai gambar
+        $sql = "INSERT INTO tb_user (id_user, id_app, nm_user, kd_sts_user, username, pass, pass_txt, kd_bgn, nohp, tgl_lhr, email, tgl_gbng) 
+                VALUES ('$id_user', '$id_app', '$nm_user', '$kdsts_user', '$username', '$hashed_password', '$password', '$kd_bgn', '$no_hp', CURRENT_DATE, '$email', CURRENT_DATE)";
 
         if (mysqli_query($koneksi, $sql)) {
             echo "<script>alert('Data berhasil disimpan!'); window.location.href='user.php';</script>";
@@ -48,8 +61,9 @@ if (isset($_POST['simpan'])) {
         echo "<script>alert('Password dan Konfirmasi Password tidak sesuai!');</script>";
     }
 }
-
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
