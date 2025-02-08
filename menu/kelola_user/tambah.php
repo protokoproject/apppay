@@ -223,6 +223,10 @@ if (isset($_POST['simpan'])) {
                                         <?php endwhile; ?>
                                     </select>
                                 </div>
+                                <?php
+                                $query = "SELECT * FROM tb_sts_user WHERE nm_sts_user NOT IN ('Orang Tua', 'Siswa', 'Guru')";
+                                $result_status_user = mysqli_query($koneksi, $query);
+                                ?>
                                 <div>
                                     <label for="kd_sts_user">Status User</label>
                                     <select id="kd_sts_user" name="kdsts_user" required>
