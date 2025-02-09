@@ -181,8 +181,12 @@
                                     echo "<td>" . $row['hari'] . "</td>";
                                     echo "<td>" . date('H:i', strtotime($row['jam_aw'])) . " - " . date('H:i', strtotime($row['jam_ak'])) . "</td>";
                                     echo "<td>
-                    <a href='edit_jadwal.php?id=" . $row['id_jadwal'] . "' class='btn btn-warning btn-sm'>Edit</a>
-                    <a href='hapus_jadwal.php?id=" . $row['id_jadwal'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Apakah Anda yakin ingin menghapus data ini?\")'>Hapus</a>
+                                    <a href='edit.php?id=" . $row['id_jadwal'] . "' class='btn btn-warning btn-sm'>
+                                    <i class='fas fa-edit'></i>
+                                </a>
+                                <a href='delete.php?id=" . $row['id_jadwal'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Apakah Anda yakin ingin menghapus data ini?\")'>
+                                    <i class='fas fa-trash-alt'></i>
+                                </a>
                   </td>";
                                     echo "</tr>";
                                 }
