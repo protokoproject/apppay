@@ -99,7 +99,24 @@
           </a>
         </li>
         <li>
-          <a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="simas/profil/profil.php"><i class="icon-user-outline"></i> Profil</a>
+          <?php
+          include "../../conn/koneksi.php";
+
+          // Base URL untuk aplikasi
+          $baseDir = "http://localhost/pkl/simas/";
+
+          // Query untuk mengambil data profil dari database
+          $sql = mysqli_query($koneksi, "SELECT link_menu FROM tb_menu WHERE nm_menu = 'Profil' LIMIT 1");
+          $data = mysqli_fetch_array($sql);
+
+          // Membuat link absolut berdasarkan baseDir dan kolom link_menu
+          $profilLink = isset($data['link_menu']) ? $baseDir . $data['link_menu'] : '#';
+          ?>
+
+          <a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="<?php echo $profilLink; ?>">
+            <i class="icon-user-outline"></i> Profil
+          </a>
+
         </li>
       </ul>
       <!-- <span class="line"></span> -->
