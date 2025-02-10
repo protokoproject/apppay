@@ -94,29 +94,41 @@ if (!isset($_SESSION["login"])) {
                 <a href="menu/menu_lengkap/menu_lengkap.php" class="primary_color fw_6">View All<i class="fas fa-arrow-right ms-1"></i></a>
             </div>
             <ul class="box-service mt-3">
-            <?php
-          include "conn/koneksi.php";
+                <?php
+                include "conn/koneksi.php";
 
-          // Base URL untuk aplikasi
-          $baseDir = "http://localhost/pkl/simas/";
+                // Base URL untuk aplikasi
+                $baseDir = "http://localhost/pkl/simas/";
 
-          // Query untuk mengambil data menu
-          $sql = mysqli_query($koneksi, "SELECT nm_menu, icon_menu, link_menu FROM tb_menu WHERE sts_menu = '1' AND kd_key = 'utama' ORDER BY urut_menu ASC LIMIT 8");
-          while ($data = mysqli_fetch_array($sql)) {
-            // Membuat link absolut berdasarkan baseDir dan kolom link_menu
-            $absoluteLink = $baseDir . $data['link_menu'];
-          ?>
-            <li>
-              <a href="<?php echo $absoluteLink; ?>">
-                <div class="icon-box bg_color_1">
-                  <i class="<?php echo $data['icon_menu']; ?>"></i>
-                </div>
-                <?php echo $data['nm_menu']; ?>
-              </a>
-            </li>
-          <?php
-          }
-          ?>
+                // Ambil kd_sts_user dari sesi
+                $kd_sts_user = $_SESSION["kd_sts_user"];
+
+                // Query untuk mengambil data menu berdasarkan tb_role_akses
+                $db_query = "
+    SELECT m.nm_menu, m.icon_menu, m.link_menu 
+    FROM tb_menu m
+    JOIN tb_role_akses r ON m.kd_menu = r.kd_menu
+    WHERE m.sts_menu = '1' AND m.kd_key = 'utama' 
+    AND r.kd_sts_user = '$kd_sts_user' AND r.view_menu = '1'
+    ORDER BY m.urut_menu ASC 
+    LIMIT 8
+";
+
+                $sql = mysqli_query($koneksi, $db_query);
+                while ($data = mysqli_fetch_array($sql)) {
+                    // Membuat link absolut berdasarkan baseDir dan kolom link_menu
+                    $absoluteLink = $baseDir . $data['link_menu'];
+                ?>
+                    <li>
+                        <a href="<?php echo $absoluteLink; ?>">
+                            <div class="icon-box bg_color_1">
+                                <i class="<?php echo $data['icon_menu']; ?>"></i>
+                            </div>
+                            <?php echo $data['nm_menu']; ?>
+                        </a>
+                    </li>
+                <?php
+                } ?>
             </ul>
         </div>
     </div>

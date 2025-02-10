@@ -54,12 +54,20 @@
         <ul class="box-service mt-3">
           <?php
           include "../../conn/koneksi.php";
+          session_start();
 
           // Base URL untuk aplikasi
           $baseDir = "http://localhost/pkl/simas/";
 
+          $kd_sts_user = $_SESSION["kd_sts_user"];
+
           // Query untuk mengambil data menu
-          $sql = mysqli_query($koneksi, "SELECT nm_menu, icon_menu, link_menu FROM tb_menu WHERE sts_menu = '1' AND kd_key = 'utama' ORDER BY kd_menu ASC");
+          $sql = mysqli_query($koneksi, "SELECT m.nm_menu, m.icon_menu, m.link_menu 
+          FROM tb_menu m
+          JOIN tb_role_akses r ON m.kd_menu = r.kd_menu
+          WHERE m.sts_menu = '1' AND m.kd_key = 'utama' 
+          AND r.kd_sts_user = '$kd_sts_user' AND r.view_menu = '1'
+          ORDER BY m.urut_menu ASC");
           while ($data = mysqli_fetch_array($sql)) {
             // Membuat link absolut berdasarkan baseDir dan kolom link_menu
             $absoluteLink = $baseDir . $data['link_menu'];

@@ -18,6 +18,7 @@ if (isset($_POST["login"])) {
       // Set session
       $_SESSION["login"] = true;
       $_SESSION["username"] = $row["username"];
+      $_SESSION["kd_sts_user"] = $row["kd_sts_user"];
       
       header("Location: home.php");
       exit;
