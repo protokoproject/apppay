@@ -93,7 +93,20 @@
     <div class="tf-container">
       <ul class="tf-navigation-bar">
         <li>
-          <a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="home.php"><i class="icon-home"></i> Home</a>
+        <?php
+          include "../../conn/koneksi.php";
+
+          // Base URL untuk aplikasi
+          $baseDir = "http://localhost/pkl/simas/";
+
+          // Query untuk mengambil data home dari database
+          $sql = mysqli_query($koneksi, "SELECT link_menu FROM tb_menu WHERE kd_menu = 1 LIMIT 1");
+          $data = mysqli_fetch_array($sql);
+
+          // Membuat link absolut berdasarkan baseDir dan kolom link_menu
+          $homeLink = isset($data['link_menu']) ? $baseDir . $data['link_menu'] : '#';
+          ?>
+          <a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="<?php echo $homeLink; ?>"><i class="icon-home"></i> Home</a>
         </li>
         <li>
           <a class="fw_4 d-flex justify-content-center align-items-center flex-column" href="58_history.html"><i class="icon-history"></i> History</a>
@@ -115,7 +128,7 @@
           $baseDir = "http://localhost/pkl/simas/";
 
           // Query untuk mengambil data profil dari database
-          $sql = mysqli_query($koneksi, "SELECT link_menu FROM tb_menu WHERE nm_menu = 'Profil' LIMIT 1");
+          $sql = mysqli_query($koneksi, "SELECT link_menu FROM tb_menu WHERE kd_menu = 11 LIMIT 1");
           $data = mysqli_fetch_array($sql);
 
           // Membuat link absolut berdasarkan baseDir dan kolom link_menu
