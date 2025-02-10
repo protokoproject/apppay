@@ -67,6 +67,7 @@
           JOIN tb_role_akses r ON m.kd_menu = r.kd_menu
           WHERE m.sts_menu = '1' AND m.kd_key = 'utama' 
           AND r.kd_sts_user = '$kd_sts_user' AND r.view_menu = '1'
+          AND m.kd_menu NOT IN (11, 12)
           ORDER BY m.urut_menu ASC");
           while ($data = mysqli_fetch_array($sql)) {
             // Membuat link absolut berdasarkan baseDir dan kolom link_menu

@@ -105,14 +105,14 @@ if (!isset($_SESSION["login"])) {
 
                 // Query untuk mengambil data menu berdasarkan tb_role_akses
                 $db_query = "
-    SELECT m.nm_menu, m.icon_menu, m.link_menu 
-    FROM tb_menu m
-    JOIN tb_role_akses r ON m.kd_menu = r.kd_menu
-    WHERE m.sts_menu = '1' AND m.kd_key = 'utama' 
-    AND r.kd_sts_user = '$kd_sts_user' AND r.view_menu = '1'
-    ORDER BY m.urut_menu ASC 
-    LIMIT 8
-";
+                SELECT m.nm_menu, m.icon_menu, m.link_menu 
+                FROM tb_menu m
+                JOIN tb_role_akses r ON m.kd_menu = r.kd_menu
+                WHERE m.sts_menu = '1' AND m.kd_key = 'utama' 
+                AND r.kd_sts_user = '$kd_sts_user' AND r.view_menu = '1'
+                AND m.kd_menu NOT IN (11, 12)
+                ORDER BY m.urut_menu ASC 
+                LIMIT 8";
 
                 $sql = mysqli_query($koneksi, $db_query);
                 while ($data = mysqli_fetch_array($sql)) {
