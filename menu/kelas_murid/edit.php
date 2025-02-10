@@ -1,6 +1,13 @@
 <?php
 include "../../conn/koneksi.php";
 
+session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 // Periksa apakah parameter id_kls dan id_mrd tersedia
 if (isset($_GET['id_kls']) && isset($_GET['id_mrd'])) {
     $id_kls = $_GET['id_kls'];

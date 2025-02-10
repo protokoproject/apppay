@@ -1,6 +1,13 @@
 <?php
 include '../../conn/koneksi.php';
 
+session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 // Ambil ID event dari parameter GET
 if (isset($_GET['id'])) {
     $id = mysqli_real_escape_string($koneksi, $_GET['id']);

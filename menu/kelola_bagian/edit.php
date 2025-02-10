@@ -1,6 +1,13 @@
 <?php
 include "../../conn/koneksi.php";
 
+session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 // Mengecek apakah parameter kd_bgn ada di URL
 if (isset($_GET['kd_bgn'])) {
     $kd_bagian = $_GET['kd_bgn'];

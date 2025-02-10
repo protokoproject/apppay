@@ -2,6 +2,11 @@
 session_start(); // Pastikan session dimulai
 include '../../conn/koneksi.php';
 
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 // Cek apakah form disubmit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = mysqli_real_escape_string($koneksi, $_POST['title']);

@@ -1,3 +1,14 @@
+<?php
+session_start();
+
+include "../../conn/koneksi.php";
+
+if (!isset($_SESSION["login"])) {
+  header("Location: ../../login.php");
+  exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -54,7 +65,6 @@
         <ul class="box-service mt-3">
           <?php
           include "../../conn/koneksi.php";
-          session_start();
 
           // Base URL untuk aplikasi
           $baseDir = "http://localhost/pkl/simas/";

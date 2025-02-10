@@ -3,6 +3,11 @@ session_start();
 
 include "../../conn/koneksi.php";
 
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 $sql = mysqli_query($koneksi, "SELECT nm_user, nohp, email FROM tb_user WHERE username = '{$_SESSION['username']}'");
 $data = mysqli_fetch_array($sql);
 

@@ -1,6 +1,13 @@
 <?php
 include "../../conn/koneksi.php";
 
+session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 if (isset($_POST['simpan'])) {
     $nm_mapel = $_POST['nm_mapel'];
     $deskripsi = $_POST['deskripsi'];

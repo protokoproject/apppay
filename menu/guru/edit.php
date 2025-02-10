@@ -2,6 +2,11 @@
 include "../../conn/koneksi.php";
 session_start();
 
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 $id = $_GET['id'];
 $sql = mysqli_query($koneksi, "SELECT nm_guru, sp_mapel, id_user FROM t_guru WHERE id_guru = '$id'");
 $data = mysqli_fetch_array($sql);

@@ -2,6 +2,11 @@
 include "../../conn/koneksi.php";
 session_start(); // Pastikan session sudah dimulai
 
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 if (isset($_POST['simpan'])) {
     $nmkantin = isset($_POST['nmkantin']) ? trim($_POST['nmkantin']) : '';
     $st_kantin = isset($_POST['sts_kantin']) ? 1 : 0; // Checkbox: jika diceklis = 1, jika tidak = 0

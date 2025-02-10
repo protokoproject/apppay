@@ -2,6 +2,11 @@
 include "../../conn/koneksi.php";
 session_start(); // Pastikan session sudah dimulai
 
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 if (isset($_POST['simpan'])) {
     $nmortu = isset($_POST['nmortu']) ? trim($_POST['nmortu']) : '';
     $tgl_rilis = date("Y-m-d");

@@ -1,6 +1,13 @@
 <?php
 include "../../conn/koneksi.php";
 
+session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 if(isset($_POST['simpan'])){
     // Mendapatkan id_kelas berikutnya
     $auto = mysqli_query($koneksi, "SELECT MAX(id_kls) as max_code FROM t_kelas");

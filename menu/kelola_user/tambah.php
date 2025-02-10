@@ -2,6 +2,11 @@
 include "../../conn/koneksi.php";
 session_start(); // Pastikan sesi dimulai
 
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 // Ambil id_app berdasarkan session username
 $username_session = $_SESSION['username'];
 $queryApp = mysqli_query($koneksi, "SELECT id_app FROM tb_user WHERE username = '$username_session'");

@@ -1,6 +1,13 @@
 <?php
 include "../../conn/koneksi.php";
 
+session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 $kd_menu = $_GET['kd_menu'];
 
 $sql = mysqli_query($koneksi, "SELECT * FROM tb_menu WHERE kd_menu = '$kd_menu'");

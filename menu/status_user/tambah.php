@@ -1,6 +1,13 @@
 <?php
 include "../../conn/koneksi.php";
 
+session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 if (isset($_POST['simpan'])) {
     // Mengambil nilai dari input
     $nm_sts_user = $_POST['nm_sts_user'];

@@ -2,6 +2,11 @@
 include "../../conn/koneksi.php";
 session_start(); // Pastikan session sudah dimulai
 
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 if (isset($_POST['simpan'])) {
     // Pastikan semua input di-trim untuk menghindari spasi yang tidak disengaja
     $nmmurid = isset($_POST['nmmurid']) ? trim($_POST['nmmurid']) : '';

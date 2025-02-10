@@ -2,6 +2,11 @@
 include "../../conn/koneksi.php";
 session_start(); // Pastikan session sudah dimulai
 
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 if (isset($_POST['simpan'])) {
     $nmguru = isset($_POST['nmguru']) ? trim($_POST['nmguru']) : '';
     $spmapel = isset($_POST['spmapel']) ? trim($_POST['spmapel']) : '';

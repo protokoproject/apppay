@@ -1,6 +1,13 @@
 <?php
 include "../../conn/koneksi.php";
 
+session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 $id_app = $_GET['id'];
 $query = mysqli_query($koneksi,"SELECT * FROM tb_app WHERE id_app = '$id_app'");
 $data = mysqli_fetch_array($query);

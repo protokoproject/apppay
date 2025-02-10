@@ -1,6 +1,13 @@
 <?php
 include "../../conn/koneksi.php";
 
+session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 if (isset($_POST['simpan'])) {
     $id_kls = $_POST['kelas']; // ID Kelas dari form
     $id_mrd = $_POST['murid']; // ID Murid dari form

@@ -1,6 +1,13 @@
 <?php
 include "../../conn/koneksi.php";
 
+session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 if (isset($_POST['simpan'])) {
     // Mengambil nilai dari input dan memastikan aman
     $nmmenu = mysqli_real_escape_string($koneksi, $_POST['nmmenu']);

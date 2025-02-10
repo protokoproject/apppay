@@ -1,5 +1,13 @@
 <?php
+
+session_start();
+
 include "../../conn/koneksi.php";
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
 
 $kd_sts_user = $_GET['kd_sts_user'];
 

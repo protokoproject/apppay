@@ -1,6 +1,13 @@
 <?php
 include "../../conn/koneksi.php";
 
+session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 $id = $_GET['id'];
 $sql = mysqli_query($koneksi,"SELECT nm_mapel, desk FROM t_mapel WHERE id_mapel = '$id'");
 $data = mysqli_fetch_array($sql);

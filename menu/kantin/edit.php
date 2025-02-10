@@ -2,6 +2,11 @@
 include "../../conn/koneksi.php";
 session_start(); // Pastikan session sudah dimulai
 
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 // Ambil id_kantin dari parameter URL jika ada
 if (isset($_GET['id'])) {
     $id_kantin = $_GET['id'];

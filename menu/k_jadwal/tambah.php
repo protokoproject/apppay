@@ -1,6 +1,12 @@
 <?php
+session_start();
 require "../../conn/koneksi.php";
 require __DIR__ . '/vendor/autoload.php'; // Pastikan composer autoload sudah dipanggil
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
 
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;

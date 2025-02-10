@@ -2,6 +2,13 @@
 // Pastikan koneksi ke database sudah dilakukan
 include '../../conn/koneksi.php'; // Sesuaikan dengan path database Anda
 
+session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 // Ambil ID user dari URL (misal: edit_user.php?id=1)
 if (isset($_GET['id'])) {
     $id_user = $_GET['id'];

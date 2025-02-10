@@ -1,6 +1,13 @@
 <?php
 include "../../conn/koneksi.php";
 
+session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
+
 $auto = mysqli_query($koneksi, "SELECT MAX(id_app) AS max_id FROM tb_app");
 $row = mysqli_fetch_assoc($auto);
 $id_app = $row['max_id'] + 1;

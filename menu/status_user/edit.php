@@ -1,6 +1,12 @@
 <?php
 include "../../conn/koneksi.php";
 
+session_start();
+
+if (!isset($_SESSION["login"])) {
+    header("Location: ../../login.php");
+    exit;
+}
 
 // Mendapatkan data pengguna berdasarkan ID (kd_sts_user) jika ada permintaan edit
 if (isset($_GET['kd_sts_user'])) {
