@@ -1,17 +1,12 @@
 <?php
 session_start();
 require "../../conn/koneksi.php";
-require __DIR__ . '/vendor/autoload.php'; // Pastikan composer autoload sudah dipanggil
 
 if (!isset($_SESSION["login"])) {
     header("Location: ../../login.php");
     exit;
 }
 
-use Endroid\QrCode\QrCode;
-use Endroid\QrCode\Writer\PngWriter;
-use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelMedium; // Perbaikan namespace
-use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin; // Perbaikan namespace
 
 if (isset($_POST['simpan'])) {
     $id_kls = $_POST['kelas'];
@@ -28,34 +23,9 @@ if (isset($_POST['simpan'])) {
     $code = $hasil['max_code'];
     $id_jadwal = ($code) ? (int)$code + 1 : 1;
 
-    // Format data QR Code
-    $qr_text = "id_jadwal:$id_jadwal\nid_kls:$id_kls";
-
-    // Membuat QR Code menggunakan Endroid
-    $qrCode = new QrCode($qr_text);
-    $qrCode->setErrorCorrectionLevel(new ErrorCorrectionLevelMedium()); // ✅ Perbaikan Error Correction Level
-    $qrCode->setSize(300);
-    $qrCode->setMargin(10);
-    $qrCode->setRoundBlockSizeMode(new RoundBlockSizeModeMargin()); // ✅ Perbaikan Round Block Size Mode
-
-    $writer = new PngWriter();
-    $result = $writer->write($qrCode);
-
-    // Folder untuk menyimpan QR Code
-    $qr_folder = "qr_codes/";
-    if (!file_exists($qr_folder)) {
-        mkdir($qr_folder, 0777, true);
-    }
-
-    // Nama file unik
-    $qr_filename = $qr_folder . uniqid() . ".png";
-
-    // Simpan QR Code sebagai file PNG
-    file_put_contents($qr_filename, $result->getString());
-
     // Simpan ke database
-    $query = "INSERT INTO t_jadwal (id_jadwal, id_kls, id_mapel, id_guru, idta, hari, jam_aw, jam_ak, qr_code) 
-              VALUES ('$id_jadwal', '$id_kls', '$id_mapel', '$id_guru', '$id_tahun_ajaran', '$hari', '$jam_aw', '$jam_ak', '$qr_filename')";
+    $query = "INSERT INTO t_jadwal (id_jadwal, id_kls, id_mapel, id_guru, idta, hari, jam_aw, jam_ak) 
+              VALUES ('$id_jadwal', '$id_kls', '$id_mapel', '$id_guru', '$id_tahun_ajaran', '$hari', '$jam_aw', '$jam_ak')";
 
     if (mysqli_query($koneksi, $query)) {
         echo "<script>alert('Data berhasil ditambahkan!')</script>";

@@ -6,7 +6,6 @@ if (!isset($_SESSION["login"])) {
     header("Location: ../../login.php");
     exit;
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -149,9 +148,25 @@ if (!isset($_SESSION["login"])) {
 
                 </div>
                 <div class="trading-month">
-                    <button class="mb-3 tf-btn accent small" style="width: 20%;">
-                        <a href="tambah.php" style="color: white; text-decoration: none;" onmouseover="this.style.color='#533dea'" onmouseout="this.style.color='white'">Tambah Data</a>
-                    </button>
+                    <?php
+                    include "../../conn/koneksi.php";
+
+                    $kd_sts_user = $_SESSION['kd_sts_user'];
+
+                    $query = "SELECT tmbh_menu, edit_menu, hapus_menu, lainnya FROM tb_role_akses WHERE kd_sts_user = '$kd_sts_user'";
+                    $result = mysqli_query($koneksi, $query);
+                    $role = mysqli_fetch_assoc($result);
+
+                    // Tombol hanya hilang jika kd_sts_user = 8 dan tmbh_menu != 1
+                    if (!($kd_sts_user == '8' && (!isset($role['tmbh_menu']) || $role['tmbh_menu'] != '1'))) {
+                    ?>
+                        <button class="mb-3 tf-btn accent small" style="width: 20%;">
+                            <a href="tambah.php" style="color: white; text-decoration: none;" onmouseover="this.style.color='#533dea'" onmouseout="this.style.color='white'">Tambah Data</a>
+                        </button>
+                    <?php
+                    }
+                    ?>
+
 
                     <div class="group-trading-history">
                         <table class="table table-striped">
@@ -169,41 +184,127 @@ if (!isset($_SESSION["login"])) {
                             </thead>
                             <tbody>
                                 <?php
-                                include "../../conn/koneksi.php";
-
-                                $query = "SELECT tj.id_jadwal, tk.nm_kls, tm.nm_mapel, tg.nm_guru, ta.thn_aw, ta.thn_ak, tj.hari, tj.jam_aw, tj.jam_ak 
-                  FROM t_jadwal tj
-                  JOIN t_kelas tk ON tj.id_kls = tk.id_kls
-                  JOIN t_mapel tm ON tj.id_mapel = tm.id_mapel
-                  JOIN t_guru tg ON tj.id_guru = tg.id_guru
-                  JOIN t_ajaran ta ON tj.idta = ta.idta
-                  ORDER BY tj.id_jadwal ASC";
+                                $query = "SELECT 
+                                tj.id_jadwal, 
+                                tj.id_kls, 
+                                tk.nm_kls, 
+                                tm.nm_mapel, 
+                                tg.nm_guru, 
+                                ta.thn_aw, 
+                                ta.thn_ak, 
+                                tj.hari, 
+                                tj.jam_aw, 
+                                tj.jam_ak 
+                              FROM t_jadwal tj
+                              JOIN t_kelas tk ON tj.id_kls = tk.id_kls
+                              JOIN t_mapel tm ON tj.id_mapel = tm.id_mapel
+                              JOIN t_guru tg ON tj.id_guru = tg.id_guru
+                              JOIN t_ajaran ta ON tj.idta = ta.idta
+                              ORDER BY tj.id_jadwal ASC";
 
                                 $result = mysqli_query($koneksi, $query);
                                 $no = 1;
 
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                    echo "<tr>";
-                                    echo "<td>" . $no++ . "</td>";
-                                    echo "<td>" . $row['nm_kls'] . "</td>";
-                                    echo "<td>" . $row['nm_mapel'] . "</td>";
-                                    echo "<td>" . $row['nm_guru'] . "</td>";
-                                    echo "<td>" . $row['thn_aw'] . " - " . $row['thn_ak'] . "</td>";
-                                    echo "<td>" . $row['hari'] . "</td>";
-                                    echo "<td>" . date('H:i', strtotime($row['jam_aw'])) . " - " . date('H:i', strtotime($row['jam_ak'])) . "</td>";
-                                    echo "<td>
-                                    <a href='edit.php?id=" . $row['id_jadwal'] . "' class='btn btn-warning btn-sm'>
+                                if ($result && mysqli_num_rows($result) > 0) {
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        echo "<tr>";
+                                        echo "<td>" . $no++ . "</td>";
+                                        echo "<td>" . $row['nm_kls'] . "</td>";
+                                        echo "<td>" . $row['nm_mapel'] . "</td>";
+                                        echo "<td>" . $row['nm_guru'] . "</td>";
+                                        echo "<td>" . $row['thn_aw'] . " - " . $row['thn_ak'] . "</td>";
+                                        echo "<td>" . $row['hari'] . "</td>";
+                                        echo "<td>" . date('H:i', strtotime($row['jam_aw'])) . " - " . date('H:i', strtotime($row['jam_ak'])) . "</td>";
+                                        echo "<td class='d-flex gap-2'>";
+
+                                        // Tombol Edit (Hanya tampil jika edit_menu = 1 atau user bukan kd_sts_user = 8)
+                                        if (!($kd_sts_user == '8' && (!isset($role['edit_menu']) || $role['edit_menu'] != '1'))) {
+                                            echo "<a href='edit.php?id=" . $row['id_jadwal'] . "' class='btn btn-warning btn-sm'>
                                     <i class='fas fa-edit'></i>
-                                </a>
-                                <a href='delete.php?id=" . $row['id_jadwal'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Apakah Anda yakin ingin menghapus data ini?\")'>
+                                  </a>";
+                                        }
+
+                                        // Tombol Hapus (Hanya tampil jika hps_menu = 1 atau user bukan kd_sts_user = 8)
+                                        if (!($kd_sts_user == '8' && (!isset($role['hps_menu']) || $role['hps_menu'] != '1'))) {
+                                            echo "<a href='delete.php?id=" . $row['id_jadwal'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Apakah Anda yakin ingin menghapus data ini?\")'>
                                     <i class='fas fa-trash-alt'></i>
-                                </a>
-                  </td>";
-                                    echo "</tr>";
+                                  </a>";
+                                        }
+
+                                        // Tombol Absen (Hanya tampil jika kd_sts_user bukan 5 atau jika absen_menu = 1)
+                                        if (!($kd_sts_user == '5' && (!isset($role['absen_menu']) || $role['absen_menu'] != '1'))) {
+                                            echo "<button type='button' class='btn btn-success btn-sm' data-bs-toggle='modal' data-bs-target='#absenModal" . $row['id_jadwal'] . "'>
+                                    <i class='fas fa-check-circle'></i> 
+                                  </button>";
+
+                                            // Modal Absen
+                                            echo "<div class='modal fade' id='absenModal" . $row['id_jadwal'] . "' tabindex='-1' aria-labelledby='absenModalLabel" . $row['id_jadwal'] . "' aria-hidden='true'>
+                                            <div class='modal-dialog'>
+                                                <div class='modal-content'>
+                                                    <div class='modal-header'>
+                                                        <h5 class='modal-title' id='absenModalLabel" . $row['id_jadwal'] . "'>Konfirmasi Absensi</h5>
+                                                        <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                                                    </div>
+                                                    <div class='modal-body'>
+                                                        <h5 id='hariSekarang" . $row['id_jadwal'] . "'></h5>
+                                                        <h6 id='waktuSekarang" . $row['id_jadwal'] . "'></h6>
+                                                        <script>
+                                                            function updateDateTime(idJadwal) {
+                                                                const hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                                                                const now = new Date();
+                                                                document.getElementById('hariSekarang' + idJadwal).innerText = 'Hari ini: ' + hari[now.getDay()];
+                                                                document.getElementById('waktuSekarang' + idJadwal).innerText = 'Waktu: ' + now.toLocaleTimeString();
+                                                            }
+                                                            setInterval(() => updateDateTime(" . $row['id_jadwal'] . "), 1000);
+                                                            updateDateTime(" . $row['id_jadwal'] . ");
+                                                        </script>
+                                                        <p>Apakah Anda yakin ingin memulai absensi untuk kelas " . $row['nm_kls'] . " - " . $row['nm_mapel'] . "?</p>
+                                                    </div>
+                                                    <div class='modal-footer'>
+                                                        <button type='button' class='btn btn-secondary' data-bs-dismiss='modal'>Batal</button>
+                                                        <button type='button' class='btn btn-success' onclick='openQRCodeModal(" . $row['id_jadwal'] . ", " . $row['id_kls'] . ")'>Mulai Absen</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>";
+
+
+                                            echo "<div class='modal fade' id='qrModal" . $row['id_jadwal'] . "' tabindex='-1' aria-labelledby='qrModalLabel" . $row['id_jadwal'] . "' aria-hidden='true'>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h5 class='modal-title' id='qrModalLabel" . $row['id_jadwal'] . "'>QR Code Absensi</h5>
+                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+            </div>
+            <div class='modal-body text-center'>
+                <img id='qrCode" . $row['id_jadwal'] . "' src='' class='img-fluid' alt='QR Code'>
+            </div>
+        </div>
+    </div>
+</div>";
+                                        }
+
+                                        echo "</td>";
+                                        echo "</tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='8' class='text-center'>Belum Ada Data</td></tr>";
                                 }
                                 ?>
                             </tbody>
                         </table>
+
+                        <script>
+                            function openQRCodeModal(idJadwal, idKls) {
+                                let img = document.getElementById('qrCode' + idJadwal);
+                                img.src = 'generate_qr.php?id_jadwal=' + idJadwal + '&id_kls=' + idKls;
+
+                                let modal = new bootstrap.Modal(document.getElementById('qrModal' + idJadwal));
+                                modal.show();
+                            }
+                        </script>
+
+
                     </div>
                 </div>
             </div>

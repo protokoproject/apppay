@@ -1,21 +1,16 @@
 <?php
 session_start();
 
-require "../../conn/koneksi.php";
-require __DIR__ . '/vendor/autoload.php'; // Pastikan composer autoload sudah dipanggil
+include "../../conn/koneksi.php";
 
 if (!isset($_SESSION["login"])) {
     header("Location: ../../login.php");
     exit;
 }
 
-use Endroid\QrCode\QrCode;
-use Endroid\QrCode\Writer\PngWriter;
-use Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelMedium;
-use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
+$id_jadwal = $_GET['id'];
 
 if (isset($_POST['simpan'])) {
-    $id_jadwal = $_POST['id_jadwal'];
     $id_kls = $_POST['kelas'];
     $id_mapel = $_POST['mapel'];
     $id_guru = $_POST['guru'];
@@ -23,45 +18,6 @@ if (isset($_POST['simpan'])) {
     $hari = $_POST['hari'];
     $jam_aw = $_POST['jam_aw'];
     $jam_ak = $_POST['jam_ak'];
-
-    // Ambil data lama dari database
-    $query_old = mysqli_query($koneksi, "SELECT * FROM t_jadwal WHERE id_jadwal = '$id_jadwal'");
-    $data_old = mysqli_fetch_assoc($query_old);
-    $qr_old_filename = $data_old['qr_code']; // QR Code lama
-
-    $qr_filename = $qr_old_filename; // Default tetap pakai QR lama
-
-    // Cek apakah QR Code perlu diperbarui
-    if ($data_old['id_kls'] != $id_kls || $data_old['id_jadwal'] != $id_jadwal) {
-        // Hapus QR Code lama jika ada
-        if (!empty($qr_old_filename) && file_exists($qr_old_filename)) {
-            unlink($qr_old_filename);
-        }
-
-        // Buat QR Code baru
-        $qr_text = "id_jadwal:$id_jadwal\nid_kls:$id_kls";
-
-        $qrCode = new QrCode($qr_text);
-        $qrCode->setErrorCorrectionLevel(new ErrorCorrectionLevelMedium());
-        $qrCode->setSize(300);
-        $qrCode->setMargin(10);
-        $qrCode->setRoundBlockSizeMode(new RoundBlockSizeModeMargin());
-
-        $writer = new PngWriter();
-        $result = $writer->write($qrCode);
-
-        // Folder penyimpanan QR Code
-        $qr_folder = "qr_codes/";
-        if (!file_exists($qr_folder)) {
-            mkdir($qr_folder, 0777, true);
-        }
-
-        // Nama file unik untuk QR baru
-        $qr_filename = $qr_folder . uniqid() . ".png";
-
-        // Simpan QR Code baru
-        file_put_contents($qr_filename, $result->getString());
-    }
 
     // Update data ke database
     $query = "UPDATE t_jadwal SET 
@@ -71,8 +27,7 @@ if (isset($_POST['simpan'])) {
               idta='$id_tahun_ajaran', 
               hari='$hari', 
               jam_aw='$jam_aw', 
-              jam_ak='$jam_ak', 
-              qr_code='$qr_filename'
+              jam_ak='$jam_ak' 
               WHERE id_jadwal='$id_jadwal'";
 
     if (mysqli_query($koneksi, $query)) {
@@ -130,8 +85,6 @@ if (isset($_POST['simpan'])) {
                     <?php
                     include "../../conn/koneksi.php";
 
-                    // Ambil id_jadwal dari URL
-                    $id_jadwal = $_GET['id'];
 
                     // Query untuk mengambil data jadwal berdasarkan id_jadwal
                     $query = "SELECT * FROM t_jadwal WHERE id_jadwal = '$id_jadwal'";
@@ -140,8 +93,6 @@ if (isset($_POST['simpan'])) {
                     ?>
 
                     <form method="post">
-                        <input type="hidden" name="id_jadwal" value="<?php echo $data['id_jadwal']; ?>">
-
                         <div class="group-input mb-3">
                             <label for="kelas" class="form-label">Kelas</label>
                             <select class="form-select" id="kelas" name="kelas">
