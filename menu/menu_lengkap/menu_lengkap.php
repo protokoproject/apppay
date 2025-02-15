@@ -67,7 +67,7 @@ if (!isset($_SESSION["login"])) {
           include "../../conn/koneksi.php";
 
           // Base URL untuk aplikasi
-          $baseDir = "http://localhost/pkl/simas/";
+          $baseDir = "http://localhost/simas/";
 
           $kd_sts_user = $_SESSION["kd_sts_user"];
 
@@ -103,11 +103,11 @@ if (!isset($_SESSION["login"])) {
     <div class="tf-container">
       <ul class="tf-navigation-bar">
         <li>
-        <?php
+          <?php
           include "../../conn/koneksi.php";
 
           // Base URL untuk aplikasi
-          $baseDir = "http://localhost/pkl/simas/";
+          $baseDir = "http://localhost/simas/";
 
           // Query untuk mengambil data home dari database
           $sql = mysqli_query($koneksi, "SELECT link_menu FROM tb_menu WHERE kd_menu = 1 LIMIT 1");
@@ -135,7 +135,7 @@ if (!isset($_SESSION["login"])) {
           include "../../conn/koneksi.php";
 
           // Base URL untuk aplikasi
-          $baseDir = "http://localhost/pkl/simas/";
+          $baseDir = "http://localhost/simas/";
 
           // Query untuk mengambil data profil dari database
           $sql = mysqli_query($koneksi, "SELECT link_menu FROM tb_menu WHERE kd_menu = 11 LIMIT 1");
