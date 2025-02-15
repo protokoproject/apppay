@@ -205,6 +205,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_data'])) {
             <div class="tf-container text-center">
                 <h2 class="fw_6 text-center">Absensi dengan QR Code</h2>
 
+                <div id="reader" style="width: 100%; max-width: 400px; margin: auto;"></div>
+
                 <div class="logo-qr">
                     <button id="scanButton" class="btn btn-primary">
                         <i class="fas fa-qrcode"></i> Scan QR Code
@@ -229,43 +231,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_data'])) {
         </div>
     </div>
 
-    <script src="https://unpkg.com/html5-qrcode"></script>
     <script>
-        document.getElementById('scanButton').addEventListener('click', function() {
-            Html5Qrcode.getCameras().then(devices => {
-                if (devices && devices.length) {
-                    const html5QrCode = new Html5Qrcode("reader");
-                    html5QrCode.start(
-                        devices[0].id, {
-                            fps: 10,
-                            qrbox: 250
-                        },
-                        qrCodeMessage => {
-                            console.log(`QR Code detected: ${qrCodeMessage}`);
-                            // Kirim data hasil scan ke server
-                            fetch(window.location.href, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/x-www-form-urlencoded',
-                                },
-                                body: `qr_data=${encodeURIComponent(qrCodeMessage)}`
-                            }).then(response => {
-                                if (response.ok) {
-                                    alert('Absensi berhasil disimpan.');
-                                } else {
-                                    alert('Gagal menyimpan absensi.');
-                                }
-                            });
-                        },
-                        errorMessage => {
-                            console.warn(`QR Code scan error: ${errorMessage}`);
-                        }
-                    ).catch(err => {
-                        console.error(`Unable to start scanning: ${err}`);
-                    });
-                }
-            }).catch(err => {
-                console.error(`Unable to access camera: ${err}`);
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById('scanButton').addEventListener('click', function() {
+                let scanner = new Html5QrcodeScanner("reader", {
+                    fps: 10,
+                    qrbox: 250
+                });
+                scanner.render(
+                    function(qrCodeMessage) {
+                        console.log(`QR Code detected: ${qrCodeMessage}`);
+
+                        // Kirim data hasil scan ke server
+                        fetch(window.location.href, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: `qr_data=${encodeURIComponent(qrCodeMessage)}`
+                        }).then(response => {
+                            if (response.ok) {
+                                alert('Absensi berhasil disimpan.');
+                                location.reload();
+                            } else {
+                                alert('Gagal menyimpan absensi.');
+                            }
+                        });
+                    },
+                    function(errorMessage) {
+                        console.warn(`QR Code scan error: ${errorMessage}`);
+                    }
+                );
             });
         });
     </script>
