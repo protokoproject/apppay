@@ -8,15 +8,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_data'])) {
     // Parse data QR Code
     parse_str(str_replace([';', ':'], ['&', '='], $qr_data), $qr_values);
     
-    if (!isset($qr_values['id_jadwal'], $qr_values['id_kls'], $qr_values['tgl'], $qr_values['jam'])) {
+    if (!isset($qr_values['id_jadwal'], $qr_values['id_kls'])) {
         echo json_encode(['status' => 'error', 'message' => 'Format QR Code tidak valid']);
         exit;
     }
     
     $id_jadwal = (int)$qr_values['id_jadwal'];
     $id_kls = (int)$qr_values['id_kls'];
-    $tgl_abs = $qr_values['tgl'];
-    $jam_abs = $qr_values['jam'];
     
     if (!isset($_SESSION['username'])) {
         echo json_encode(['status' => 'error', 'message' => 'User tidak terautentikasi']);
@@ -57,6 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_data'])) {
     
     $id_mrd = $murid_data['id_mrd'];
     
+    // Set waktu absensi sesuai waktu saat ini
+    date_default_timezone_set('Asia/Jakarta'); // Set zona waktu ke Indonesia
+    $tgl_abs = date('Y-m-d'); // Tanggal absensi (misal: 2025-02-27)
+    $jam_abs = date('H:i:s'); // Jam absensi (misal: 08:30:15)
+
     // Cek apakah sudah absen sebelumnya
     $query_check = "SELECT id_absen FROM t_absen WHERE id_mrd = ? AND id_jadwal = ? AND tgl_abs = ?";
     $stmt_check = $koneksi->prepare($query_check);
