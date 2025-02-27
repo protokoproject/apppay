@@ -63,43 +63,6 @@ if ($kd_sts_user == 7) {
     }
 }
 
-// Proses penyimpanan data setelah scan QR Code
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_data'])) {
-    $qr_data = $_POST['qr_data'];
-    // Asumsikan qr_data berisi id_jadwal dan id_kls dipisahkan oleh tanda |
-    list($id_jadwal, $id_kls) = explode('|', $qr_data);
-
-    // Ambil id_mrd dari t_murid berdasarkan id_user
-    $query_murid = "SELECT id_mrd FROM t_murid WHERE id_user = ?";
-    $stmt_murid = $koneksi->prepare($query_murid);
-    $stmt_murid->bind_param("i", $id_user);
-    $stmt_murid->execute();
-    $result_murid = $stmt_murid->get_result();
-    $murid_data = $result_murid->fetch_assoc();
-    $id_mrd = $murid_data['id_mrd'];
-
-    // Generate id_absen secara otomatis
-    $auto = mysqli_query($koneksi, "SELECT MAX(id_absen) as max_code FROM t_absen");
-    $hasil = mysqli_fetch_array($auto);
-    $code = $hasil['max_code'];
-    $id_absen = ($code) ? (int)$code + 1 : 1;
-
-    // Tanggal dan waktu saat ini
-    $tgl_abs = date('Y-m-d');
-    $jam_abs = date('H:i:s');
-
-    // Insert data ke t_absen
-    $query_insert = "INSERT INTO t_absen (id_absen, id_mrd, id_jadwal, id_kls, tgl_abs, jam_abs, ket_abs) VALUES (?, ?, ?, ?, ?, ?, NULL)";
-    $stmt_insert = $koneksi->prepare($query_insert);
-    $stmt_insert->bind_param("iiisss", $id_absen, $id_mrd, $id_jadwal, $id_kls, $tgl_abs, $jam_abs);
-
-    if ($stmt_insert->execute()) {
-        echo "<script>alert('Absensi berhasil disimpan.');</script>";
-    } else {
-        echo "<script>alert('Gagal menyimpan absensi.');</script>";
-    }
-    $stmt_insert->close();
-}
 ?>
 
 <!DOCTYPE html>
@@ -118,6 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_data'])) {
     <link rel="stylesheet" type="text/css" href="../../styles/styles.css" />
     <link rel="manifest" href="../../_manifest.json" data-pwa-version="set_in_manifest_and_pwa_js">
     <link rel="apple-touch-icon" sizes="192x192" href="../../app/icons/icon-192x192.png">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="jsQR.js"></script>
     <style>
         /* Custom styling */
         .wrap-qr {
@@ -169,6 +134,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_data'])) {
             color: #666;
         }
 
+        #video {
+            display: none;
+            width: 100%;
+            max-width: 400px;
+        }
+
         @media (max-width: 768px) {
             .logo-qr img {
                 width: 150px;
@@ -204,19 +175,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_data'])) {
         <div class="card">
             <div class="tf-container text-center">
                 <h2 class="fw_6 text-center">Absensi dengan QR Code</h2>
-
-                <div id="reader" style="width: 100%; max-width: 400px; margin: auto;"></div>
-
-                <div class="logo-qr">
-                    <button id="scanButton" class="btn btn-primary">
-                        <i class="fas fa-qrcode"></i> Scan QR Code
-                    </button>
-                </div>
-
-                <p class="text-center mt-3" style="font-size: 15px;">
-                    <em>Klik tombol di atas untuk memindai QR Code</em>
-                </p>
-
+                <video id="video" autoplay playsinline></video>
+                <canvas id="canvas" style="display: none;"></canvas>
+                <button id="scanButton" class="btn btn-primary mt-3">Mulai Scan QR Code</button>
+                <p id="qrResult" class="text-center mt-3" style="font-size: 15px;"><em>QR Code belum dipindai.</em></p>
                 <div class="student-info">
                     <div class="info-card">
                         <h4>Nama:</h4>
@@ -230,43 +192,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_data'])) {
             </div>
         </div>
     </div>
-
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            document.getElementById('scanButton').addEventListener('click', function() {
-                let scanner = new Html5QrcodeScanner("reader", {
-                    fps: 10,
-                    qrbox: 250
-                });
-                scanner.render(
-                    function(qrCodeMessage) {
-                        console.log(`QR Code detected: ${qrCodeMessage}`);
+        $(document).ready(function() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+            const qrResult = $('#qrResult');
+            const scanButton = $('#scanButton');
+            let stream = null;
+            let scanning = false;
 
-                        // Kirim data hasil scan ke server
-                        fetch(window.location.href, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'
-                            },
-                            body: `qr_data=${encodeURIComponent(qrCodeMessage)}`
-                        }).then(response => {
-                            if (response.ok) {
+            scanButton.click(function() {
+                if (!scanning) {
+                    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                        .then((mediaStream) => {
+                            stream = mediaStream;
+                            video.srcObject = stream;
+                            video.style.display = 'block';
+                            video.play();
+                            scanning = true;
+                            scanButton.text('Stop Scan QR Code');
+                            requestAnimationFrame(scanQRCode);
+                        })
+                        .catch((err) => {
+                            console.error("Error accessing camera: ", err);
+                            qrResult.text("Gagal mengakses kamera. Periksa izin browser Anda.");
+                        });
+                } else {
+                    stopScan();
+                }
+            });
+
+            function scanQRCode() {
+                if (!scanning) return;
+                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                    canvas.height = video.videoHeight;
+                    canvas.width = video.videoWidth;
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                        inversionAttempts: 'dontInvert',
+                    });
+                    if (code) {
+                        qrResult.text('QR Code terdeteksi: ' + code.data);
+                        $.ajax({
+                            url: 'process_qr.php',
+                            type: 'POST',
+                            data: { qr_data: code.data },
+                            success: function(response) {
                                 alert('Absensi berhasil disimpan.');
-                                location.reload();
-                            } else {
-                                alert('Gagal menyimpan absensi.');
+                                stopScan();
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(xhr, status, error);
                             }
                         });
-                    },
-                    function(errorMessage) {
-                        console.warn(`QR Code scan error: ${errorMessage}`);
                     }
-                );
-            });
+                }
+                requestAnimationFrame(scanQRCode);
+            }
+
+            function stopScan() {
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                }
+                video.style.display = 'none';
+                scanning = false;
+                scanButton.text('Mulai Scan QR Code');
+            }
         });
     </script>
 
-    <script src="https://unpkg.com/html5-qrcode"></script>
+    
     <script type="text/javascript" src="../../javascript/jquery.min.js"></script>
     <script type="text/javascript" src="../../javascript/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../javascript/main.js"></script>
