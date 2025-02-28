@@ -31,6 +31,11 @@ if(isset($_POST['update'])){
     $wali_kelas = $_POST['wali_kelas'];  // ID wali kelas yang dipilih
     $tahun_ajaran = $_POST['tahun_ajaran'];  // ID tahun ajaran yang dipilih
 
+    if (empty($nm_kelas) || empty($wali_kelas) || empty($tahun_ajaran)) {
+        echo "<script>alert('Semua field harus diisi!'); window.history.back();</script>";
+        exit;
+    }
+
     // Query untuk memperbarui data ke tabel t_kelas
     $query_update = "UPDATE t_kelas SET nm_kls = '$nm_kelas', wali = '$wali_kelas', idta = '$tahun_ajaran' WHERE id_kls = '$id_kls'";
 
@@ -92,13 +97,13 @@ if(isset($_POST['update'])){
                     <form method="post">
                         <div class="group-input">
                             <label>Nama Kelas</label>
-                            <input type="text" placeholder="Nama Kelas" name="nmkelas" value="<?php echo $data['nm_kls']; ?>" required>
+                            <input type="text" placeholder="Nama Kelas" name="nmkelas" value="<?php echo $data['nm_kls']; ?>">
                         </div>
 
                         <!-- Select Wali Kelas -->
                         <div class="group-input">
                             <label>Wali Kelas</label>
-                            <select name="wali_kelas" required>
+                            <select name="wali_kelas">
                                 <option value="" disabled>Pilih Wali Kelas</option>
                                 <?php
                                 // Menampilkan opsi wali kelas
@@ -113,7 +118,7 @@ if(isset($_POST['update'])){
                         <!-- Select Tahun Ajaran -->
                         <div class="group-input">
                             <label>Tahun Ajaran</label>
-                            <select name="tahun_ajaran" required>
+                            <select name="tahun_ajaran">
                                 <option value="" disabled>Pilih Tahun Ajaran</option>
                                 <?php
                                 // Menampilkan opsi tahun ajaran

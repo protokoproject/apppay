@@ -20,6 +20,11 @@ if(isset($_POST['simpan'])){
     $wali_kelas = $_POST['wali_kelas'];  // ID wali kelas yang dipilih
     $tahun_ajaran = $_POST['tahun_ajaran'];  // ID tahun ajaran yang dipilih
 
+    if (empty($nm_kelas) || empty($wali_kelas) || empty($tahun_ajaran)) {
+        echo "<script>alert('Semua field harus diisi!'); window.history.back();</script>";
+        exit;
+    }
+
     // Query untuk memasukkan data ke tabel t_kelas
     $query = "INSERT INTO t_kelas (id_kls, nm_kls, wali, idta) VALUES ('$idkelas', '$nm_kelas', '$wali_kelas', '$tahun_ajaran')";
 
@@ -82,13 +87,13 @@ if(isset($_POST['simpan'])){
                     <form method="post">
                         <div class="group-input">
                             <label>Nama Kelas</label>
-                            <input type="text" placeholder="Nama Kelas" name="nmkelas" required>
+                            <input type="text" placeholder="Nama Kelas" name="nmkelas">
                         </div>
 
                         <!-- Select Wali Kelas -->
                         <div class="group-input">
                             <label>Wali Kelas</label>
-                            <select name="wali_kelas" required>
+                            <select name="wali_kelas">
                                 <option value="" disabled selected>Pilih Wali Kelas</option>
                                 <?php
                                 // Koneksi ke database dan mengambil data Wali Kelas dari tabel t_guru
@@ -103,7 +108,7 @@ if(isset($_POST['simpan'])){
                         <!-- Select Tahun Ajaran -->
                         <div class="group-input">
                             <label>Tahun Ajaran</label>
-                            <select name="tahun_ajaran" required>
+                            <select name="tahun_ajaran">
                                 <option value="" disabled selected>Pilih Tahun Ajaran</option>
                                 <?php
                                 // Koneksi ke database dan mengambil data Tahun Ajaran dari tabel t_ajaran
