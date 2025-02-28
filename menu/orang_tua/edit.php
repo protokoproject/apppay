@@ -30,7 +30,7 @@ if (isset($_POST['update'])) {
 
     // Validasi input tidak boleh kosong
     if (empty($nmortu)) {
-        echo "<script>alert('Nama Orang Tua harus diisi!'); window.history.back();</script>";
+        echo "<script>alert('Semua field harus diisi!'); window.history.back();</script>";
         exit;
     }
 
