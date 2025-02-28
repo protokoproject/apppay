@@ -26,18 +26,41 @@ $query_status_user = "SELECT kd_sts_user, nm_sts_user FROM tb_sts_user";
 $result_status_user = mysqli_query($koneksi, $query_status_user);
 
 if (isset($_POST['simpan'])) {
-    $nm_user = $_POST['nm_user'];
-    $email = $_POST['email'];
-    $no_hp = $_POST['no_hp'];
+    $nm_user = trim($_POST['nm_user']);
+    $email = trim($_POST['email']);
+    $no_hp = trim($_POST['no_hp']);
     $password = $_POST['password'];
     $konfirmasi_password = $_POST['konfirmasi_password'];
     $kd_bgn = $_POST['kd_bgn'];
     $kdsts_user = $_POST['kdsts_user'];
+    $id_app_input = $_POST['id_app'];
 
-    if (empty($kdsts_user)) {
-        echo "<script>alert('Status User is required!');</script>";
+    // Validasi input tidak boleh kosong
+    if (empty($nm_user) || empty($email) || empty($no_hp) || empty($password) || empty($konfirmasi_password) || empty($kd_bgn) || empty($kdsts_user) || empty($id_app_input)) {
+        echo "<script>alert('Semua field harus diisi!'); window.history.back();</script>";
         exit;
     }
+
+    // Validasi email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "<script>alert('Format email tidak valid!'); window.history.back();</script>";
+        exit;
+    }
+
+    // Validasi nomor HP (hanya angka dan panjang minimal 10)
+    if (!preg_match("/^[0-9]{10,15}$/", $no_hp)) {
+        echo "<script>alert('Nomor HP harus berupa angka dan minimal 10 digit!'); window.history.back();</script>";
+        exit;
+    }
+
+    // Validasi password dan konfirmasi password
+    if ($password !== $konfirmasi_password) {
+        echo "<script>alert('Password dan Konfirmasi Password tidak sesuai!'); window.history.back();</script>";
+        exit;
+    }
+
+    // Enkripsi password sebelum disimpan
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
     // Ambil ID User terbaru
     $auto2 = mysqli_query($koneksi, "SELECT MAX(id_user) AS max_user FROM tb_user");
@@ -48,22 +71,14 @@ if (isset($_POST['simpan'])) {
     $nama_parts = explode(" ", $nm_user);
     $username = strtolower($nama_parts[0]) . $id_user . $id_app;
 
-    // Validasi password dan konfirmasi password
-    if ($password === $konfirmasi_password) {
-        // Enkripsi password sebelum disimpan
-        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+    // Query untuk menyimpan data ke tabel tb_user
+    $sql = "INSERT INTO tb_user (id_user, id_app, nm_user, kd_sts_user, username, pass, pass_txt, kd_bgn, nohp, tgl_lhr, email, tgl_gbng) 
+            VALUES ('$id_user', '$id_app_input', '$nm_user', '$kdsts_user', '$username', '$hashed_password', '$password', '$kd_bgn', '$no_hp', CURRENT_DATE, '$email', CURRENT_DATE)";
 
-        // Query untuk menyimpan data ke tabel tb_user dengan urutan sesuai gambar
-        $sql = "INSERT INTO tb_user (id_user, id_app, nm_user, kd_sts_user, username, pass, pass_txt, kd_bgn, nohp, tgl_lhr, email, tgl_gbng) 
-                VALUES ('$id_user', '$id_app', '$nm_user', '$kdsts_user', '$username', '$hashed_password', '$password', '$kd_bgn', '$no_hp', CURRENT_DATE, '$email', CURRENT_DATE)";
-
-        if (mysqli_query($koneksi, $sql)) {
-            echo "<script>alert('Data berhasil disimpan!'); window.location.href='user.php';</script>";
-        } else {
-            echo "Error: " . $sql . "<br>" . mysqli_error($koneksi);
-        }
+    if (mysqli_query($koneksi, $sql)) {
+        echo "<script>alert('Data berhasil disimpan!'); window.location.href='user.php';</script>";
     } else {
-        echo "<script>alert('Password dan Konfirmasi Password tidak sesuai!');</script>";
+        echo "<script>alert('Terjadi kesalahan: " . mysqli_error($koneksi) . "'); window.history.back();</script>";
     }
 }
 ?>

@@ -9,7 +9,7 @@ if (!isset($_SESSION["login"])) {
     exit;
 }
 
-// Ambil ID user dari URL (misal: edit_user.php?id=1)
+// Pastikan ID user ada di URL
 if (isset($_GET['id'])) {
     $id_user = $_GET['id'];
 
@@ -17,7 +17,7 @@ if (isset($_GET['id'])) {
     $query = "SELECT * FROM tb_user WHERE id_user = '$id_user'";
     $result = mysqli_query($koneksi, $query);
 
-    // Jika ada data pengguna
+    // Jika data user ditemukan
     if ($result && mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
     } else {
@@ -26,21 +26,41 @@ if (isset($_GET['id'])) {
 
     // Proses pengeditan data jika form disubmit
     if (isset($_POST['simpan'])) {
-        $nm_user = $_POST['nm_user'];
-        $email = $_POST['email'];
-        $nohp = $_POST['nohp'];
+        $nm_user = trim($_POST['nm_user']);
+        $email = trim($_POST['email']);
+        $nohp = trim($_POST['nohp']);
         $kd_bgn = $_POST['kd_bgn'];
         $id_app = $_POST['id_app'];
         $kd_sts_user = $_POST['kd_sts_user'];
 
+        // Validasi input tidak boleh kosong
+        if (empty($nm_user) || empty($email) || empty($nohp) || empty($kd_bgn) || empty($id_app) || empty($kd_sts_user)) {
+            echo "<script>alert('Semua field harus diisi!'); window.history.back();</script>";
+            exit;
+        }
+
+        // Validasi format email
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            echo "<script>alert('Format email tidak valid!'); window.history.back();</script>";
+            exit;
+        }
+
+        // Validasi nomor HP harus angka dan minimal 10 digit
+        if (!preg_match('/^[0-9]{10,}$/', $nohp)) {
+            echo "<script>alert('Nomor HP harus berupa angka dan minimal 10 digit!'); window.history.back();</script>";
+            exit;
+        }
+
         // Query untuk mengupdate data pengguna
-        $update_query = "UPDATE tb_user SET nm_user='$nm_user', email='$email', nohp='$nohp', kd_bgn='$kd_bgn', id_app='$id_app', kd_sts_user='$kd_sts_user' WHERE id_user='$id_user'";
+        $update_query = "UPDATE tb_user 
+                        SET nm_user='$nm_user', email='$email', nohp='$nohp', kd_bgn='$kd_bgn', id_app='$id_app', kd_sts_user='$kd_sts_user' 
+                        WHERE id_user='$id_user'";
 
         if (mysqli_query($koneksi, $update_query)) {
             echo "<script>alert('Data berhasil diperbarui!'); window.location.href='user.php';</script>";
             exit;
         } else {
-            echo "<script>alert('Terjadi kesalahan saat memperbarui data!'); window.location.href='user.php';</script>";
+            echo "<script>alert('Terjadi kesalahan saat memperbarui data!'); window.history.back();</script>";
             exit;
         }
     }
@@ -48,7 +68,7 @@ if (isset($_GET['id'])) {
     die("ID user tidak ditemukan.");
 }
 
-// Ambil data Bagian (Divisi) dari tabel tb_bagian
+// Ambil data Bagian dari tabel tb_bagian
 $query_bagian = "SELECT * FROM tb_bagian";
 $result_bagian = mysqli_query($koneksi, $query_bagian);
 
@@ -59,6 +79,7 @@ $result_app = mysqli_query($koneksi, $query_app);
 // Ambil data Status User dari tabel tb_status_user
 $query_status_user = "SELECT * FROM tb_sts_user";
 $result_status_user = mysqli_query($koneksi, $query_status_user);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

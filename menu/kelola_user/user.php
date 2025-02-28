@@ -171,32 +171,40 @@ if (!isset($_SESSION["login"])) {
 
                                 // Query dengan JOIN untuk mendapatkan nama status user
                                 $sql = mysqli_query($koneksi, "
-    SELECT tb_user.*, tb_sts_user.nm_sts_user 
-    FROM tb_user 
-    JOIN tb_sts_user ON tb_user.kd_sts_user = tb_sts_user.kd_sts_user
-");
+            SELECT tb_user.*, tb_sts_user.nm_sts_user 
+            FROM tb_user 
+            JOIN tb_sts_user ON tb_user.kd_sts_user = tb_sts_user.kd_sts_user
+        ");
 
-                                while ($data = mysqli_fetch_array($sql)) {
+                                if (mysqli_num_rows($sql) > 0) {
+                                    while ($data = mysqli_fetch_array($sql)) {
                                 ?>
+                                        <tr>
+                                            <td><?php echo $no++; ?></td>
+                                            <td><?php echo $data['nm_user']; ?></td>
+                                            <td><?php echo $data['username']; ?></td>
+                                            <td><?php echo $data['email']; ?></td>
+                                            <td><?php echo $data['nm_sts_user']; ?></td> <!-- Menampilkan nama status user -->
+                                            <td><?php echo $data['nohp']; ?></td>
+                                            <td>
+                                                <a href="edit.php?id=<?php echo $data['id_user']; ?>" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="delete.php?id=<?php echo $data['id_user']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }
+                                } else { ?>
                                     <tr>
-                                        <td><?php echo $no++; ?></td>
-                                        <td><?php echo $data['nm_user']; ?></td>
-                                        <td><?php echo $data['username']; ?></td>
-                                        <td><?php echo $data['email']; ?></td>
-                                        <td><?php echo $data['nm_sts_user']; ?></td> <!-- Menampilkan nama status user -->
-                                        <td><?php echo $data['nohp']; ?></td>
-                                        <td>
-                                            <a href="edit.php?id=<?php echo $data['id_user']; ?>" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="delete.php?id=<?php echo $data['id_user']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-                                        </td>
+                                        <td colspan="7" class="text-center">Belum Ada Data</td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
+
                     </div>
                 </div>
 
