@@ -14,7 +14,7 @@ if (isset($_POST['simpan'])) {
 
     // Validasi input (Pastikan nama bagian tidak kosong)
     if (empty($namaBagian)) {
-        echo "<script>alert('Nama Bagian harus diisi!');</script>";
+        echo "<script>alert('Semua field harus diisi!');</script>";
         echo "<script>window.history.back();</script>";
         exit;
     }

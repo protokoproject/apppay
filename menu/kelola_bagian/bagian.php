@@ -163,24 +163,33 @@ if (!isset($_SESSION["login"])) {
                             </thead>
                             <tbody>
                                 <?php
-                                include "../../conn/koneksi.php";
                                 $no = 1;
                                 $sql = mysqli_query($koneksi, "SELECT * FROM tb_bagian");
-                                while ($data = mysqli_fetch_array($sql)) {
+                                if (mysqli_num_rows($sql) > 0) {
+                                    while ($data = mysqli_fetch_array($sql)) {
                                 ?>
+                                        <tr>
+                                            <td><?php echo $no++; ?></td>
+                                            <td><?php echo $data['nm_bgn']; ?></td>
+                                            <td>
+                                                <a href="edit.php?kd_bgn=<?php echo $data['kd_bgn']; ?>" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="delete.php?kd_bgn=<?php echo $data['kd_bgn']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }
+                                } else {
+                                    ?>
                                     <tr>
-                                        <td><?php echo $no++; ?></td>
-                                        <td><?php echo $data['nm_bgn']; ?></td>
-                                        <td>
-                                            <a href="edit.php?kd_bgn=<?php echo $data['kd_bgn']; ?>" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="delete.php?kd_bgn=<?php echo $data['kd_bgn']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-                                        </td>
+                                        <td colspan="3" class="text-center">Belum Ada Data</td>
                                     </tr>
-                                <?php } ?>
+                                <?php
+                                }
+                                ?>
                             </tbody>
                         </table>
                     </div>
