@@ -9,52 +9,54 @@ if (!isset($_SESSION["login"])) {
 }
 
 // Periksa apakah parameter id_kls dan id_mrd tersedia
-if (isset($_GET['id_kls']) && isset($_GET['id_mrd'])) {
-    $id_kls = $_GET['id_kls'];
-    $id_mrd = $_GET['id_mrd'];
-
-    // Ambil data berdasarkan id_kls dan id_mrd
-    $query = mysqli_query($koneksi, "SELECT * FROM t_klsmrd WHERE id_kls = '$id_kls' AND id_mrd = '$id_mrd'");
-    $data = mysqli_fetch_assoc($query);
+if (!isset($_GET['id_kls']) || !isset($_GET['id_mrd'])) {
+    echo "<script>alert('ID kelas atau murid tidak ditemukan!'); window.location.href='kls_mrd.php';</script>";
+    exit;
 }
 
-// Proses update data jika tombol simpan ditekan
+$id_kls = $_GET['id_kls'];
+$id_mrd = $_GET['id_mrd'];
+
+// Ambil data kelas berdasarkan id_kls dan id_mrd
+$query = mysqli_query($koneksi, "SELECT * FROM t_klsmrd WHERE id_kls = '$id_kls' AND id_mrd = '$id_mrd'");
+$data = mysqli_fetch_assoc($query);
+
+if (!$data) {
+    echo "<script>alert('Data tidak ditemukan!'); window.location.href='kls_mrd.php';</script>";
+    exit;
+}
+
+// Proses update kelas jika tombol simpan ditekan
 if (isset($_POST['update'])) {
     $id_kls_baru = $_POST['kelas'];
-    $id_mrd_baru = $_POST['murid'];
 
-    if (empty($id_kls) || empty($id_mrd)) {
-        echo "<script>
-                alert('Semua field harus diisi!');
-                window.history.back(); // Kembali ke halaman sebelumnya
-              </script>";
+    if (empty($id_kls_baru)) {
+        echo "<script>alert('Kelas harus dipilih!'); window.history.back();</script>";
         exit;
     }
 
-    // Cek apakah data baru sudah ada di database untuk mencegah duplikasi
-    $cek_query = mysqli_query($koneksi, "SELECT * FROM t_klsmrd WHERE id_kls = '$id_kls_baru' AND id_mrd = '$id_mrd_baru'");
-    if (mysqli_num_rows($cek_query) > 0) {
-        echo "<script>
-                alert('Data sudah ada! Murid sudah terdaftar di kelas ini.');
-              </script>";
-        header("refresh:0; url=kls_mrd.php");
+    // Cek apakah kelas baru sama dengan yang lama
+    if ($id_kls_baru == $id_kls) {
+        echo "<script>alert('Kelas tidak berubah!'); window.location.href='kls_mrd.php';</script>";
         exit;
     }
 
-    // Update data di tabel t_klsmrd
-    $update_query = "UPDATE t_klsmrd SET id_kls = '$id_kls_baru', id_mrd = '$id_mrd_baru' WHERE id_kls = '$id_kls' AND id_mrd = '$id_mrd'";
+    // Update kelas di t_klsmrd
+    $updateKlsmrd = mysqli_query($koneksi, "UPDATE t_klsmrd SET id_kls = '$id_kls_baru' WHERE id_kls = '$id_kls' AND id_mrd = '$id_mrd'");
 
-    if (mysqli_query($koneksi, $update_query)) {
-        echo "<script>alert('Data berhasil diperbarui!');</script>";
-        header("refresh:0; url=kls_mrd.php");
+    // Update kelas aktif di t_murid
+    $updateMurid = mysqli_query($koneksi, "UPDATE t_murid SET kls_aktif = '$id_kls_baru' WHERE id_mrd = '$id_mrd'");
+
+    if ($updateKlsmrd && $updateMurid) {
+        echo "<script>alert('Kelas berhasil diperbarui!'); window.location.href='kls_mrd.php';</script>";
         exit;
     } else {
-        echo "<script>alert('Terjadi kesalahan saat memperbarui data!');</script>";
-        header("refresh:0; url=kls_mrd.php");
+        echo "<script>alert('Terjadi kesalahan saat memperbarui kelas!'); window.history.back();</script>";
         exit;
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -112,21 +114,6 @@ if (isset($_POST['update'])) {
                                 while ($kelas = mysqli_fetch_array($kelas_query)) {
                                     $selected = ($kelas['id_kls'] == $data['id_kls']) ? "selected" : "";
                                     echo "<option value='" . $kelas['id_kls'] . "' $selected>" . $kelas['nm_kls'] . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-
-                        <!-- Pilih Murid -->
-                        <div class="group-input mb-3">
-                            <label for="murid" class="form-label">Pilih Murid</label>
-                            <select class="form-select" id="murid" name="murid" required>
-                                <option value="" disabled>Pilih Murid</option>
-                                <?php
-                                $murid_query = mysqli_query($koneksi, "SELECT id_mrd, nm_murid FROM t_murid");
-                                while ($murid = mysqli_fetch_array($murid_query)) {
-                                    $selected = ($murid['id_mrd'] == $data['id_mrd']) ? "selected" : "";
-                                    echo "<option value='" . $murid['id_mrd'] . "' $selected>" . $murid['nm_murid'] . "</option>";
                                 }
                                 ?>
                             </select>
