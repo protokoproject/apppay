@@ -10,37 +10,44 @@ if (!isset($_SESSION["login"])) {
 
 if (isset($_POST['simpan'])) {
     // Mengambil nilai dari input dan memastikan aman
-    $nmmenu = mysqli_real_escape_string($koneksi, $_POST['nmmenu']);
-    $iconmenu = mysqli_real_escape_string($koneksi, $_POST['iconmenu']);
-    $linkmenu = mysqli_real_escape_string($koneksi, $_POST['linkmenu']);
-    $urutmenu = $_POST['urutmenu'] ?? 0; // Jika tidak diisi, default 0
-    $sts_menu = isset($_POST['sts_menu']) ? 1 : 0; // Checkbox: aktif = 1, tidak aktif = 0
-    $kdkey = $_POST['kdkey'] ?? 'utama'; // Default 'utama' jika tidak diisi
-
-    // Validasi input (Pastikan tidak ada yang kosong kecuali urutmenu)
-    if (empty($nmmenu) || empty($iconmenu) || empty($linkmenu)) {
-        echo "<script>alert('Nama Menu, Icon Menu, dan Link Menu harus diisi!');</script>";
+    $nmmenu = trim($_POST['nmmenu'] ?? '');
+    $iconmenu = trim($_POST['iconmenu'] ?? '');
+    $linkmenu = trim($_POST['linkmenu'] ?? '');
+    $urutmenu = trim($_POST['urutmenu'] ?? '');
+    $sts_menu = isset($_POST['sts_menu']) ? 1 : 0;
+    $kdkey = trim($_POST['kdkey'] ?? 'utama');
+    
+    // Validasi input tidak boleh kosong kecuali sts_menu
+    if (empty($nmmenu) || empty($iconmenu) || empty($linkmenu) || empty($urutmenu) || empty($kdkey)) {
+        echo "<script>alert('Semua field harus diisi!');</script>";
         echo "<script>window.history.back();</script>";
         exit;
     }
-
+    
+    // Filter input untuk keamanan
+    $nmmenu = mysqli_real_escape_string($koneksi, $nmmenu);
+    $iconmenu = mysqli_real_escape_string($koneksi, $iconmenu);
+    $linkmenu = mysqli_real_escape_string($koneksi, $linkmenu);
+    $urutmenu = (int) $urutmenu; // Pastikan urutmenu adalah angka
+    $kdkey = mysqli_real_escape_string($koneksi, $kdkey);
+    
     // Mendapatkan kd_menu terakhir
     $last_menu = mysqli_query($koneksi, "SELECT MAX(kd_menu) AS last_menu FROM tb_menu");
     $last_menu_data = mysqli_fetch_assoc($last_menu);
-    $kd_menu = $last_menu_data['last_menu'] ? $last_menu_data['last_menu'] + 1 : 1; // Jika NULL, mulai dari 1
-
+    $kd_menu = $last_menu_data['last_menu'] ? $last_menu_data['last_menu'] + 1 : 1;
+    
     // Menyimpan data ke tb_menu
     $query_menu = "INSERT INTO tb_menu (kd_menu, nm_menu, icon_menu, link_menu, kd_key, gmbr_menu, sts_menu, urut_menu, menu_utama, class_menu) 
                    VALUES ('$kd_menu', '$nmmenu', '$iconmenu', '$linkmenu', '$kdkey', '', '$sts_menu', '$urutmenu', '0', '')";
-
+    
     if (mysqli_query($koneksi, $query_menu)) {
         // Ambil semua kd_sts_user dari tb_sts_user
         $result_sts_user = mysqli_query($koneksi, "SELECT kd_sts_user FROM tb_sts_user");
         if ($result_sts_user) {
             while ($row = mysqli_fetch_assoc($result_sts_user)) {
                 $kd_sts_user = $row['kd_sts_user'];
-
-                // Insert ke tb_role_akses dengan hak akses default (misal: semua diatur ke '0')
+                
+                // Insert ke tb_role_akses dengan hak akses default
                 $query_role = "INSERT INTO tb_role_akses (kd_sts_user, kd_menu, edit_menu, tmbh_menu, hapus_menu, view_menu, lainnya) 
                                VALUES ('$kd_sts_user', '$kd_menu', '0', '0', '0', '0', '0')";
                 if (!mysqli_query($koneksi, $query_role)) {
@@ -48,7 +55,6 @@ if (isset($_POST['simpan'])) {
                 }
             }
         }
-
         echo "<script>alert('Data berhasil ditambahkan!');</script>";
         header("refresh:0, menu.php");
     } else {
@@ -119,7 +125,7 @@ if (isset($_POST['simpan'])) {
                         </div>
                         <div class="group-input">
                             <label>Urut Menu</label>
-                            <input type="text" placeholder="Urut Menu" name="urutmenu">
+                            <input type="number" placeholder="Urut Menu" name="urutmenu">
                         </div>
                         <div class="group-input">
                             <label>Status Menu</label>

@@ -14,19 +14,25 @@ $sql = mysqli_query($koneksi, "SELECT * FROM tb_menu WHERE kd_menu = '$kd_menu'"
 $data = mysqli_fetch_array($sql);
 
 if (isset($_POST['simpan'])) {
-    // Mengambil nilai dari input
-    $nmmenu = $_POST['nmmenu'];
-    $iconmenu = $_POST['iconmenu'];
-    $linkmenu = $_POST['linkmenu'];
-    $urutmenu = $_POST['urutmenu'] ?? 0; // Default 0 jika tidak diisi
-    $sts_menu = isset($_POST['sts_menu']) ? 1 : 0; // Checkbox: aktif = 1, tidak aktif = 0
+    // Mengambil nilai dari input dan memastikan aman
+    $nmmenu = trim($_POST['nmmenu'] ?? '');
+    $iconmenu = trim($_POST['iconmenu'] ?? '');
+    $linkmenu = trim($_POST['linkmenu'] ?? '');
+    $urutmenu = trim($_POST['urutmenu'] ?? '');
+    $sts_menu = isset($_POST['sts_menu']) ? 1 : 0;
 
-    // Validasi input (Pastikan tidak ada yang kosong kecuali urutmenu)
-    if (empty($nmmenu) || empty($iconmenu) || empty($linkmenu)) {
-        echo "<script>alert('Nama Menu, Icon Menu, dan Link Menu harus diisi!');</script>";
+    // Validasi input tidak boleh kosong kecuali sts_menu
+    if (empty($nmmenu) || empty($iconmenu) || empty($linkmenu) || empty($urutmenu)) {
+        echo "<script>alert('Semua field harus diisi!');</script>";
         echo "<script>window.history.back();</script>";
         exit;
     }
+
+    // Filter input untuk keamanan
+    $nmmenu = mysqli_real_escape_string($koneksi, $nmmenu);
+    $iconmenu = mysqli_real_escape_string($koneksi, $iconmenu);
+    $linkmenu = mysqli_real_escape_string($koneksi, $linkmenu);
+    $urutmenu = (int) $urutmenu; // Pastikan urutmenu adalah angka
 
     // Query update data
     $query = "UPDATE tb_menu 
