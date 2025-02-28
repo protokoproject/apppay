@@ -12,7 +12,7 @@ if (isset($_POST['simpan'])) {
 
     // Validasi input tidak boleh kosong
     if (empty($nm_ktgb)) {
-        echo "<script>alert('Nama Kategori Bayar harus diisi!'); window.history.back();</script>";
+        echo "<script>alert('Semua field harus diisi!'); window.history.back();</script>";
         exit;
     }
 
@@ -82,7 +82,7 @@ if (isset($_POST['simpan'])) {
                     <form method="post">
                         <div class="group-input">
                             <label>Nama Kategori Bayar</label>
-                            <input type="text" placeholder="Nama Kategori Bayar" name="nm_ktgb" required>
+                            <input type="text" placeholder="Nama Kategori Bayar" name="nm_ktgb">
                         </div>
                         <button type="submit" class="mb-3 tf-btn accent small" style="width: 20%;" name="simpan">Tambah Data</button>
                     </form>
