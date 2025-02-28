@@ -20,16 +20,22 @@ if (!$data) {
 }
 
 // Ambil data kategori dan kantin untuk dropdown
-$result_kategori = mysqli_query($koneksi, "SELECT * FROM t_kategori");
+$result_kategori = mysqli_query($koneksi, "SELECT * FROM t_ktg");
 $result_kantin = mysqli_query($koneksi, "SELECT * FROM t_kantin");
 
 if (isset($_POST['simpan'])) {
     // Mengambil data dari form
     $nm_brg = $_POST['nm_brg'];
-    $id_ktg = $_POST['kategori'];
-    $id_kantin = $_POST['kantin'];
+    $id_ktg = isset($_POST['kategori']) ? trim($_POST['kategori']) : null;
+    $id_kantin = isset($_POST['kantin']) ? trim($_POST['kantin']) : null;
     $st_brg = isset($_POST['st_brg']) ? 1 : 0;
     $hrg_jual = $_POST['hrg_jual'];
+
+    // Validasi: Cek apakah semua input sudah diisi
+    if (empty($nm_brg) || empty($id_ktg) || empty($id_kantin) || empty($hrg_jual)) {
+        echo "<script>alert('Semua field harus diisi!'); window.history.back();</script>";
+        exit;
+    }
 
     // Query untuk memperbarui data ke tabel t_brg
     $query_update = "UPDATE t_brg SET 
@@ -97,7 +103,7 @@ if (isset($_POST['simpan'])) {
                     <form method="post">
                         <div class="group-input">
                             <label>Nama Barang</label>
-                            <input type="text" name="nm_brg" value="<?php echo $data['nm_brg']; ?>" required>
+                            <input type="text" name="nm_brg" value="<?php echo $data['nm_brg']; ?>">
                         </div>
                         <div class="group-input mb-3">
                             <label for="kategori" class="form-label">Pilih Kategori</label>
@@ -114,7 +120,7 @@ if (isset($_POST['simpan'])) {
                         </div>
                         <div class="group-input mb-3">
                             <label for="kantin" class="form-label">Pilih Kantin</label>
-                            <select class="form-select" id="kantin" name="kantin" required>
+                            <select class="form-select" id="kantin" name="kantin">
                                 <option value="" disabled>Pilih Kantin</option>
                                 <?php
                                 $kantin_query = mysqli_query($koneksi, "SELECT id_kantin, nm_kantin FROM t_kantin");
@@ -125,16 +131,16 @@ if (isset($_POST['simpan'])) {
                                 ?>
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label for="hrg_jual" class="form-label">Harga Jual (Rp)</label>
+                            <input type="number" class="form-control" id="hrg_jual" name="hrg_jual" value="<?php echo $data['hrg_jual']; ?>">
+                        </div>
                         <div class="group-input">
                             <label>Status Barang</label>
                             <fieldset class="d-flex align-items-center gap-2">
                                 <input class="tf-switch-check" id="switchCheckDefault" type="checkbox" name="st_brg" <?php echo ($data['st_brg'] == 1) ? "checked" : ""; ?>>
                                 <label for="switchCheckDefault">Aktif</label>
                             </fieldset>
-                        </div>
-                        <div class="mb-3">
-                            <label for="hrg_jual" class="form-label">Harga Jual (Rp)</label>
-                            <input type="number" class="form-control" id="hrg_jual" name="hrg_jual" value="<?php echo $data['hrg_jual']; ?>" required>
                         </div>
                         <button type="submit" class="mb-3 tf-btn accent small" style="width: 20%;" name="simpan">Simpan</button>
                     </form>

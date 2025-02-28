@@ -9,29 +9,39 @@ if (!isset($_SESSION["login"])) {
 }
 
 if (isset($_POST['simpan'])) {
+    // Ambil data dari form
+    $id_ktgb = isset($_POST['kategori']) ? trim($_POST['kategori']) : null;
+    $idta = isset($_POST['tahun']) ? trim($_POST['tahun']) : null;
+    $nom = trim($_POST['nominal']);
+
+    // Validasi input tidak boleh kosong
+    if (empty($id_ktgb) || empty($idta) || empty($nom)) {
+        echo "<script>alert('Semua field harus diisi!'); history.go(-1);</script>";
+        exit;
+    }
+
+    // Pastikan nominal angka positif
+    if (!is_numeric($nom) || $nom <= 0) {
+        echo "<script>alert('Nominal harus berupa angka positif!'); history.go(-1);</script>";
+        exit;
+    }
+
     // Auto-increment id_tgh
     $auto = mysqli_query($koneksi, "SELECT MAX(id_tgh) as max_code FROM t_tghbyr");
     $hasil = mysqli_fetch_array($auto);
     $code = $hasil['max_code'];
     $idtgh = ($code) ? (int)$code + 1 : 1;
 
-    $id_ktgb = $_POST['kategori'];  // ID Kategori Bayar dari form
-    $idta = $_POST['tahun'];        // ID Tahun Ajaran dari form
-    $nom = $_POST['nominal'];       // Nominal dari form
-
-    // Query untuk menyimpan data ke tabel t_tghbyr
+    // Query untuk menyimpan data ke database
     $insert_query = "INSERT INTO t_tghbyr (id_tgh, id_ktgb, idta, nom) VALUES ('$idtgh', '$id_ktgb', '$idta', '$nom')";
 
     if (mysqli_query($koneksi, $insert_query)) {
-        echo "<script>alert('Data berhasil ditambahkan!');</script>";
-        header("refresh:0; bayar.php");
-        exit;
+        echo "<script>alert('Data berhasil ditambahkan!'); window.location='bayar.php';</script>";
     } else {
-        echo "<script>alert('Data Gagal ditambahkan!');</script>";
-        header("refresh:0; bayar.php");
-        exit;
+        echo "<script>alert('Data gagal ditambahkan: " . mysqli_error($koneksi) . "'); history.go(-1);</script>";
     }
 }
+
 ?>
 
 
@@ -83,7 +93,7 @@ if (isset($_POST['simpan'])) {
                         <!-- Pilih Kategori Bayar -->
                         <div class="mb-3">
                             <label for="kategori" class="form-label">Pilih Kategori Bayar</label>
-                            <select class="form-select" id="kategori" name="kategori" required>
+                            <select class="form-select" id="kategori" name="kategori">
                                 <option value="" selected disabled>Pilih Kategori Bayar</option>
                                 <?php
                                 $kategori_query = mysqli_query($koneksi, "SELECT id_ktgb, nm_ktgb FROM t_ktgbyr");
@@ -97,7 +107,7 @@ if (isset($_POST['simpan'])) {
                         <!-- Pilih Tahun Ajaran -->
                         <div class="mb-3">
                             <label for="tahun" class="form-label">Tahun Ajaran</label>
-                            <select class="form-select" id="tahun" name="tahun" required>
+                            <select class="form-select" id="tahun" name="tahun">
                                 <option value="" selected disabled>Pilih Tahun Ajaran</option>
                                 <?php
                                 $tahun_query = mysqli_query($koneksi, "SELECT idta, CONCAT(thn_aw, ' - ', thn_ak) AS tahun_ajaran FROM t_ajaran");
@@ -111,7 +121,7 @@ if (isset($_POST['simpan'])) {
                         <!-- Input Nominal -->
                         <div class="mb-3">
                             <label for="nominal" class="form-label">Nominal Tagihan (Rp)</label>
-                            <input type="number" class="form-control" id="nominal" name="nominal" placeholder="Contoh: 300000" required>
+                            <input type="number" class="form-control" id="nominal" name="nominal" placeholder="Contoh: 300000">
                         </div>
 
                         <button type="submit" class="btn btn-primary tf-btn accent small" style="width: 20%;" name="simpan">Tambah Data</button>

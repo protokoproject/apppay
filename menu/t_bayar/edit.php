@@ -15,9 +15,15 @@ $data = mysqli_fetch_array($query);
 
 // Simpan perubahan
 if (isset($_POST['simpan'])) {
-    $id_ktgb = $_POST['kategori'];
-    $idta = $_POST['tahun'];
+    $id_ktgb = isset($_POST['kategori']) ? trim($_POST['kategori']) : null;
+    $idta = isset($_POST['tahun']) ? trim($_POST['tahun']) : null;
     $nom = $_POST['nominal'];
+
+    // Validasi input tidak boleh kosong
+    if (empty($id_ktgb) || empty($idta) || empty($nom)) {
+        echo "<script>alert('Semua field harus diisi!'); history.go(-1);</script>";
+        exit;
+    }
 
     $update_query = "UPDATE t_tghbyr SET id_ktgb='$id_ktgb', idta='$idta', nom='$nom' WHERE id_tgh='$id_tgh'";
 
@@ -82,7 +88,7 @@ if (isset($_POST['simpan'])) {
                         <!-- Pilih Kategori Bayar -->
                         <div class="mb-3">
                             <label for="kategori" class="form-label">Pilih Kategori Bayar</label>
-                            <select class="form-select" id="kategori" name="kategori" required>
+                            <select class="form-select" id="kategori" name="kategori">
                                 <option value="" disabled>Pilih Kategori Bayar</option>
                                 <?php
                                 $kategori_query = mysqli_query($koneksi, "SELECT id_ktgb, nm_ktgb FROM t_ktgbyr");
@@ -97,7 +103,7 @@ if (isset($_POST['simpan'])) {
                         <!-- Pilih Tahun Ajaran -->
                         <div class="mb-3">
                             <label for="tahun" class="form-label">Tahun Ajaran</label>
-                            <select class="form-select" id="tahun" name="tahun" required>
+                            <select class="form-select" id="tahun" name="tahun">
                                 <option value="" disabled>Pilih Tahun Ajaran</option>
                                 <?php
                                 $tahun_query = mysqli_query($koneksi, "SELECT idta, CONCAT(thn_aw, ' - ', thn_ak) AS tahun_ajaran FROM t_ajaran");
@@ -112,10 +118,9 @@ if (isset($_POST['simpan'])) {
                         <!-- Input Nominal -->
                         <div class="mb-3">
                             <label for="nominal" class="form-label">Nominal Tagihan (Rp)</label>
-                            <input type="number" class="form-control" id="nominal" name="nominal" placeholder="Contoh: 300000" value="<?= $data['nom']; ?>" required>
+                            <input type="number" class="form-control" id="nominal" name="nominal" placeholder="Contoh: 300000" value="<?= $data['nom']; ?>">
                         </div>
-
-                        <button type="submit" class="btn btn-primary tf-btn accent small" name="simpan">Simpan Perubahan</button>
+                        <button type="submit" class="btn btn-primary tf-btn accent small" style="width: 20%;" name="update">Simpan</button>
                     </form>
                 </div>
             </div>

@@ -16,6 +16,12 @@ $data = mysqli_fetch_assoc($query);
 if (isset($_POST['simpan'])) {
     $nm_ktg = $_POST['nm_ktg'];
 
+    // Validasi input tidak boleh kosong
+    if (empty($nm_ktg)) {
+        echo "<script>alert('Semua field harus diisi!'); window.history.back();</script>";
+        exit;
+    }
+
     // Update data di tabel t_ktgbyr
     $update = mysqli_query($koneksi, "UPDATE t_ktg SET nm_ktg = '$nm_ktg' WHERE id_ktg = '$id_ktg'");
 
@@ -75,7 +81,7 @@ if (isset($_POST['simpan'])) {
                     <form method="post">
                         <div class="group-input">
                             <label>Nama Kategori Barang</label>
-                            <input type="text" placeholder="Nama Kategori Barang" name="nm_ktg" value="<?php echo $data['nm_ktg']; ?>" required>
+                            <input type="text" placeholder="Nama Kategori Barang" name="nm_ktg" value="<?php echo $data['nm_ktg']; ?>">
                         </div>
                         <button type="submit" class="mb-3 tf-btn accent small" style="width: 20%;" name="simpan">Simpan</button>
                     </form>

@@ -180,28 +180,36 @@ if (!isset($_SESSION["login"])) {
             ORDER BY t_tghbyr.id_tgh ASC
         ");
 
-                                while ($hasil = mysqli_fetch_array($sql)) {
+                                // Cek apakah ada data
+                                if (mysqli_num_rows($sql) > 0) {
+                                    while ($hasil = mysqli_fetch_array($sql)) {
                                 ?>
+                                        <tr>
+                                            <td><?php echo $no++; ?></td>
+                                            <td><?php echo $hasil['nm_ktgb']; ?></td>
+                                            <td><?php echo $hasil['tahun_ajaran']; ?></td>
+                                            <td><?php echo "Rp. " . number_format($hasil['nom'], 0, ',', '.') . ",-"; ?></td>
+                                            <td>
+                                                <a href="edit.php?id=<?php echo $hasil['id_tgh']; ?>" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="delete.php?id=<?php echo $hasil['id_tgh']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }
+                                } else {
+                                    ?>
                                     <tr>
-                                        <td><?php echo $no++; ?></td>
-                                        <td><?php echo $hasil['nm_ktgb']; ?></td>
-                                        <td><?php echo $hasil['tahun_ajaran']; ?></td>
-                                        <td><?php echo "Rp. " . number_format($hasil['nom'], 0, ',', '.') . ",-"; ?></td>
-                                        <td>
-                                            <a href="edit.php?id=<?php echo $hasil['id_tgh']; ?>" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="delete.php?id=<?php echo $hasil['id_tgh']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-                                        </td>
+                                        <td colspan="5" class="text-center">Belum Ada Data</td>
                                     </tr>
                                 <?php
                                 }
                                 ?>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>

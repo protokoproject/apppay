@@ -8,10 +8,16 @@ if (!isset($_SESSION["login"])) {
 }
 if (isset($_POST['simpan'])) {
     $nm_brg = $_POST['nm_brg'];
-    $id_ktg = $_POST['kategori'];
-    $id_kantin = $_POST['kantin'];
+    $id_ktg = isset($_POST['kategori']) ? trim($_POST['kategori']) : null;
+    $id_kantin = isset($_POST['kantin']) ? trim($_POST['kantin']) : null;
     $st_brg = isset($_POST['st_brg']) ? 1 : 0;
     $hrg_jual = $_POST['hrg_jual'];
+
+    // Validasi: Cek apakah semua input sudah diisi
+    if (empty($nm_brg) || empty($id_ktg) || empty($id_kantin) || empty($hrg_jual)) {
+        echo "<script>alert('Semua field harus diisi!'); window.history.back();</script>";
+        exit;
+    }
 
     // Generate kd_brg dengan auto increment manual
     $auto = mysqli_query($koneksi, "SELECT MAX(kd_brg) as max_code FROM t_brg");
@@ -80,11 +86,11 @@ if (isset($_POST['simpan'])) {
                     <form method="post">
                         <div class="group-input">
                             <label>Nama Barang</label>
-                            <input type="text" placeholder="Nama Barang" name="nm_brg" required>
+                            <input type="text" placeholder="Nama Barang" name="nm_brg">
                         </div>
                         <div class="group-input mb-3">
                             <label for="kategori" class="form-label">Pilih Kategori</label>
-                            <select class="form-select" id="kategori" name="kategori" required>
+                            <select class="form-select" id="kategori" name="kategori">
                                 <option value="" selected disabled>Pilih Kategori</option>
                                 <?php
                                 include "../../conn/koneksi.php";
@@ -97,7 +103,7 @@ if (isset($_POST['simpan'])) {
                         </div>
                         <div class="group-input mb-3">
                             <label for="kantin" class="form-label">Pilih Kantin</label>
-                            <select class="form-select" id="kantin" name="kantin" required>
+                            <select class="form-select" id="kantin" name="kantin">
                                 <option value="" selected disabled>Pilih Kantin</option>
                                 <?php
                                 include "../../conn/koneksi.php";
@@ -108,16 +114,16 @@ if (isset($_POST['simpan'])) {
                                 ?>
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label for="hrg_jual" class="form-label">Harga Jual (Rp)</label>
+                            <input type="number" class="form-control" id="hrg_jual" name="hrg_jual" placeholder="Contoh: 300000">
+                        </div>
                         <div class="group-input">
                             <label>Status Barang</label>
                             <fieldset class="d-flex align-items-center gap-12">
                                 <input class="tf-switch-check" id="switchCheckDefault" type="checkbox" name="st_brg">
                                 <label for="switchCheckDefault">Aktif</label>
                             </fieldset>
-                        </div>
-                        <div class="mb-3">
-                            <label for="hrg_jual" class="form-label">Harga Jual (Rp)</label>
-                            <input type="number" class="form-control" id="hrg_jual" name="hrg_jual" placeholder="Contoh: 300000" required>
                         </div>
                         <button type="submit" class="mb-3 tf-btn accent small" style="width: 20%;" name="simpan">Tambah Data</button>
                     </form>

@@ -167,7 +167,7 @@ if (isset($_POST['update'])) {
                             <label for="saldo" class="form-label">Saldo</label>
                             <input type="number" class="form-control" id="saldo" placeholder="Saldo" name="saldo" value="<?php echo isset($dataMurid['saldo']) ? $dataMurid['saldo'] : ''; ?>">
                         </div>
-                        <button type="submit" class="btn btn-primary tf-btn accent small" style="width: 20%;" name="update">Perbarui Data</button>
+                        <button type="submit" class="btn btn-primary tf-btn accent small" style="width: 20%;" name="update">Simpan</button>
                     </form>
 
                 </div>
