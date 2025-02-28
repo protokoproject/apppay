@@ -41,7 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Validasi input
     if (empty($title) || empty($start_date) || empty($end_date)) {
-        echo "<script>alert('Semua kolom harus diisi!');</script>";
+        echo "<script>alert('Semua field harus diisi!');</script>";
+        echo "<script>window.history.back();</script>";
         exit;
     }
 
@@ -113,15 +114,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <form method="post">
                         <div class="group-input">
                             <label>Judul Event</label>
-                            <input type="text" placeholder="Judul Event" name="title" required>
+                            <input type="text" placeholder="Judul Event" name="title">
                         </div>
                         <div class="group-input">
                             <label>Tanggal Mulai</label>
-                            <input type="date" name="start_date" required>
+                            <input type="date" name="start_date">
                         </div>
                         <div class="group-input">
                             <label>Tanggal Selesai</label>
-                            <input type="date" name="end_date" required>
+                            <input type="date" name="end_date">
                         </div>
                         <button type="submit" class="mb-3 tf-btn accent small" style="width: 20%;" name="simpan">Tambah Data</button>
                     </form>

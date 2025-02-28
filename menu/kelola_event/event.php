@@ -165,28 +165,37 @@ if (!isset($_SESSION["login"])) {
                             </thead>
                             <tbody>
                                 <?php
-                                include "../../conn/koneksi.php";
                                 $no = 1;
                                 $sql = mysqli_query($koneksi, "SELECT * FROM tb_events");
-                                while ($data = mysqli_fetch_array($sql)) {
-                                    $start_date = date("d-m-Y", strtotime($data['start_date']));
-                                    $end_date = date("d-m-Y", strtotime($data['end_date']));
+                                if (mysqli_num_rows($sql) > 0) {
+                                    while ($data = mysqli_fetch_array($sql)) {
+                                        $start_date = date("d-m-Y", strtotime($data['start_date']));
+                                        $end_date = date("d-m-Y", strtotime($data['end_date']));
                                 ?>
+                                        <tr>
+                                            <td><?php echo $no++; ?></td>
+                                            <td><?php echo $data['title']; ?></td>
+                                            <td><?php echo $start_date; ?></td>
+                                            <td><?php echo $end_date; ?></td>
+                                            <td>
+                                                <a href="edit.php?id=<?php echo $data['id_event']; ?>" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="delete.php?id=<?php echo $data['id_event']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }
+                                } else {
+                                    ?>
                                     <tr>
-                                        <td><?php echo $no++; ?></td>
-                                        <td><?php echo $data['title']; ?></td>
-                                        <td><?php echo $start_date; ?></td>
-                                        <td><?php echo $end_date; ?></td>
-                                        <td>
-                                            <a href="edit.php?id=<?php echo $data['id_event']; ?>" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="delete.php?id=<?php echo $data['id_event']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-                                        </td>
+                                        <td colspan="5" class="text-center">Belum Ada Data</td>
                                     </tr>
-                                <?php } ?>
+                                <?php
+                                }
+                                ?>
                             </tbody>
                         </table>
                     </div>
