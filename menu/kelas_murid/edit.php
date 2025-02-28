@@ -132,7 +132,7 @@ if (isset($_POST['update'])) {
                             </select>
                         </div>
 
-                        <button type="submit" class="btn btn-primary tf-btn accent small" style="width: 20%;" name="update">Update Data</button>
+                        <button type="submit" class="btn btn-primary tf-btn accent small" style="width: 20%;" name="update">Simpan</button>
                     </form>
                 </div>
             </div>
