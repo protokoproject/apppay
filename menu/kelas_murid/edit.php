@@ -23,6 +23,14 @@ if (isset($_POST['update'])) {
     $id_kls_baru = $_POST['kelas'];
     $id_mrd_baru = $_POST['murid'];
 
+    if (empty($id_kls) || empty($id_mrd)) {
+        echo "<script>
+                alert('Semua field harus diisi!');
+                window.history.back(); // Kembali ke halaman sebelumnya
+              </script>";
+        exit;
+    }
+
     // Cek apakah data baru sudah ada di database untuk mencegah duplikasi
     $cek_query = mysqli_query($koneksi, "SELECT * FROM t_klsmrd WHERE id_kls = '$id_kls_baru' AND id_mrd = '$id_mrd_baru'");
     if (mysqli_num_rows($cek_query) > 0) {

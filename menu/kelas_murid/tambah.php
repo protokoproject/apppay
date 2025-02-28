@@ -9,8 +9,16 @@ if (!isset($_SESSION["login"])) {
 }
 
 if (isset($_POST['simpan'])) {
-    $id_kls = $_POST['kelas']; // ID Kelas dari form
-    $id_mrd = $_POST['murid']; // ID Murid dari form
+    $id_kls = isset($_POST['kelas']) ? trim($_POST['kelas']) : null;
+    $id_mrd = isset($_POST['murid']) ? trim($_POST['murid']) : null;
+
+    if (empty($id_kls) || empty($id_mrd)) {
+        echo "<script>
+                alert('Semua field harus diisi!');
+                window.history.back(); // Kembali ke halaman sebelumnya
+              </script>";
+        exit;
+    }
 
     // Cek apakah pasangan id_kls dan id_mrd sudah ada untuk mencegah duplikasi
     $cek_query = mysqli_query($koneksi, "SELECT * FROM t_klsmrd WHERE id_kls = '$id_kls' AND id_mrd = '$id_mrd'");
@@ -85,7 +93,7 @@ if (isset($_POST['simpan'])) {
                         <!-- Pilih Kelas -->
                         <div class="group-input mb-3">
                             <label for="kelas" class="form-label">Pilih Kelas</label>
-                            <select class="form-select" id="kelas" name="kelas" required>
+                            <select class="form-select" id="kelas" name="kelas">
                                 <option value="" selected disabled>Pilih Kelas</option>
                                 <?php
                                 include "../../conn/koneksi.php";
@@ -100,7 +108,7 @@ if (isset($_POST['simpan'])) {
                         <!-- Pilih Murid -->
                         <div class="group-input mb-3">
                             <label for="murid" class="form-label">Pilih Murid</label>
-                            <select class="form-select" id="murid" name="murid" required>
+                            <select class="form-select" id="murid" name="murid">
                                 <option value="" selected disabled>Pilih Murid</option>
                                 <?php
                                 $murid_query = mysqli_query($koneksi, "SELECT id_mrd, nm_murid FROM t_murid");
