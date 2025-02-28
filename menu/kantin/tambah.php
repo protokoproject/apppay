@@ -14,7 +14,7 @@ if (isset($_POST['simpan'])) {
 
     // Validasi input tidak boleh kosong
     if (empty($nmkantin)) {
-        echo "<script>alert('Nama kantin harus diisi!'); window.history.back();</script>";
+        echo "<script>alert('Semua field harus diisi!'); window.history.back();</script>";
         exit;
     }
 
