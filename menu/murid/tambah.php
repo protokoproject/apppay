@@ -150,7 +150,7 @@ if (isset($_POST['simpan'])) {
                         </div>
                         <div class="group-input">
                             <label for="nm_ortu">Nama Orang Tua</label>
-                            <select name="nm_ortu" id="nm_ortu" class="form-control" required>
+                            <select name="nm_ortu" id="nm_ortu" class="form-control">
                                 <option value="" disabled selected>Pilih Nama Orang Tua</option>
                                 <?php
                                 $result_kelas = mysqli_query($koneksi, "SELECT * FROM t_ortu");
@@ -162,7 +162,7 @@ if (isset($_POST['simpan'])) {
                         </div>
                         <div class="group-input">
                             <label for="kls_aktif">Kelas</label>
-                            <select name="kls_aktif" id="kls_aktif" class="form-control" required>
+                            <select name="kls_aktif" id="kls_aktif" class="form-control">
                                 <option value="" disabled selected>Pilih Kelas</option>
                                 <?php
                                 $result_kelas = mysqli_query($koneksi, "SELECT * FROM t_kelas");

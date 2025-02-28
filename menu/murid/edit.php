@@ -33,6 +33,7 @@ WHERE t_murid.id_mrd = '$id_mrd'");
     $current_username = $dataMurid['username'];
 }
 
+
 // Ambil daftar kelas dari database
 $queryKelas = mysqli_query($koneksi, "SELECT id_kls, nm_kls FROM t_kelas");
 
@@ -46,6 +47,12 @@ if (isset($_POST['update'])) {
     $kls_aktif = $_POST['kls_aktif'];
     $id_ortu = $_POST['id_ortu'];
     $tgl_rilis = date("Y-m-d");
+
+    // Validasi input tidak boleh kosong
+    if (empty($nmmurid) || empty($nisn) || empty($saldo) || empty($kls_aktif) || empty($id_ortu)) {
+        echo "<script>alert('Semua field harus diisi!'); window.history.back();</script>";
+        exit;
+    }
 
     // Ambil id_app berdasarkan session username
     $username_session = $_SESSION['username'];
@@ -134,7 +141,7 @@ if (isset($_POST['update'])) {
                         </div>
                         <div class="group-input">
                             <label for="nm_ortu">Nama Orang Tua</label>
-                            <select name="id_ortu" id="id_ortu" class="form-control" required>
+                            <select name="id_ortu" id="id_ortu" class="form-control">
                                 <option value="" disabled>Pilih Nama Orang Tua</option>
                                 <?php
                                 while ($ortu = mysqli_fetch_assoc($queryOrtu)) {
@@ -146,7 +153,7 @@ if (isset($_POST['update'])) {
                         </div>
                         <div class="group-input">
                             <label for="kls_aktif">Kelas</label>
-                            <select name="kls_aktif" id="kls_aktif" class="form-control" required>
+                            <select name="kls_aktif" id="kls_aktif" class="form-control">
                                 <option value="" disabled>Pilih Kelas</option>
                                 <?php
                                 while ($kelas = mysqli_fetch_assoc($queryKelas)) {
