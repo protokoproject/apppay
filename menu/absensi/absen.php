@@ -201,10 +201,15 @@ if ($kd_sts_user == 7) {
             const scanButton = $('#scanButton');
             let stream = null;
             let scanning = false;
+            let isProcessing = false; // Flag untuk mencegah multiple request
 
             scanButton.click(function() {
                 if (!scanning) {
-                    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                    navigator.mediaDevices.getUserMedia({
+                            video: {
+                                facingMode: 'environment'
+                            }
+                        })
                         .then((mediaStream) => {
                             stream = mediaStream;
                             video.srcObject = stream;
@@ -212,6 +217,7 @@ if ($kd_sts_user == 7) {
                             video.play();
                             scanning = true;
                             scanButton.text('Stop Scan QR Code');
+                            isProcessing = false; // Reset flag
                             requestAnimationFrame(scanQRCode);
                         })
                         .catch((err) => {
@@ -224,7 +230,7 @@ if ($kd_sts_user == 7) {
             });
 
             function scanQRCode() {
-                if (!scanning) return;
+                if (!scanning || isProcessing) return; // Cegah scan jika sudah diproses
                 if (video.readyState === video.HAVE_ENOUGH_DATA) {
                     canvas.height = video.videoHeight;
                     canvas.width = video.videoWidth;
@@ -233,20 +239,33 @@ if ($kd_sts_user == 7) {
                     const code = jsQR(imageData.data, imageData.width, imageData.height, {
                         inversionAttempts: 'dontInvert',
                     });
+
                     if (code) {
+                        isProcessing = true; // Set flag agar tidak memproses ulang
                         qrResult.text('QR Code terdeteksi: ' + code.data);
+
+                        stopScan(); // Hentikan scan sebelum mengirim AJAX
+
                         $.ajax({
                             url: 'process_qr.php',
                             type: 'POST',
-                            data: { qr_data: code.data },
+                            data: {
+                                qr_data: code.data
+                            },
+                            dataType: 'json', // Tambahkan ini untuk parsing otomatis
                             success: function(response) {
-                                alert('Absensi berhasil disimpan.');
-                                stopScan();
+                                if (response.status === 'success') {
+                                    alert(response.message);
+                                } else {
+                                    alert('Gagal: ' + response.message);
+                                }
                             },
                             error: function(xhr, status, error) {
-                                console.error(xhr, status, error);
+                                console.error("AJAX Error: ", error);
+                                alert("Terjadi kesalahan, coba lagi.");
                             }
                         });
+
                     }
                 }
                 requestAnimationFrame(scanQRCode);
@@ -263,7 +282,7 @@ if ($kd_sts_user == 7) {
         });
     </script>
 
-    
+
     <script type="text/javascript" src="../../javascript/jquery.min.js"></script>
     <script type="text/javascript" src="../../javascript/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../javascript/main.js"></script>

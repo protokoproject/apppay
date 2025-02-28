@@ -56,9 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_data'])) {
     $id_mrd = $murid_data['id_mrd'];
     
     // Set waktu absensi sesuai waktu saat ini
-    date_default_timezone_set('Asia/Jakarta'); // Set zona waktu ke Indonesia
-    $tgl_abs = date('Y-m-d'); // Tanggal absensi (misal: 2025-02-27)
-    $jam_abs = date('H:i:s'); // Jam absensi (misal: 08:30:15)
+    date_default_timezone_set('Asia/Jakarta');
+    $tgl_abs = date('Y-m-d');
+    $jam_abs = date('H:i:s');
+    $ket_abs = "Hadir"; // Set default keterangan absensi
 
     // Cek apakah sudah absen sebelumnya
     $query_check = "SELECT id_absen FROM t_absen WHERE id_mrd = ? AND id_jadwal = ? AND tgl_abs = ?";
@@ -83,9 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_data'])) {
 
     // Insert data ke t_absen
     $query_insert = "INSERT INTO t_absen (id_absen, id_mrd, id_jadwal, id_kls, tgl_abs, jam_abs, ket_abs) 
-                     VALUES (?, ?, ?, ?, ?, ?, '')";
+                     VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt_insert = $koneksi->prepare($query_insert);
-    $stmt_insert->bind_param("iiisss", $id_absen, $id_mrd, $id_jadwal, $id_kls, $tgl_abs, $jam_abs);
+    $stmt_insert->bind_param("iiissss", $id_absen, $id_mrd, $id_jadwal, $id_kls, $tgl_abs, $jam_abs, $ket_abs);
     
     if ($stmt_insert->execute()) {
         echo json_encode(['status' => 'success', 'message' => 'Absensi berhasil disimpan']);
