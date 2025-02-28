@@ -15,6 +15,12 @@ if (isset($_POST['simpan'])) {
     $nmguru = $_POST['nmguru'];
     $spmapel = $_POST['spmapel'];
 
+    if (empty($nmguru) || empty($spmapel)) {
+        echo "<script>alert('Semua field harus diisi!')</script>";
+        echo "<script>window.history.back();</script>";
+        exit;
+    }
+
     // Ambil id_app berdasarkan session username
     $username_session = $_SESSION['username'];
     $queryApp = mysqli_query($koneksi, "SELECT id_app FROM tb_user WHERE username = '$username_session'");

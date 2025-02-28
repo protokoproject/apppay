@@ -189,7 +189,7 @@ if (!isset($_SESSION["login"])) {
                                 } else {
                                     ?>
                                     <tr>
-                                        <td colspan="4" class="text-center">Belum Ada Data Guru</td>
+                                        <td colspan="4" class="text-center">Belum Ada Data</td>
                                     </tr>
                                 <?php
                                 }
