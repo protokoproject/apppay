@@ -17,7 +17,9 @@ if (isset($_POST['simpan'])) {
     $tahun_akhir = $_POST['tahun_akhir'];
     $sts_ajaran = isset($_POST['sts_ajaran']) ? 1 : 0;
 
-    if (!is_numeric($tahun_awal) || !is_numeric($tahun_akhir) || strlen($tahun_awal) != 4 || strlen($tahun_akhir) != 4 || $tahun_awal >= $tahun_akhir) {
+    if (empty($tahun_awal) || empty($tahun_akhir)) {
+        echo "<script>alert('Semua field harus diisi!')</script>";
+    } elseif (!is_numeric($tahun_awal) || !is_numeric($tahun_akhir) || strlen($tahun_awal) != 4 || strlen($tahun_akhir) != 4 || $tahun_awal >= $tahun_akhir) {
         echo "<script>alert('Tahun awal dan tahun akhir harus berupa angka 4 digit dan tahun awal harus lebih kecil dari tahun akhir!')</script>";
     }else{
         $query = mysqli_query($koneksi, "UPDATE t_ajaran SET thn_aw = '$tahun_awal', thn_ak = '$tahun_akhir',sts_thn = '$sts_ajaran' WHERE idta = '$id'");

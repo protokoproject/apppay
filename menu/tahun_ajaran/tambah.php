@@ -9,26 +9,22 @@ if (!isset($_SESSION["login"])) {
 }
 
 if (isset($_POST['simpan'])) {
-    $tahun_awal = $_POST['tahun_awal'];
-    $tahun_akhir = $_POST['tahun_akhir'];
+    $tahun_awal = trim($_POST['tahun_awal']);
+    $tahun_akhir = trim($_POST['tahun_akhir']);
     $sts_ajaran = isset($_POST['sts_ajaran']) ? 1 : 0;
 
-    if (!is_numeric($tahun_awal) || !is_numeric($tahun_akhir) || strlen($tahun_awal) != 4 || strlen($tahun_akhir) != 4 || $tahun_awal >= $tahun_akhir) {
+    if (empty($tahun_awal) || empty($tahun_akhir)) {
+        echo "<script>alert('Semua field harus diisi!')</script>";
+    } elseif (!is_numeric($tahun_awal) || !is_numeric($tahun_akhir) || strlen($tahun_awal) != 4 || strlen($tahun_akhir) != 4 || $tahun_awal >= $tahun_akhir) {
         echo "<script>alert('Tahun awal dan tahun akhir harus berupa angka 4 digit dan tahun awal harus lebih kecil dari tahun akhir!')</script>";
     } else {
         $auto = mysqli_query($koneksi, "SELECT MAX(idta) as max_code FROM t_ajaran");
         $hasil = mysqli_fetch_array($auto);
         $code = $hasil['max_code'];
 
-        if ($code) {
-            $urutan = (int)$code + 1;
-        } else {
-            $urutan = 1;
-        }
+        $idta = ($code) ? (int)$code + 1 : 1;
 
-        $idta = $urutan;
-
-        $query = mysqli_query($koneksi, "INSERT INTO t_ajaran(idta,thn_aw,thn_ak,sts_thn) VALUES ('$idta','$tahun_awal','$tahun_akhir','$sts_ajaran')");
+        $query = mysqli_query($koneksi, "INSERT INTO t_ajaran(idta, thn_aw, thn_ak, sts_thn) VALUES ('$idta', '$tahun_awal', '$tahun_akhir', '$sts_ajaran')");
 
         if ($query) {
             echo "<script>alert('Data berhasil ditambahkan!')</script>";

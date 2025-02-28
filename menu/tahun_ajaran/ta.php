@@ -168,30 +168,37 @@ if (!isset($_SESSION["login"])) {
                                 include "../../conn/koneksi.php";
                                 $no = 1;
                                 $sql = mysqli_query($koneksi, "SELECT * FROM t_ajaran");
-                                while ($hasil = mysqli_fetch_array($sql)) {
+                                if (mysqli_num_rows($sql) > 0) {
+                                    while ($hasil = mysqli_fetch_array($sql)) {
                                 ?>
+                                        <tr>
+                                            <td><?php echo $no++; ?></td>
+                                            <td><?php echo $hasil['thn_aw']; ?></td>
+                                            <td><?php echo $hasil['thn_ak']; ?></td>
+                                            <td>
+                                                <?php
+                                                $status = ($hasil['sts_thn'] == '1') ?
+                                                    '<span class="badge bg-success">Aktif</span>' :
+                                                    '<span class="badge bg-danger">Tidak Aktif</span>';
+                                                echo $status;
+                                                ?>
+                                            </td>
+                                            <td>
+                                                <a href="edit.php?id=<?php echo $hasil['idta']; ?>" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i> <!-- Ikon Edit -->
+                                                </a>
+                                                <a href="delete.php?id=<?php echo $hasil['idta']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
+                                                    <i class="fas fa-trash-alt"></i> <!-- Ikon Hapus -->
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }
+                                } else {
+                                    ?>
                                     <tr>
-                                        <td><?php echo $no++; ?></td>
-                                        <td><?php echo $hasil['thn_aw']; ?></td>
-                                        <td><?php echo $hasil['thn_ak']; ?></td>
-                                        <td>
-                                            <?php
-                                            $status = ($hasil['sts_thn'] == '1') ?
-                                                '<span class="badge bg-success">Aktif</span>' :
-                                                '<span class="badge bg-danger">Tidak Aktif</span>';
-                                            echo $status;
-                                            ?>
-                                        </td>
-                                        <td>
-                                            <a href="edit.php?id=<?php echo $hasil['idta']; ?>" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-edit"></i> <!-- Ikon Edit -->
-                                            </a>
-                                            <a href="delete.php?id=<?php echo $hasil['idta']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
-                                                <i class="fas fa-trash-alt"></i> <!-- Ikon Hapus -->
-                                            </a>
-                                        </td>
+                                        <td colspan="5" class="text-center">Belum Ada Data</td>
                                     </tr>
-
                                 <?php } ?>
                             </tbody>
                         </table>
