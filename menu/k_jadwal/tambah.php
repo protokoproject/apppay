@@ -17,6 +17,12 @@ if (isset($_POST['simpan'])) {
     $jam_aw = $_POST['jam_aw'];
     $jam_ak = $_POST['jam_ak'];
 
+    // Validasi input tidak boleh kosong
+    if (empty($id_kls) || empty($id_mapel) || empty($id_guru) || empty($id_tahun_ajaran) || empty($hari) || empty($jam_aw) || empty($jam_ak)) {
+        echo "<script>alert('Semua field harus diisi!'); window.history.back();</script>";
+        exit;
+    }
+
     // Generate auto increment untuk id_jadwal
     $auto = mysqli_query($koneksi, "SELECT MAX(id_jadwal) as max_code FROM t_jadwal");
     $hasil = mysqli_fetch_array($auto);
