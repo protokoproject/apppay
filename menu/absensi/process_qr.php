@@ -54,7 +54,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_data'])) {
     }
     
     $id_mrd = $murid_data['id_mrd'];
-    
+
+    // **Validasi apakah murid terdaftar di kelas tersebut**
+    $query_kelas = "SELECT id_kls FROM t_klsmrd WHERE id_mrd = ?";
+    $stmt_kelas = $koneksi->prepare($query_kelas);
+    $stmt_kelas->bind_param("i", $id_mrd);
+    $stmt_kelas->execute();
+    $result_kelas = $stmt_kelas->get_result();
+    $kelas_data = $result_kelas->fetch_assoc();
+    $stmt_kelas->close();
+
+    if (!$kelas_data || $kelas_data['id_kls'] != $id_kls) {
+        echo json_encode(['status' => 'error', 'message' => 'Anda tidak terdaftar di kelas ini']);
+        exit;
+    }
+
     // Set waktu absensi sesuai waktu saat ini
     date_default_timezone_set('Asia/Jakarta');
     $tgl_abs = date('Y-m-d');
