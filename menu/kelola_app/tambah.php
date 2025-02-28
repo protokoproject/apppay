@@ -13,20 +13,30 @@ $row = mysqli_fetch_assoc($auto);
 $id_app = $row['max_id'] + 1;
 
 if(isset($_POST['simpan'])){
-    $nm_app = addslashes($_POST['nm_app']);
-    $logo_app = 'app.png';
-    $tgl_rilis = date("Y-m-d");
-    $kab = "3522";
-    $almt = addslashes($_POST['almt']);
-    $no_telp = $_POST['no_telp'];
-
-    $sql = mysqli_query($koneksi,"INSERT INTO tb_app(id_app, nm_app, logo_app, tgl_rilis, kab, almt, no_telp) VALUES ('$id_app','$nm_app','$logo_app','$tgl_rilis','$kab','$almt','$no_telp')");
-    if($sql){
-        echo "<script>alert('Data Berhasil Ditambahkan!')</script>";
-        header("refresh:0, app.php");
-    }else{
-        echo"<script>alert(Data Berhasil Gagal Ditambahkan!')</script>";
-        header("refresh:0, app.php");
+    $nm_app = trim($_POST['nm_app']);
+    $almt = trim($_POST['almt']);
+    $no_telp = trim($_POST['no_telp']);
+    
+    if(empty($nm_app) || empty($almt) || empty($no_telp)) {
+        echo "<script>alert('Semua field harus diisi!');</script>";
+        echo "<script>window.history.back();</script>";
+        exit;
+    } else {
+        $nm_app = addslashes($nm_app);
+        $almt = addslashes($almt);
+        $logo_app = 'app.png';
+        $tgl_rilis = date("Y-m-d");
+        $kab = "3522";
+        
+        $sql = mysqli_query($koneksi,"INSERT INTO tb_app(id_app, nm_app, logo_app, tgl_rilis, kab, almt, no_telp) VALUES ('$id_app','$nm_app','$logo_app','$tgl_rilis','$kab','$almt','$no_telp')");
+        
+        if($sql){
+            echo "<script>alert('Data Berhasil Ditambahkan!');</script>";
+            header("refresh:0, app.php");
+        } else {
+            echo "<script>alert('Data Gagal Ditambahkan!');</script>";
+            header("refresh:0, app.php");
+        }
     }
 }
 
@@ -176,15 +186,15 @@ if(isset($_POST['simpan'])){
                             <form method="POST">
                                 <div class="form-group">
                                     <label for="nm_app">Nama Aplikasi</label>
-                                    <input type="text" id="nm_app" name="nm_app" placeholder="Masukkan Nama" required>
+                                    <input type="text" id="nm_app" name="nm_app" placeholder="Masukkan Nama">
                                 </div>
                                 <div class="form-group">
                                     <label for="alamat">Alamat</label>
-                                    <input type="text" id="almt" name="almt" placeholder="Masukkan Alamat" required>
+                                    <input type="text" id="almt" name="almt" placeholder="Masukkan Alamat">
                                 </div>
                                 <div class="form-group">
                                     <label for="no_telp">No Telepon</label>
-                                    <input type="text" id="no_telp" name="no_telp" placeholder="Masukkan Nomor Telepon Anda" required>
+                                    <input type="text" id="no_telp" name="no_telp" placeholder="Masukkan Nomor Telepon Anda" >
                                 </div>
                                 <div class="form-group">
                                     <button type="submit" class="mt-3 tf-btn accent small" style="width: 20%;" name="simpan">Simpan</button>

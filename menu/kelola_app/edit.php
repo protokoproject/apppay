@@ -9,22 +9,28 @@ if (!isset($_SESSION["login"])) {
 }
 
 $id_app = $_GET['id'];
-$query = mysqli_query($koneksi,"SELECT * FROM tb_app WHERE id_app = '$id_app'");
+$query = mysqli_query($koneksi, "SELECT * FROM tb_app WHERE id_app = '$id_app'");
 $data = mysqli_fetch_array($query);
 
 
-if(isset($_POST['simpan'])){
+if (isset($_POST['simpan'])) {
     $nm_app = addslashes($_POST['nm_app']);
     $almt = addslashes($_POST['almt']);
     $no_telp = $_POST['no_telp'];
 
-    $sql = mysqli_query($koneksi,"UPDATE tb_app SET nm_app = '$nm_app', almt = '$almt', no_telp = '$no_telp' WHERE id_app = '$id_app'");
-    if($sql){
-        echo "<script>alert('Data Berhasil Diubah!')</script>";
-        header("refresh:0, app.php");
-    }else{
-        echo"<script>alert(Data Berhasil Gagal Diubah!')</script>";
-        header("refresh:0, app.php");
+    if (empty($nm_app) || empty($almt) || empty($no_telp)) {
+        echo "<script>alert('Semua field harus diisi!');</script>";
+        echo "<script>window.history.back();</script>";
+        exit;
+    } else {
+        $sql = mysqli_query($koneksi, "UPDATE tb_app SET nm_app = '$nm_app', almt = '$almt', no_telp = '$no_telp' WHERE id_app = '$id_app'");
+        if ($sql) {
+            echo "<script>alert('Data Berhasil Diubah!')</script>";
+            header("refresh:0, app.php");
+        } else {
+            echo "<script>alert(Data Berhasil Gagal Diubah!')</script>";
+            header("refresh:0, app.php");
+        }
     }
 }
 
@@ -158,7 +164,7 @@ if(isset($_POST['simpan'])){
         <div class="tf-container">
             <div class="tf-statusbar d-flex justify-content-center align-items-center">
                 <a href="../menu_lengkap/menu_lengkap.php" class="back-btn"> <i class="icon-left"></i> </a>
-                <h3>Tambah Aplikasi</h3>
+                <h3>Edit Aplikasi</h3>
             </div>
         </div>
     </div>
@@ -171,18 +177,18 @@ if(isset($_POST['simpan'])){
                 <div class="tf-container">
                     <div class="trading-month">
                         <div class="form-container">
-                            <form method="POST"> 
+                            <form method="POST">
                                 <div class="form-group">
                                     <label for="nm_app">Nama Aplikasi</label>
-                                    <input type="text" id="nm_app" name="nm_app" placeholder="Masukkan Nama" value="<?php echo $data['nm_app']; ?>" required>
+                                    <input type="text" id="nm_app" name="nm_app" placeholder="Masukkan Nama" value="<?php echo $data['nm_app']; ?>">
                                 </div>
                                 <div class="form-group">
                                     <label for="alamat">Alamat</label>
-                                    <input type="text" id="almt" name="almt" placeholder="Masukkan Alamat" value="<?php echo $data['almt']; ?>" required>
+                                    <input type="text" id="almt" name="almt" placeholder="Masukkan Alamat" value="<?php echo $data['almt']; ?>">
                                 </div>
                                 <div class="form-group">
                                     <label for="no_telp">No Telepon</label>
-                                    <input type="text" id="no_telp" name="no_telp" placeholder="Masukkan Nomor Telepon Anda" value="<?php echo $data['no_telp']; ?>" required>
+                                    <input type="text" id="no_telp" name="no_telp" placeholder="Masukkan Nomor Telepon Anda" value="<?php echo $data['no_telp']; ?>">
                                 </div>
                                 <div class="form-group">
                                     <button type="submit" class="mt-3 tf-btn accent small" style="width: 20%;" name="simpan">Simpan</button>

@@ -9,26 +9,33 @@ if (!isset($_SESSION["login"])) {
 }
 
 if (isset($_POST['simpan'])) {
-    $nm_mapel = $_POST['nm_mapel'];
-    $deskripsi = $_POST['deskripsi'];
-    $auto = mysqli_query($koneksi, "SELECT MAX(id_mapel) as max_code FROM t_mapel");
-    $hasil = mysqli_fetch_array($auto);
-    $code = $hasil['max_code'];
-
-    if ($code) {
-        $urutan = (int)$code + 1; // Increment the highest ID
+    $nm_mapel = trim($_POST['nm_mapel']);
+    $deskripsi = trim($_POST['deskripsi']);
+    
+    if (empty($nm_mapel) || empty($deskripsi)) {
+        echo "<script>alert('Semua field harus diisi!');</script>";
+        echo "<script>window.history.back();</script>";
+        exit;
     } else {
-        $urutan = 1; // If the table is empty, start with 1
-    }
+        $auto = mysqli_query($koneksi, "SELECT MAX(id_mapel) as max_code FROM t_mapel");
+        $hasil = mysqli_fetch_array($auto);
+        $code = $hasil['max_code'];
 
-    $id_mapel = $urutan;
-    $query = mysqli_query($koneksi, "INSERT INTO t_mapel(id_mapel, nm_mapel, desk) VALUES ('$id_mapel', '$nm_mapel', '$deskripsi')");
-    if ($query) {
-        echo "<script>alert('Data berhasil ditambahkan!')</script>";
-        header("refresh:0, mapel.php");
-    } else {
-        echo "<script>alert('Data gagal ditambahkan!')</script>";
-        header("refresh:0, mapel.php");
+        if ($code) {
+            $urutan = (int)$code + 1; // Increment the highest ID
+        } else {
+            $urutan = 1; // If the table is empty, start with 1
+        }
+
+        $id_mapel = $urutan;
+        $query = mysqli_query($koneksi, "INSERT INTO t_mapel(id_mapel, nm_mapel, desk) VALUES ('$id_mapel', '$nm_mapel', '$deskripsi')");
+        if ($query) {
+            echo "<script>alert('Data berhasil ditambahkan!');</script>";
+            header("refresh:0, mapel.php");
+        } else {
+            echo "<script>alert('Data gagal ditambahkan!');</script>";
+            header("refresh:0, mapel.php");
+        }
     }
 }
 ?>

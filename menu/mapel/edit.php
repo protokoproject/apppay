@@ -9,20 +9,25 @@ if (!isset($_SESSION["login"])) {
 }
 
 $id = $_GET['id'];
-$sql = mysqli_query($koneksi,"SELECT nm_mapel, desk FROM t_mapel WHERE id_mapel = '$id'");
+$sql = mysqli_query($koneksi, "SELECT nm_mapel, desk FROM t_mapel WHERE id_mapel = '$id'");
 $data = mysqli_fetch_array($sql);
 
 if (isset($_POST['simpan'])) {
     $nm_mapel = $_POST['nm_mapel'];
     $deskripsi = $_POST['deskripsi'];
-    
-    $query = mysqli_query($koneksi, "UPDATE t_mapel SET nm_mapel ='$nm_mapel', desk = '$deskripsi' WHERE id_mapel = '$id'");
-    if ($query) {
-        echo "<script>alert('Data berhasil diubah!')</script>";
-        header("refresh:0, mapel.php");
+    if (empty($nm_mapel) || empty($deskripsi)) {
+        echo "<script>alert('Semua field harus diisi!');</script>";
+        echo "<script>window.history.back();</script>";
+        exit;
     } else {
-        echo "<script>alert('Data gagal diubah!')</script>";
-        header("refresh:0, mapel.php");
+        $query = mysqli_query($koneksi, "UPDATE t_mapel SET nm_mapel ='$nm_mapel', desk = '$deskripsi' WHERE id_mapel = '$id'");
+        if ($query) {
+            echo "<script>alert('Data berhasil diubah!')</script>";
+            header("refresh:0, mapel.php");
+        } else {
+            echo "<script>alert('Data gagal diubah!')</script>";
+            header("refresh:0, mapel.php");
+        }
     }
 }
 ?>

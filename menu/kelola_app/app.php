@@ -169,31 +169,37 @@ if (!isset($_SESSION["login"])) {
                                 include "../../conn/koneksi.php";
                                 $no = 1;
                                 $sql = mysqli_query($koneksi, "SELECT * FROM tb_app");
-                                while ($data = mysqli_fetch_array($sql)) {
-                                    $tgl_rilis = date("d-m-Y", strtotime($data['tgl_rilis']));
+                                if (mysqli_num_rows($sql) > 0) {
+                                    while ($data = mysqli_fetch_array($sql)) {
+                                        $tgl_rilis = date("d-m-Y", strtotime($data['tgl_rilis']));
                                 ?>
+                                        <tr>
+                                            <td><?php echo $no++; ?></td>
+                                            <td><?php echo $data['nm_app']; ?></td>
+                                            <td><img src="<?php echo $data['logo_app']; ?>" alt="Logo" width="50"></td>
+                                            <td><?php echo $tgl_rilis; ?></td>
+                                            <td><?php echo $data['almt']; ?></td>
+                                            <td><?php echo $data['no_telp']; ?></td>
+                                            <td>
+                                                <a href="edit.php?id=<?php echo $data['id_app']; ?>" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="delete.php?id=<?php echo $data['id_app']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }
+                                } else { ?>
                                     <tr>
-                                        <td><?php echo $no++; ?></td>
-                                        <td><?php echo $data['nm_app']; ?></td>
-                                        <td><img src="<?php echo $data['logo_app']; ?>" alt="Logo" width="50"></td>
-                                        <td><?php echo $tgl_rilis; ?></td>
-                                        <td><?php echo $data['almt']; ?></td>
-                                        <td><?php echo $data['no_telp']; ?></td>
-                                        <td>
-                                            <a href="edit.php?id=<?php echo $data['id_app']; ?>" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="delete.php?id=<?php echo $data['id_app']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-                                        </td>
+                                        <td colspan="7" class="text-center">Belum Ada Data</td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

@@ -167,24 +167,32 @@ if (!isset($_SESSION["login"])) {
                                 include "../../conn/koneksi.php";
                                 $no = 1;
                                 $sql = mysqli_query($koneksi, "SELECT * FROM tb_sts_user");
-                                while ($data = mysqli_fetch_array($sql)) {
+                                if (mysqli_num_rows($sql) > 0) {
+                                    while ($data = mysqli_fetch_array($sql)) {
                                 ?>
+                                        <tr>
+                                            <td><?php echo $no++; ?></td>
+                                            <td><?php echo $data['nm_sts_user']; ?></td>
+                                            <td><?php echo $data['ket_sts_user']; ?></td>
+                                            <td>
+                                                <a href="edit.php?kd_sts_user=<?php echo $data['kd_sts_user']; ?>" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i> <!-- Ikon Edit -->
+                                                </a>
+                                                <a href="delete.php?kd_sts_user=<?php echo $data['kd_sts_user']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">
+                                                    <i class="fas fa-trash-alt"></i> <!-- Ikon Hapus -->
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }
+                                } else { ?>
                                     <tr>
-                                        <td><?php echo $no++; ?></td>
-                                        <td><?php echo $data['nm_sts_user']; ?></td>
-                                        <td><?php echo $data['ket_sts_user']; ?></td>
-                                        <td>
-                                            <a href="edit.php?kd_sts_user=<?php echo $data['kd_sts_user']; ?>" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-edit"></i> <!-- Ikon Edit -->
-                                            </a>
-                                            <a href="delete.php?kd_sts_user=<?php echo $data['kd_sts_user']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Menghapus Data?')">
-                                                <i class="fas fa-trash-alt"></i> <!-- Ikon Hapus -->
-                                            </a>
-                                        </td>
+                                        <td colspan="4" class="text-center">Belum Ada Data</td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
+
                     </div>
                 </div>
             </div>

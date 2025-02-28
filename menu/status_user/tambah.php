@@ -14,8 +14,8 @@ if (isset($_POST['simpan'])) {
     $ket_sts_user = $_POST['ket_sts_user'];
 
     // Validasi input (Pastikan tidak ada yang kosong)
-    if (empty($nm_sts_user)) {
-        echo "<script>alert('Nama Status Pengguna harus diisi!');</script>";
+    if (empty($nm_sts_user) || empty($ket_sts_user)) {
+        echo "<script>alert('Semua Field harus diisi!');</script>";
         echo "<script>window.history.back();</script>";
         exit;
     }
@@ -118,7 +118,7 @@ if (isset($_POST['simpan'])) {
                     <form method="post">
                         <div class="group-input">
                             <label>Nama Status Pengguna</label>
-                            <input type="text" placeholder="Nama Status Pengguna" name="nm_sts_user" required>
+                            <input type="text" placeholder="Nama Status Pengguna" name="nm_sts_user">
                         </div>
                         <div class="group-input">
                             <label>Keterangan</label>
