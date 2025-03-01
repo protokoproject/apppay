@@ -279,7 +279,7 @@ if (isset($_POST['simpan'])) {
                                     <input type="password" id="konfirmasi_password" name="konfirmasi_password" placeholder="Masukkan Konfirmasi Password" required>
                                 </div>
                                 <div class="form-group">
-                                    <button type="submit" class="mt-3 tf-btn accent small" style="width: 20%;" name="simpan">Simpan</button>
+                                    <button type="submit" class="mt-3 tf-btn accent small" style="width: 20%;" name="simpan">Tambah Data</button>
                                 </div>
                             </form>
                         </div>

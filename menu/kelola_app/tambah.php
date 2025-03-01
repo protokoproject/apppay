@@ -197,7 +197,7 @@ if(isset($_POST['simpan'])){
                                     <input type="text" id="no_telp" name="no_telp" placeholder="Masukkan Nomor Telepon Anda" >
                                 </div>
                                 <div class="form-group">
-                                    <button type="submit" class="mt-3 tf-btn accent small" style="width: 20%;" name="simpan">Simpan</button>
+                                    <button type="submit" class="mt-3 tf-btn accent small" style="width: 20%;" name="simpan">Tambah Data</button>
                                 </div>
                             </form>
                         </div>

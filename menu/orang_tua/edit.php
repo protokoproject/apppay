@@ -114,7 +114,7 @@ if (isset($_POST['update'])) {
                             <label for="nm_ortu" class="form-label">Nama Orang Tua</label>
                             <input type="text" class="form-control" id="nmortu" placeholder="Nama Orang Tua" name="nmortu" value="<?php echo isset($nmortu) ? $nmortu : ''; ?>">
                         </div>
-                        <button type="submit" class="btn btn-primary tf-btn accent small" style="width: 20%;" name="update">Update</button>
+                        <button type="submit" class="btn btn-primary tf-btn accent small" style="width: 20%;" name="update">Simpan</button>
                     </form>
                 </div>
             </div>
