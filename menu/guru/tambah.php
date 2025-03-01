@@ -72,7 +72,7 @@ if (isset($_POST['simpan'])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <!-- Mobile Specific Metas -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
-    <title>Tambah Spesialis Mata Pelajaran</title>
+    <title>Tambah Guru</title>
     <!-- Favicon and Touch Icons  -->
     <link rel="shortcut icon" href="../../images/logo.png" />
     <link rel="apple-touch-icon-precomposed" href="../../images/logo.png" />
@@ -100,7 +100,7 @@ if (isset($_POST['simpan'])) {
         <div class="tf-container">
             <div class="tf-statusbar d-flex justify-content-center align-items-center">
                 <a href="#" class="back-btn"> <i class="icon-left"></i> </a>
-                <h3>Tambah Spesialis Mata Pelajaran</h3>
+                <h3>Tambah Guru</h3>
             </div>
         </div>
     </div>
@@ -114,14 +114,14 @@ if (isset($_POST['simpan'])) {
                             <input type="text" class="form-control" id="nmguru" placeholder="Nama Guru" name="nmguru">
                         </div>
                         <div class="group-input mb-3">
-                            <label for="spmapel" class="form-label">Spesialis Mata Pelajaran</label>
+                            <label for="spmapel" class="form-label">Mata Pelajaran</label>
                             <select class="form-select" id="spmapel" name="spmapel">
                                 <option value="" selected disabled>Pilih Mata Pelajaran</option>
                                 <?php
                                 include "../../conn/koneksi.php";
-                                $mapel_query = mysqli_query($koneksi, "SELECT nm_mapel FROM t_mapel");
+                                $mapel_query = mysqli_query($koneksi, "SELECT id_mapel, nm_mapel FROM t_mapel");
                                 while ($mapel = mysqli_fetch_array($mapel_query)) {
-                                    echo "<option value='" . $mapel['nm_mapel'] . "'>" . $mapel['nm_mapel'] . "</option>";
+                                    echo "<option value='" . $mapel['id_mapel'] . "'>" . $mapel['nm_mapel'] . "</option>";
                                 }
                                 ?>
                             </select>

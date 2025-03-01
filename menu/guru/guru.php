@@ -154,48 +154,54 @@ if (!isset($_SESSION["login"])) {
                     </button>
 
                     <div class="group-trading-history">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama Guru</th>
-                                    <th>Spesialis Mata Pelajaran</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                include "../../conn/koneksi.php";
-                                $no = 1;
-                                $sql = mysqli_query($koneksi, "SELECT * FROM t_guru");
-                                if (mysqli_num_rows($sql) > 0) {
-                                    while ($hasil = mysqli_fetch_array($sql)) {
-                                ?>
-                                        <tr>
-                                            <td><?php echo $no++; ?></td>
-                                            <td><?php echo $hasil['nm_guru']; ?></td>
-                                            <td><?php echo $hasil['sp_mapel']; ?></td>
-                                            <td>
-                                                <a href="edit.php?id=<?php echo $hasil['id_guru']; ?>" class="btn btn-warning btn-sm">
-                                                    <i class="fas fa-edit"></i> <!-- Ikon Edit -->
-                                                </a>
-                                                <a href="delete.php?id=<?php echo $hasil['id_guru']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
-                                                    <i class="fas fa-trash-alt"></i> <!-- Ikon Hapus -->
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    <?php
-                                    }
-                                } else {
-                                    ?>
-                                    <tr>
-                                        <td colspan="4" class="text-center">Belum Ada Data</td>
-                                    </tr>
-                                <?php
-                                }
-                                ?>
-                            </tbody>
-                        </table>
+                    <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Nama Guru</th>
+            <th>Mata Pelajaran</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        include "../../conn/koneksi.php";
+        $no = 1;
+        
+        // Query dengan JOIN untuk mengambil nama mapel berdasarkan id_mapel
+        $sql = mysqli_query($koneksi, "SELECT t_guru.id_guru, t_guru.nm_guru, t_mapel.nm_mapel 
+                                       FROM t_guru 
+                                       LEFT JOIN t_mapel ON t_guru.sp_mapel = t_mapel.id_mapel");
+
+        if (mysqli_num_rows($sql) > 0) {
+            while ($hasil = mysqli_fetch_array($sql)) {
+        ?>
+                <tr>
+                    <td><?php echo $no++; ?></td>
+                    <td><?php echo $hasil['nm_guru']; ?></td>
+                    <td><?php echo $hasil['nm_mapel'] ? $hasil['nm_mapel'] : '-'; ?></td> 
+                    <td>
+                        <a href="edit.php?id=<?php echo $hasil['id_guru']; ?>" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i> <!-- Ikon Edit -->
+                        </a>
+                        <a href="delete.php?id=<?php echo $hasil['id_guru']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
+                            <i class="fas fa-trash-alt"></i> <!-- Ikon Hapus -->
+                        </a>
+                    </td>
+                </tr>
+            <?php
+            }
+        } else {
+            ?>
+            <tr>
+                <td colspan="4" class="text-center">Belum Ada Data</td>
+            </tr>
+        <?php
+        }
+        ?>
+    </tbody>
+</table>
+
                     </div>
                 </div>
             </div>
