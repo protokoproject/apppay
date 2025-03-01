@@ -44,7 +44,7 @@ if (isset($_POST['simpan'])) {
 
     // Insert ke tabel tb_user
     $queryUser = mysqli_query($koneksi, "INSERT INTO tb_user(id_user, id_app, nm_user, kd_sts_user, username, pass, pass_txt, nohp, tgl_lhr, tgl_gbng) 
-                                        VALUES ('$id_user', '$id_app', '$nmkantin', '8', '$username', '$password_hash', '1234', '', '$tgl_rilis', '$tgl_rilis')");
+                                        VALUES ('$id_user', '$id_app', '$nmkantin', '9', '$username', '$password_hash', '1234', '', '$tgl_rilis', '$tgl_rilis')");
 
     if ($queryUser) {
         // Insert ke tabel t_kantin
