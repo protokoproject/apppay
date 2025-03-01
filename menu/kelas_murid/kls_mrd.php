@@ -149,9 +149,9 @@ if (!isset($_SESSION["login"])) {
                 </div>
                 <div class="tf-container">
                     <div class="trading-month">
-                        <button class="mb-3 tf-btn accent small" style="width: 20%;">
+                        <!-- <button class="mb-3 tf-btn accent small" style="width: 20%;">
                             <a href="tambah.php" style="color: white; text-decoration: none;" onmouseover="this.style.color='#533dea'" onmouseout="this.style.color='white'">Tambah Data</a>
-                        </button>
+                        </button> -->
                         <?php
                         include "../../conn/koneksi.php";
 
@@ -198,9 +198,9 @@ if (!isset($_SESSION["login"])) {
                                                 <a href="edit.php?id_kls=<?php echo $data['id_kls']; ?>&id_mrd=<?php echo $data['id_mrd']; ?>" class="btn btn-warning btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a href="delete.php?id_kls=<?php echo $data['id_kls']; ?>&id_mrd=<?php echo $data['id_mrd']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                <!-- <a href="delete.php?id_kls=<?php echo $data['id_kls']; ?>&id_mrd=<?php echo $data['id_mrd']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
                                                     <i class="fas fa-trash-alt"></i>
-                                                </a>
+                                                </a> -->
                                             </td>
                                         </tr>
                                     <?php }

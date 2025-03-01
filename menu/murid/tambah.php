@@ -82,9 +82,16 @@ if (isset($_POST['simpan'])) {
         // Insert ke tabel t_murid dengan id_ortu
         $queryMurid = mysqli_query($koneksi, "INSERT INTO t_murid(id_mrd, nm_murid, nisn, nim, saldo, kls_aktif, id_ortu, id_user) 
                                               VALUES ('$idmurid','$nmmurid', '$nisn', 0, '$saldo', '$kls_aktif', '$id_ortu', '$id_user')");
-
+        
         if ($queryMurid) {
-            echo "<script>alert('Data Murid berhasil ditambahkan!'); window.location.href='murid.php';</script>";
+            // Insert ke tabel t_klsmrd
+            $queryKlsMrd = mysqli_query($koneksi, "INSERT INTO t_klsmrd(id_kls, id_mrd) VALUES ('$kls_aktif', '$idmurid')");
+            
+            if ($queryKlsMrd) {
+                echo "<script>alert('Data Murid berhasil ditambahkan!'); window.location.href='murid.php';</script>";
+            } else {
+                echo "<script>alert('Gagal menambahkan data ke t_klsmrd. Silakan coba lagi.'); window.history.back();</script>";
+            }
         } else {
             echo "<script>alert('Gagal menambahkan data murid. Silakan coba lagi.'); window.history.back();</script>";
         }
@@ -92,6 +99,7 @@ if (isset($_POST['simpan'])) {
         echo "<script>alert('Gagal menyimpan data pengguna. Silakan coba lagi.'); window.history.back();</script>";
     }
 }
+
 ?>
 
 

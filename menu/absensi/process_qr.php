@@ -5,24 +5,34 @@ session_start();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_data'])) {
     $qr_data = $_POST['qr_data'];
     
+    // Validasi format QR Code menggunakan regex
+    $pattern = '/^id_jadwal:\d+;id_kls:\d+;tgl:\d{4}-\d{2}-\d{2};jam:\d{2}:\d{2}:\d{2}$/';
+
+    if (!preg_match($pattern, $qr_data)) {
+        echo json_encode(['status' => 'error', 'message' => 'Format QR Code tidak valid']);
+        exit;
+    }
+
     // Parse data QR Code
     parse_str(str_replace([';', ':'], ['&', '='], $qr_data), $qr_values);
     
-    if (!isset($qr_values['id_jadwal'], $qr_values['id_kls'])) {
+    if (!isset($qr_values['id_jadwal'], $qr_values['id_kls'], $qr_values['tgl'], $qr_values['jam'])) {
         echo json_encode(['status' => 'error', 'message' => 'Format QR Code tidak valid']);
         exit;
     }
     
     $id_jadwal = (int)$qr_values['id_jadwal'];
     $id_kls = (int)$qr_values['id_kls'];
-    
+    $tgl_qr = $qr_values['tgl']; // Tanggal dari QR Code
+    $jam_qr = $qr_values['jam']; // Jam dari QR Code
+
     if (!isset($_SESSION['username'])) {
         echo json_encode(['status' => 'error', 'message' => 'User tidak terautentikasi']);
         exit;
     }
-    
+
     $username = $_SESSION['username'];
-    
+
     // Ambil id_user dari tb_user berdasarkan username
     $query_user = "SELECT id_user FROM tb_user WHERE username = ?";
     $stmt_user = $koneksi->prepare($query_user);
@@ -54,22 +64,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_data'])) {
     }
     
     $id_mrd = $murid_data['id_mrd'];
-    
-    // Set waktu absensi sesuai waktu saat ini
-    date_default_timezone_set('Asia/Jakarta'); // Set zona waktu ke Indonesia
-    $tgl_abs = date('Y-m-d'); // Tanggal absensi (misal: 2025-02-27)
-    $jam_abs = date('H:i:s'); // Jam absensi (misal: 08:30:15)
 
-    // Cek apakah sudah absen sebelumnya
+    // Validasi apakah murid terdaftar di kelas yang sesuai dengan QR Code
+    $query_kelas = "SELECT id_kls FROM t_klsmrd WHERE id_mrd = ?";
+    $stmt_kelas = $koneksi->prepare($query_kelas);
+    $stmt_kelas->bind_param("i", $id_mrd);
+    $stmt_kelas->execute();
+    $result_kelas = $stmt_kelas->get_result();
+    $kelas_data = $result_kelas->fetch_assoc();
+    $stmt_kelas->close();
+
+    if (!$kelas_data || $kelas_data['id_kls'] != $id_kls) {
+        echo json_encode(['status' => 'error', 'message' => 'Anda tidak terdaftar di kelas ini']);
+        exit;
+    }
+
+    // Set waktu absensi sesuai waktu saat ini
+    date_default_timezone_set('Asia/Jakarta');
+    $tgl_abs = date('Y-m-d'); // Tanggal saat ini
+    $jam_abs = date('H:i:s');
+    $ket_abs = "Hadir"; // Set default keterangan absensi
+
+    // **Validasi: Absensi hanya bisa dilakukan pada tanggal yang ada di QR Code**
+    if ($tgl_abs !== $tgl_qr) {
+        echo json_encode(['status' => 'error', 'message' => 'Absensi hanya bisa dilakukan pada tanggal yang tertera di QR Code']);
+        exit;
+    }
+
+    // **Validasi: Jika murid sudah absen pada tanggal yang ada di QR Code, tampilkan pesan error**
     $query_check = "SELECT id_absen FROM t_absen WHERE id_mrd = ? AND id_jadwal = ? AND tgl_abs = ?";
     $stmt_check = $koneksi->prepare($query_check);
-    $stmt_check->bind_param("iis", $id_mrd, $id_jadwal, $tgl_abs);
+    $stmt_check->bind_param("iis", $id_mrd, $id_jadwal, $tgl_qr);
     $stmt_check->execute();
     $stmt_check->store_result();
     
     if ($stmt_check->num_rows > 0) {
         $stmt_check->close();
-        echo json_encode(['status' => 'error', 'message' => 'Anda sudah absen hari ini']);
+        echo json_encode(['status' => 'error', 'message' => 'Anda sudah berhasil absen pada tanggal ini.']);
         exit;
     }
     
@@ -83,9 +114,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr_data'])) {
 
     // Insert data ke t_absen
     $query_insert = "INSERT INTO t_absen (id_absen, id_mrd, id_jadwal, id_kls, tgl_abs, jam_abs, ket_abs) 
-                     VALUES (?, ?, ?, ?, ?, ?, '')";
+                     VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt_insert = $koneksi->prepare($query_insert);
-    $stmt_insert->bind_param("iiisss", $id_absen, $id_mrd, $id_jadwal, $id_kls, $tgl_abs, $jam_abs);
+    $stmt_insert->bind_param("iiissss", $id_absen, $id_mrd, $id_jadwal, $id_kls, $tgl_abs, $jam_abs, $ket_abs);
     
     if ($stmt_insert->execute()) {
         echo json_encode(['status' => 'success', 'message' => 'Absensi berhasil disimpan']);
