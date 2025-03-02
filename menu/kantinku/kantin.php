@@ -105,31 +105,41 @@
         </div>
     </div>
 
-    <div class="amount-money mt-5">
+    <div class="amount-money mt-5" id="menu-container" style="display: none;">
         <div class="tf-container">
             <h3>Pilih Menu</h3>
-            <ul class="box-card">
-                <li class="tf-card-list medium bt-line">
-                    <div class="info">
-                        <h4 class="fw_6">Visacard</h4>
-                    </div>
-                    <input type="checkbox" class="tf-checkbox circle-check">
-                </li>
-                <li class="tf-card-list medium bt-line">
-                    <div class="info">
-                        <h4 class="fw_6">Visacard</h4>
-                    </div>
-                    <input type="checkbox" class="tf-checkbox circle-check">
-                </li>
-                <li class="tf-card-list medium bt-line">
-                    <div class="info">
-                        <h4 class="fw_6">Visacard</h4>
-                    </div>
-                    <input type="checkbox" class="tf-checkbox circle-check">
-                </li>
+            <ul class="box-card" id="menu-list">
+                <!-- Menu akan dimuat di sini -->
             </ul>
         </div>
     </div>
+
+    <script>
+        document.getElementById("kantin").addEventListener("change", function() {
+            let kantinId = this.value;
+            let menuContainer = document.getElementById("menu-container");
+            let menuList = document.getElementById("menu-list");
+
+            if (kantinId) {
+                let xhr = new XMLHttpRequest();
+                xhr.open("GET", "get_menu.php?kantin_id=" + kantinId, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4) {
+                        if (xhr.status == 200) {
+                            menuList.innerHTML = xhr.responseText;
+                            menuContainer.style.display = "block";
+                        } else {
+                            console.error("Gagal mengambil data menu: " + xhr.statusText);
+                        }
+                    }
+                };
+                xhr.send();
+            } else {
+                menuContainer.style.display = "none";
+            }
+        });
+    </script>
+
 
     <script>
         document.querySelectorAll(".tag-money").forEach(function(item) {
