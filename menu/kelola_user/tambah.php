@@ -106,6 +106,12 @@ if (isset($_POST['simpan'])) {
     <link rel="manifest" href="../../_manifest.json" data-pwa-version="set_in_manifest_and_pwa_js">
     <link rel="apple-touch-icon" sizes="192x192" href="../../app/icons/icon-192x192.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
 
     <style>
         body {
@@ -241,35 +247,45 @@ if (isset($_POST['simpan'])) {
                                 </div>
                                 <div>
                                     <label for="kd_bgn">Bagian</label>
-                                    <select id="kd_bgn" name="kd_bgn" required>
+                                    <select id="kd_bgn" name="kd_bgn" class="select2" required>
                                         <option value="">--Pilih Bagian--</option>
                                         <?php while ($row = mysqli_fetch_assoc($result_bagian)) : ?>
                                             <option value="<?= $row['kd_bgn']; ?>"><?= $row['nm_bgn']; ?></option>
                                         <?php endwhile; ?>
                                     </select>
                                 </div>
+
                                 <div>
                                     <label for="id_app">App</label>
-                                    <select id="id_app" name="id_app" required>
+                                    <select id="id_app" name="id_app" class="select2" required>
                                         <option value="">--Pilih App--</option>
                                         <?php while ($row = mysqli_fetch_assoc($result_app)) : ?>
                                             <option value="<?= $row['id_app']; ?>"><?= $row['nm_app']; ?></option>
                                         <?php endwhile; ?>
                                     </select>
                                 </div>
+
                                 <?php
                                 $query = "SELECT * FROM tb_sts_user WHERE nm_sts_user NOT IN ('Orang Tua', 'Siswa', 'Guru')";
                                 $result_status_user = mysqli_query($koneksi, $query);
                                 ?>
                                 <div>
                                     <label for="kd_sts_user">Status User</label>
-                                    <select id="kd_sts_user" name="kdsts_user" required>
+                                    <select id="kd_sts_user" name="kdsts_user" class="select2" required>
                                         <option value="">--Pilih Status User--</option>
                                         <?php while ($row = mysqli_fetch_assoc($result_status_user)) : ?>
                                             <option value="<?= $row['kd_sts_user']; ?>"><?= $row['nm_sts_user']; ?></option>
                                         <?php endwhile; ?>
                                     </select>
                                 </div>
+                                <script>
+                                    $(document).ready(function() {
+                                        $('.select2').select2({
+                                            placeholder: "--Pilih Opsi--",
+                                            allowClear: true
+                                        });
+                                    });
+                                </script>
                                 <div class="form-group">
                                     <label for="password">Password</label>
                                     <input type="password" id="password" name="password" placeholder="Masukkan Password" required>

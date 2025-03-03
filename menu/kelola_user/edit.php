@@ -103,6 +103,12 @@ $result_status_user = mysqli_query($koneksi, $query_status_user);
     <link rel="manifest" href="../../_manifest.json" data-pwa-version="set_in_manifest_and_pwa_js">
     <link rel="apple-touch-icon" sizes="192x192" href="../../app/icons/icon-192x192.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 
     <style>
         body {
@@ -238,31 +244,48 @@ $result_status_user = mysqli_query($koneksi, $query_status_user);
                                 </div>
                                 <div>
                                     <label for="kd_bgn">Bagian</label>
-                                    <select id="kd_bgn" name="kd_bgn" required>
+                                    <select id="kd_bgn" name="kd_bgn" class="select2" required>
                                         <option value="">--Pilih Bagian--</option>
                                         <?php while ($row = mysqli_fetch_assoc($result_bagian)) : ?>
-                                            <option value="<?= $row['kd_bgn']; ?>" <?= $user['kd_bgn'] == $row['kd_bgn'] ? 'selected' : ''; ?>><?= $row['nm_bgn']; ?></option>
+                                            <option value="<?= $row['kd_bgn']; ?>" <?= ($user['kd_bgn'] == $row['kd_bgn']) ? 'selected' : ''; ?>>
+                                                <?= $row['nm_bgn']; ?>
+                                            </option>
                                         <?php endwhile; ?>
                                     </select>
                                 </div>
+
                                 <div>
                                     <label for="id_app">App</label>
-                                    <select id="id_app" name="id_app" required>
+                                    <select id="id_app" name="id_app" class="select2" required>
                                         <option value="">--Pilih App--</option>
                                         <?php while ($row = mysqli_fetch_assoc($result_app)) : ?>
-                                            <option value="<?= $row['id_app']; ?>" <?= $user['id_app'] == $row['id_app'] ? 'selected' : ''; ?>><?= $row['nm_app']; ?></option>
+                                            <option value="<?= $row['id_app']; ?>" <?= ($user['id_app'] == $row['id_app']) ? 'selected' : ''; ?>>
+                                                <?= $row['nm_app']; ?>
+                                            </option>
                                         <?php endwhile; ?>
                                     </select>
                                 </div>
+
                                 <div>
                                     <label for="kd_sts_user">Status User</label>
-                                    <select id="kd_sts_user" name="kd_sts_user" required>
+                                    <select id="kd_sts_user" name="kd_sts_user" class="select2" required>
                                         <option value="">--Pilih Status User--</option>
                                         <?php while ($row = mysqli_fetch_assoc($result_status_user)) : ?>
-                                            <option value="<?= $row['kd_sts_user']; ?>" <?= $user['kd_sts_user'] == $row['kd_sts_user'] ? 'selected' : ''; ?>><?= $row['nm_sts_user']; ?></option>
+                                            <option value="<?= $row['kd_sts_user']; ?>" <?= ($user['kd_sts_user'] == $row['kd_sts_user']) ? 'selected' : ''; ?>>
+                                                <?= $row['nm_sts_user']; ?>
+                                            </option>
                                         <?php endwhile; ?>
                                     </select>
                                 </div>
+                                <script>
+                                    $(document).ready(function() {
+                                        $('.select2').select2({
+                                            placeholder: "--Pilih Opsi--",
+                                            allowClear: true,
+                                            minimumResultsForSearch: 0 // Tetap aktifkan pencarian meskipun opsi sedikit
+                                        });
+                                    });
+                                </script>
                                 <div class="form-group">
                                     <button type="submit" class="mt-3 tf-btn accent small" style="width: 20%;" name="simpan">Simpan</button>
                                 </div>

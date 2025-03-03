@@ -113,14 +113,14 @@ if (isset($_POST['simpan'])) {
                                 include "../../conn/koneksi.php";
 
                                 // Ambil daftar mata pelajaran dari database
-                                $mapel_query = mysqli_query($koneksi, "SELECT nm_mapel FROM t_mapel");
+                                $mapel_query = mysqli_query($koneksi, "SELECT id_mapel, nm_mapel FROM t_mapel");
 
-                                // Pastikan nilai sebelumnya tersimpan
+                                // Ambil nilai sebelumnya dari database
                                 $selected_mapel = isset($data['sp_mapel']) ? $data['sp_mapel'] : '';
 
                                 while ($mapel = mysqli_fetch_array($mapel_query)) {
-                                    $selected = ($mapel['nm_mapel'] == $selected_mapel) ? "selected" : "";
-                                    echo "<option value='" . $mapel['nm_mapel'] . "' $selected>" . $mapel['nm_mapel'] . "</option>";
+                                    $selected = ($mapel['id_mapel'] == $selected_mapel) ? "selected" : "";
+                                    echo "<option value='" . $mapel['id_mapel'] . "' $selected>" . $mapel['nm_mapel'] . "</option>";
                                 }
                                 ?>
                             </select>
