@@ -50,7 +50,7 @@ if (isset($_POST['simpan'])) {
         $queryOrtu = mysqli_query($koneksi, "INSERT INTO t_ortu(id_ortu, nm_ortu, id_user) VALUES ('$idortu', '$nmortu', '$id_user')");
 
         if ($queryOrtu) {
-            echo "<script>alert('Data Orang Tua berhasil ditambahkan!')</script>";
+            echo "<script>alert('Data berhasil ditambahkan!')</script>";
             header("refresh:0, ortu.php");
         } else {
             echo "<script>alert('Data gagal ditambahkan ke t_ortu!')</script>";
