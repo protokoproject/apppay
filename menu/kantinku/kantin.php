@@ -1,3 +1,34 @@
+<?php
+include "../../conn/koneksi.php";
+
+$kantin_id = isset($_GET['kantin_id']) ? $_GET['kantin_id'] : '';
+$menu_html = '';
+$show_menu = false;
+
+if (!empty($kantin_id)) {
+    $sql = "SELECT kd_brg, nm_brg, hrg_jual FROM t_brg WHERE id_kantin = ?";
+    $stmt = $koneksi->prepare($sql);
+    $stmt->bind_param("i", $kantin_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $menu_html .= '<li class="tf-card-list medium bt-line">
+                    <div class="info">
+                        <h4 class="fw_6">' . htmlspecialchars($row["nm_brg"]) . '</h4>
+                        <p>Rp. ' . number_format($row["hrg_jual"], 0, ',', '.') . ',-</p>
+                    </div>
+                    <input type="checkbox" class="tf-checkbox circle-check">
+                  </li>';
+        }
+    } else {
+        $menu_html = "<p>Tidak ada menu tersedia</p>";
+    }
+    $show_menu = true;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -65,22 +96,12 @@
                         <select id="kantin">
                             <option value="">Pilih Kantin</option>
                             <?php
-                            // Koneksi ke database
-                            include "../../conn/koneksi.php";
-
-                            // Query untuk mengambil data kantin
                             $sql = "SELECT id_kantin, nm_kantin FROM t_kantin";
                             $result = $koneksi->query($sql);
-
-                            // Looping hasil query ke dalam <option>
-                            if ($result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-                                    echo '<option value="' . $row["id_kantin"] . '">' . $row["nm_kantin"] . '</option>';
-                                }
+                            while ($row = $result->fetch_assoc()) {
+                                $selected = ($row["id_kantin"] == $kantin_id) ? "selected" : "";
+                                echo '<option value="' . $row["id_kantin"] . '" ' . $selected . '>' . htmlspecialchars($row["nm_kantin"]) . '</option>';
                             }
-
-                            // Tutup koneksi
-                            $koneksi->close();
                             ?>
                         </select>
                         <script>
@@ -100,29 +121,34 @@
         </div>
         <div class="bottom-navigation-bar">
             <div class="tf-container">
-                <a href="#" id="btn-popup-up" class="tf-btn accent large">Selanjutnya</a>
+                <a href="get_menu.php" class="tf-btn accent large">Selanjutnya</a>
             </div>
         </div>
     </div>
 
-    <div class="amount-money mt-5" id="menu-container" style="display: none;">
+    <div class="amount-money mt-5" id="menu-container" style="display: <?php echo $show_menu ? 'block' : 'none'; ?>;">
         <div class="tf-container">
             <h3>Pilih Menu</h3>
-            <ul class="box-card" id="menu-list">
-                <!-- Menu akan dimuat di sini -->
-            </ul>
+            <ul class="box-card" id="menu-list"> <?php echo $menu_html; ?> </ul>
         </div>
     </div>
-
     <script>
         document.getElementById("kantin").addEventListener("change", function() {
             let kantinId = this.value;
+            if (kantinId) {
+                window.location.href = "kantin.php?kantin_id=" + kantinId;
+            } else {
+                window.location.href = "kantin.php";
+            }
             let menuContainer = document.getElementById("menu-container");
             let menuList = document.getElementById("menu-list");
 
             if (kantinId) {
+                let newUrl = window.location.pathname + "?kantin_id=" + kantinId;
+                history.pushState(null, "", newUrl); // Mengubah URL tanpa reload
+
                 let xhr = new XMLHttpRequest();
-                xhr.open("GET", "get_menu.php?kantin_id=" + kantinId, true);
+                xhr.open("GET", newUrl, true);
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == 4) {
                         if (xhr.status == 200) {
@@ -136,6 +162,7 @@
                 xhr.send();
             } else {
                 menuContainer.style.display = "none";
+                history.pushState(null, "", window.location.pathname); // Kembali ke URL tanpa parameter
             }
         });
     </script>
