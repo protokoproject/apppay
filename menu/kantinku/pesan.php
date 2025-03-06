@@ -229,7 +229,7 @@
                                         <h4 class="secondary_color fw_4">Total</h4>
                                         <h2>Rp. 100.000</h2>
                                     </div>
-                                    <a href="enter-pin-donasi.html" class="tf-btn accent large"><i class="icon-secure1"></i>Bayar</a>
+                                    <a href="struk.php" class="tf-btn accent large"><i class="icon-secure1"></i>Bayar</a>
                                 </div>
                             </div>
                         </div>
