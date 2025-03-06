@@ -132,7 +132,7 @@ if (!empty($kantin_id)) {
             <div class="mb-3">
                 <input type="text" class="form-control" id="search-menu" placeholder="Cari menu...">
             </div>
-            <ul class="box-card" id="menu-list"> <?php echo $menu_html; ?> </ul>
+            <ul class="box-card" id="menu-list" style="max-height: 300px; overflow-y: auto;"> <?php echo $menu_html; ?> </ul>
         </div>
     </div>
     <script>
@@ -179,6 +179,7 @@ if (!empty($kantin_id)) {
             });
         });
     </script>
+
 
 
     <script>
