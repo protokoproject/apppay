@@ -121,7 +121,7 @@ if (!empty($kantin_id)) {
         </div>
         <div class="bottom-navigation-bar">
             <div class="tf-container">
-                <a href="get_menu.php" class="tf-btn accent large">Selanjutnya</a>
+                <a href="pesan.php" class="tf-btn accent large">Selanjutnya</a>
             </div>
         </div>
     </div>
@@ -129,6 +129,9 @@ if (!empty($kantin_id)) {
     <div class="amount-money mt-5" id="menu-container" style="display: <?php echo $show_menu ? 'block' : 'none'; ?>;">
         <div class="tf-container">
             <h3>Pilih Menu</h3>
+            <div class="mb-3">
+                <input type="text" class="form-control" id="search-menu" placeholder="Cari menu...">
+            </div>
             <ul class="box-card" id="menu-list"> <?php echo $menu_html; ?> </ul>
         </div>
     </div>
@@ -145,7 +148,7 @@ if (!empty($kantin_id)) {
 
             if (kantinId) {
                 let newUrl = window.location.pathname + "?kantin_id=" + kantinId;
-                history.pushState(null, "", newUrl); // Mengubah URL tanpa reload
+                history.pushState(null, "", newUrl);
 
                 let xhr = new XMLHttpRequest();
                 xhr.open("GET", newUrl, true);
@@ -162,8 +165,18 @@ if (!empty($kantin_id)) {
                 xhr.send();
             } else {
                 menuContainer.style.display = "none";
-                history.pushState(null, "", window.location.pathname); // Kembali ke URL tanpa parameter
+                history.pushState(null, "", window.location.pathname);
             }
+        });
+
+        document.getElementById("search-menu").addEventListener("input", function() {
+            let searchText = this.value.toLowerCase();
+            let items = document.querySelectorAll("#menu-list li");
+
+            items.forEach(function(item) {
+                let text = item.textContent.toLowerCase();
+                item.style.display = text.includes(searchText) ? "flex" : "none";
+            });
         });
     </script>
 
