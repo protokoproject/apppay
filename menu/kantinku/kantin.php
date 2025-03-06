@@ -1,4 +1,5 @@
 <?php
+session_start();
 include "../../conn/koneksi.php";
 
 $kantin_id = isset($_GET['kantin_id']) ? $_GET['kantin_id'] : '';
@@ -133,10 +134,21 @@ if (!empty($kantin_id)) {
                 <input type="text" class="form-control" id="search-menu" placeholder="Cari menu...">
             </div>
             <ul class="box-card" id="menu-list" style="max-height: 300px; overflow-y: auto;"> <?php echo $menu_html; ?> </ul>
+            <input type="hidden" id="username" value="<?php echo $_SESSION['username']; ?>">
         </div>
     </div>
     <script>
-        let selectedMenus = JSON.parse(localStorage.getItem('selectedMenus')) || [];
+        // Ambil username dari elemen HTML
+        let username = document.getElementById("username").value;
+
+        // Kunci untuk localStorage berdasarkan username
+        let storageKey = `selectedMenus_${username}`;
+
+        // Ambil data dari localStorage atau inisialisasi array kosong
+        let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+        // Tampilkan data yang tersimpan di localStorage di console
+        console.log(`Menu yang tersimpan untuk ${username}:`, selectedMenus);
 
         document.getElementById("kantin").addEventListener("change", function() {
             let kantinId = this.value;
@@ -187,15 +199,16 @@ if (!empty($kantin_id)) {
                     selectedMenus = selectedMenus.filter(item => item.name !== menuName);
                 }
 
-                // Simpan data yang telah diperbarui ke localStorage
-                localStorage.setItem('selectedMenus', JSON.stringify(selectedMenus));
+                // Simpan data yang telah diperbarui ke localStorage dengan kunci unik
+                localStorage.setItem(storageKey, JSON.stringify(selectedMenus));
+
             }
         });
 
         // Fungsi untuk memulihkan status checkbox berdasarkan data di localStorage
         function restoreCheckedMenus() {
             let checkboxes = document.querySelectorAll('.tf-checkbox');
-            let storedMenus = JSON.parse(localStorage.getItem('selectedMenus')) || [];
+            let storedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
 
             checkboxes.forEach(checkbox => {
                 let menuItem = checkbox.closest('li');
@@ -203,6 +216,7 @@ if (!empty($kantin_id)) {
 
                 checkbox.checked = storedMenus.some(item => item.name === menuName);
             });
+
         }
     </script>
 

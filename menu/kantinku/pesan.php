@@ -164,6 +164,7 @@
                     <div class="total">
                         <h3>Total: Rp. <span id="total-price">0</span></h3>
                     </div>
+                    <input type="hidden" id="username" value="<?php echo $_SESSION['username']; ?>">
                 </div>
                 <div class="group-input">
                     <label>Message</label>
@@ -172,10 +173,16 @@
             </div>
 
             <script>
+                // Ambil username dari elemen HTML
+                let username = document.getElementById("username").value;
+
+                // Kunci untuk localStorage berdasarkan username
+                let storageKey = `selectedMenus_${username}`;
+
                 // Fungsi untuk memperbarui daftar pesanan
                 function updateOrderList() {
                     let orderList = document.getElementById('order-list');
-                    let selectedMenus = JSON.parse(localStorage.getItem('selectedMenus')) || [];
+                    let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
                     orderList.innerHTML = '';
                     let totalPrice = 0;
 
@@ -208,27 +215,27 @@
 
                 // Fungsi untuk mengubah jumlah pesanan
                 function changeQuantity(menuName, delta) {
-                    let selectedMenus = JSON.parse(localStorage.getItem('selectedMenus')) || [];
+                    let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
                     selectedMenus = selectedMenus.map(menu => {
                         if (menu.name === menuName) {
                             menu.quantity = Math.max(1, menu.quantity + delta);
                         }
                         return menu;
                     });
-                    localStorage.setItem('selectedMenus', JSON.stringify(selectedMenus));
+                    localStorage.setItem(storageKey, JSON.stringify(selectedMenus));
                     updateOrderList();
                 }
 
                 // Set quantity default ke 1 untuk setiap item baru yang dipilih
                 window.onload = function() {
-                    let selectedMenus = JSON.parse(localStorage.getItem('selectedMenus')) || [];
+                    let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
                     selectedMenus = selectedMenus.map(menu => {
                         if (!menu.quantity) {
                             menu.quantity = 1; // Tetapkan quantity default menjadi 1
                         }
                         return menu;
                     });
-                    localStorage.setItem('selectedMenus', JSON.stringify(selectedMenus));
+                    localStorage.setItem(storageKey, JSON.stringify(selectedMenus));
                     updateOrderList();
                 };
 
