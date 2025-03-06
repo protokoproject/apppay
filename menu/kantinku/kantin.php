@@ -136,36 +136,27 @@ if (!empty($kantin_id)) {
         </div>
     </div>
     <script>
+        let selectedMenus = JSON.parse(localStorage.getItem('selectedMenus')) || [];
+
         document.getElementById("kantin").addEventListener("change", function() {
             let kantinId = this.value;
-            if (kantinId) {
-                window.location.href = "kantin.php?kantin_id=" + kantinId;
-            } else {
-                window.location.href = "kantin.php";
-            }
             let menuContainer = document.getElementById("menu-container");
             let menuList = document.getElementById("menu-list");
 
             if (kantinId) {
-                let newUrl = window.location.pathname + "?kantin_id=" + kantinId;
-                history.pushState(null, "", newUrl);
-
+                window.location.href = "kantin.php?kantin_id=" + kantinId;
                 let xhr = new XMLHttpRequest();
-                xhr.open("GET", newUrl, true);
+                xhr.open("GET", "kantin.php?kantin_id=" + kantinId, true);
                 xhr.onreadystatechange = function() {
-                    if (xhr.readyState == 4) {
-                        if (xhr.status == 200) {
-                            menuList.innerHTML = xhr.responseText;
-                            menuContainer.style.display = "block";
-                        } else {
-                            console.error("Gagal mengambil data menu: " + xhr.statusText);
-                        }
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        menuList.innerHTML = xhr.responseText;
+                        menuContainer.style.display = "block";
+                        restoreCheckedMenus(); // Memulihkan status checkbox yang sebelumnya dipilih
                     }
                 };
                 xhr.send();
             } else {
                 menuContainer.style.display = "none";
-                history.pushState(null, "", window.location.pathname);
             }
         });
 
@@ -178,9 +169,42 @@ if (!empty($kantin_id)) {
                 item.style.display = text.includes(searchText) ? "flex" : "none";
             });
         });
+
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('tf-checkbox')) {
+                let menuItem = e.target.closest('li');
+                let menuName = menuItem.querySelector('h4').textContent;
+                let menuPrice = menuItem.querySelector('p').textContent;
+
+                if (e.target.checked) {
+                    // Tambahkan menu ke dalam array jika checkbox dipilih
+                    selectedMenus.push({
+                        name: menuName,
+                        price: menuPrice
+                    });
+                } else {
+                    // Hapus hanya menu yang di-unchecklist
+                    selectedMenus = selectedMenus.filter(item => item.name !== menuName);
+                }
+
+                // Simpan data yang telah diperbarui ke localStorage
+                localStorage.setItem('selectedMenus', JSON.stringify(selectedMenus));
+            }
+        });
+
+        // Fungsi untuk memulihkan status checkbox berdasarkan data di localStorage
+        function restoreCheckedMenus() {
+            let checkboxes = document.querySelectorAll('.tf-checkbox');
+            let storedMenus = JSON.parse(localStorage.getItem('selectedMenus')) || [];
+
+            checkboxes.forEach(checkbox => {
+                let menuItem = checkbox.closest('li');
+                let menuName = menuItem.querySelector('h4').textContent;
+
+                checkbox.checked = storedMenus.some(item => item.name === menuName);
+            });
+        }
     </script>
-
-
 
     <script>
         document.querySelectorAll(".tag-money").forEach(function(item) {
