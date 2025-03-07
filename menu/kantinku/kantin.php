@@ -138,86 +138,75 @@ if (!empty($kantin_id)) {
         </div>
     </div>
     <script>
-        // Ambil username dari elemen HTML
-        let username = document.getElementById("username").value;
+        document.addEventListener("DOMContentLoaded", function() {
+            let username = document.getElementById("username").value;
+            let storageKey = `selectedMenus_${username}`;
+            let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
 
-        // Kunci untuk localStorage berdasarkan username
-        let storageKey = `selectedMenus_${username}`;
+            console.log(`Menu yang tersimpan untuk ${username}:`, selectedMenus);
 
-        // Ambil data dari localStorage atau inisialisasi array kosong
-        let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
-
-        // Tampilkan data yang tersimpan di localStorage di console
-        console.log(`Menu yang tersimpan untuk ${username}:`, selectedMenus);
-
-        document.getElementById("kantin").addEventListener("change", function() {
-            let kantinId = this.value;
-            let menuContainer = document.getElementById("menu-container");
-            let menuList = document.getElementById("menu-list");
-
-            if (kantinId) {
-                window.location.href = "kantin.php?kantin_id=" + kantinId;
-                let xhr = new XMLHttpRequest();
-                xhr.open("GET", "kantin.php?kantin_id=" + kantinId, true);
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState == 4 && xhr.status == 200) {
-                        menuList.innerHTML = xhr.responseText;
-                        menuContainer.style.display = "block";
-                        restoreCheckedMenus(); // Memulihkan status checkbox yang sebelumnya dipilih
-                    }
-                };
-                xhr.send();
-            } else {
-                menuContainer.style.display = "none";
+            function restoreCheckedMenus() {
+                let checkboxes = document.querySelectorAll(".tf-checkbox");
+                checkboxes.forEach(checkbox => {
+                    let menuItem = checkbox.closest("li");
+                    let menuName = menuItem.querySelector("h4").textContent;
+                    checkbox.checked = selectedMenus.some(item => item.name === menuName);
+                });
             }
-        });
 
-        document.getElementById("search-menu").addEventListener("input", function() {
-            let searchText = this.value.toLowerCase();
-            let items = document.querySelectorAll("#menu-list li");
+            document.getElementById("kantin").addEventListener("change", function() {
+                let kantinId = this.value;
+                let menuContainer = document.getElementById("menu-container");
+                let menuList = document.getElementById("menu-list");
 
-            items.forEach(function(item) {
-                let text = item.textContent.toLowerCase();
-                item.style.display = text.includes(searchText) ? "flex" : "none";
-            });
-        });
-
-        document.addEventListener('change', function(e) {
-            if (e.target.classList.contains('tf-checkbox')) {
-                let menuItem = e.target.closest('li');
-                let menuName = menuItem.querySelector('h4').textContent;
-                let menuPrice = menuItem.querySelector('p').textContent;
-
-                if (e.target.checked) {
-                    // Tambahkan menu ke dalam array jika checkbox dipilih
-                    selectedMenus.push({
-                        name: menuName,
-                        price: menuPrice
-                    });
+                if (kantinId) {
+                    let xhr = new XMLHttpRequest();
+                    xhr.open("GET", "kantin.php?kantin_id=" + kantinId, true);
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState == 4 && xhr.status == 200) {
+                            menuList.innerHTML = xhr.responseText;
+                            menuContainer.style.display = "block";
+                            setTimeout(restoreCheckedMenus, 500); // Beri waktu untuk memastikan elemen sudah ter-load
+                        }
+                    };
+                    xhr.send();
                 } else {
-                    // Hapus hanya menu yang di-unchecklist
-                    selectedMenus = selectedMenus.filter(item => item.name !== menuName);
+                    menuContainer.style.display = "none";
                 }
-
-                // Simpan data yang telah diperbarui ke localStorage dengan kunci unik
-                localStorage.setItem(storageKey, JSON.stringify(selectedMenus));
-
-            }
-        });
-
-        // Fungsi untuk memulihkan status checkbox berdasarkan data di localStorage
-        function restoreCheckedMenus() {
-            let checkboxes = document.querySelectorAll('.tf-checkbox');
-            let storedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
-
-            checkboxes.forEach(checkbox => {
-                let menuItem = checkbox.closest('li');
-                let menuName = menuItem.querySelector('h4').textContent;
-
-                checkbox.checked = storedMenus.some(item => item.name === menuName);
             });
 
-        }
+            document.getElementById("search-menu").addEventListener("input", function() {
+                let searchText = this.value.toLowerCase();
+                let items = document.querySelectorAll("#menu-list li");
+                items.forEach(function(item) {
+                    let text = item.textContent.toLowerCase();
+                    item.style.display = text.includes(searchText) ? "flex" : "none";
+                });
+            });
+
+            document.addEventListener("change", function(e) {
+                if (e.target.classList.contains("tf-checkbox")) {
+                    let menuItem = e.target.closest("li");
+                    let menuName = menuItem.querySelector("h4").textContent;
+                    let menuPrice = menuItem.querySelector("p").textContent;
+
+                    if (e.target.checked) {
+                        if (!selectedMenus.some(item => item.name === menuName)) {
+                            selectedMenus.push({
+                                name: menuName,
+                                price: menuPrice
+                            });
+                        }
+                    } else {
+                        selectedMenus = selectedMenus.filter(item => item.name !== menuName);
+                    }
+
+                    localStorage.setItem(storageKey, JSON.stringify(selectedMenus));
+                }
+            });
+
+            restoreCheckedMenus(); // Pastikan checkbox dipulihkan setelah reload
+        });
     </script>
 
     <script>
