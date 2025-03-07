@@ -150,6 +150,32 @@ if (!empty($kantin_id)) {
         // Tampilkan data yang tersimpan di localStorage di console
         console.log(`Menu yang tersimpan untuk ${username}:`, selectedMenus);
 
+        // Fungsi untuk memulihkan status checkbox berdasarkan data di localStorage
+        function restoreCheckedMenus() {
+            let checkboxes = document.querySelectorAll('.tf-checkbox');
+            let storedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+            checkboxes.forEach(checkbox => {
+                let menuItem = checkbox.closest('li');
+                let menuName = menuItem.querySelector('h4').textContent;
+
+                // Cek apakah menu ada di localStorage
+                if (storedMenus.some(item => item.name === menuName)) {
+                    checkbox.checked = true; // Centang checkbox jika menu ada di localStorage
+                } else {
+                    checkbox.checked = false; // Jangan centang checkbox jika menu tidak ada
+                }
+            });
+
+            // Tampilkan data yang dipulihkan di console
+            console.log(`Menu yang dipulihkan untuk ${username}:`, storedMenus);
+        }
+
+        // Panggil restoreCheckedMenus saat halaman selesai dimuat
+        window.onload = function() {
+            restoreCheckedMenus();
+        };
+
         document.getElementById("kantin").addEventListener("change", function() {
             let kantinId = this.value;
             let menuContainer = document.getElementById("menu-container");
@@ -206,22 +232,6 @@ if (!empty($kantin_id)) {
                 console.log(`Menu yang tersimpan untuk ${username}:`, selectedMenus);
             }
         });
-
-        // Fungsi untuk memulihkan status checkbox berdasarkan data di localStorage
-        function restoreCheckedMenus() {
-            let checkboxes = document.querySelectorAll('.tf-checkbox');
-            let storedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
-
-            checkboxes.forEach(checkbox => {
-                let menuItem = checkbox.closest('li');
-                let menuName = menuItem.querySelector('h4').textContent;
-
-                checkbox.checked = storedMenus.some(item => item.name === menuName);
-            });
-
-            // Tampilkan data yang dipulihkan di console
-            console.log(`Menu yang dipulihkan untuk ${username}:`, storedMenus);
-        }
     </script>
 
     <script>
