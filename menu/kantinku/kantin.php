@@ -158,9 +158,10 @@ if (!empty($kantin_id)) {
             checkboxes.forEach(checkbox => {
                 let menuItem = checkbox.closest('li');
                 let menuName = menuItem.querySelector('h4').textContent;
+                let kantinId = document.getElementById("kantin").value; // Ambil kantin_id yang dipilih
 
-                // Cek apakah menu ada di localStorage
-                if (storedMenus.some(item => item.name === menuName)) {
+                // Cek apakah menu ada di localStorage dan terkait dengan kantin_id yang dipilih
+                if (storedMenus.some(item => item.name === menuName && item.kantin_id === kantinId)) {
                     checkbox.checked = true; // Centang checkbox jika menu ada di localStorage
                 } else {
                     checkbox.checked = false; // Jangan centang checkbox jika menu tidak ada
@@ -213,16 +214,18 @@ if (!empty($kantin_id)) {
                 let menuItem = e.target.closest('li');
                 let menuName = menuItem.querySelector('h4').textContent;
                 let menuPrice = menuItem.querySelector('p').textContent;
+                let kantinId = document.getElementById("kantin").value; // Ambil kantin_id yang dipilih
 
                 if (e.target.checked) {
                     // Tambahkan menu ke dalam array jika checkbox dipilih
                     selectedMenus.push({
                         name: menuName,
-                        price: menuPrice
+                        price: menuPrice,
+                        kantin_id: kantinId // Simpan kantin_id bersama dengan menu
                     });
                 } else {
-                    // Hapus hanya menu yang di-unchecklist
-                    selectedMenus = selectedMenus.filter(item => item.name !== menuName);
+                    // Hapus hanya menu yang di-unchecklist dan terkait dengan kantin_id yang dipilih
+                    selectedMenus = selectedMenus.filter(item => !(item.name === menuName && item.kantin_id === kantinId));
                 }
 
                 // Simpan data yang telah diperbarui ke localStorage dengan kunci unik
