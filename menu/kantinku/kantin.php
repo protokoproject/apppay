@@ -249,6 +249,18 @@ if (!empty($kantin_id)) {
                 console.log(`Menu yang tersimpan untuk ${username}:`, selectedMenus);
             }
         });
+
+        // Tambahkan event listener ke setiap item list untuk toggle checkbox
+        document.addEventListener('click', function(e) {
+            let menuItem = e.target.closest('li');
+            if (menuItem && !e.target.classList.contains('tf-checkbox')) {
+                let checkbox = menuItem.querySelector('.tf-checkbox');
+                checkbox.checked = !checkbox.checked;
+                checkbox.dispatchEvent(new Event('change', {
+                    bubbles: true
+                }));
+            }
+        });
     </script>
 
     <script>
