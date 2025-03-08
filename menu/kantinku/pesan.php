@@ -286,13 +286,11 @@
                             $query = "
         SELECT 
             tm.nm_murid AS nama_siswa, 
-            tk.nm_kelas AS kelas, 
-            tkn.nm_kantin AS nama_kantin
-        FROM t_user tu
+            tk.nm_kelas AS kelas
+        FROM tb_user tu
         JOIN t_murid tm ON tu.id_user = tm.id_user
         JOIN t_klsmrd tkm ON tm.id_mrd = tkm.id_mrd
         JOIN t_kelas tk ON tkm.id_kls = tk.id_kls
-        LEFT JOIN t_kantin tkn ON tm.id_kantin = tkn.id_kantin
         WHERE tu.username = '$username'
     ";
                             $result = mysqli_query($koneksi, $query);
@@ -301,8 +299,24 @@
                                 $row = mysqli_fetch_assoc($result);
                                 $nama_siswa = $row['nama_siswa'];
                                 $kelas = $row['kelas'];
-                                $nama_kantin = $row['nama_kantin'];
                             }
+                        }
+
+                        // Jika ada request POST untuk mengambil nama kantin
+                        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['kantin_id'])) {
+                            $kantin_id = $_POST['kantin_id'];
+
+                            // Query untuk mengambil nama kantin berdasarkan kantin_id
+                            $query_kantin = "SELECT nm_kantin FROM t_kantin WHERE id_kantin = '$kantin_id'";
+                            $result_kantin = mysqli_query($koneksi, $query_kantin);
+
+                            if ($result_kantin && mysqli_num_rows($result_kantin) > 0) {
+                                $row_kantin = mysqli_fetch_assoc($result_kantin);
+                                echo $row_kantin['nm_kantin']; // Kembalikan nama kantin
+                            } else {
+                                echo "Nama Kantin Tidak Ditemukan";
+                            }
+                            exit; // Hentikan eksekusi script setelah mengembalikan data
                         }
                         ?>
 
@@ -311,9 +325,6 @@
                                 <h3>Detail Pembayaran</h3>
                                 <div class="tf-card-block d-flex align-items-center justify-content-between">
                                     <div class="inner d-flex align-items-center">
-                                        <div class="logo-img">
-                                            <img src="images/logo-banks/card-visa3.png" alt="image" />
-                                        </div>
                                         <div class="content">
                                             <h4><a href="#" class="fw_6"><?php echo htmlspecialchars($nama_siswa); ?></a></h4>
                                             <p><?php echo htmlspecialchars($kelas); ?></p>
