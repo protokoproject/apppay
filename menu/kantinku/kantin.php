@@ -143,6 +143,7 @@ if (!empty($kantin_id)) {
 
         // Kunci untuk localStorage berdasarkan username
         let storageKey = `selectedMenus_${username}`;
+        let kantinKey = `selectedKantin_${username}`;
 
         // Cek apakah session masih ada (dengan AJAX request ke check_session.php)
         fetch('check_session.php')
@@ -151,6 +152,7 @@ if (!empty($kantin_id)) {
                 if (!data.session_exists) {
                     // Jika session tidak ada, hapus localStorage yang terkait dengan username
                     localStorage.removeItem(storageKey);
+                    localStorage.removeItem(kantinKey);
                     console.log(`LocalStorage untuk ${username} telah dihapus karena session tidak ada.`);
                 }
             })
@@ -160,22 +162,24 @@ if (!empty($kantin_id)) {
 
         // Ambil data dari localStorage atau inisialisasi array kosong
         let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
+        let selectedKantin = localStorage.getItem(kantinKey);
 
         // Tampilkan data yang tersimpan di localStorage di console
         console.log(`Menu yang tersimpan untuk ${username}:`, selectedMenus);
+        console.log(`Kantin yang tersimpan untuk ${username}:`, selectedKantin);
 
         // Fungsi untuk memulihkan status checkbox berdasarkan data di localStorage
         function restoreCheckedMenus() {
             let checkboxes = document.querySelectorAll('.tf-checkbox');
             let storedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
+            let kantinId = document.getElementById("kantin").value;
 
             checkboxes.forEach(checkbox => {
                 let menuItem = checkbox.closest('li');
                 let menuName = menuItem.querySelector('h4').textContent;
-                let kantinId = document.getElementById("kantin").value; // Ambil kantin_id yang dipilih
 
-                // Cek apakah menu ada di localStorage dan terkait dengan kantin_id yang dipilih
-                if (storedMenus.some(item => item.name === menuName && item.kantin_id === kantinId)) {
+                // Cek apakah menu ada di localStorage
+                if (storedMenus.some(item => item.name === menuName)) {
                     checkbox.checked = true; // Centang checkbox jika menu ada di localStorage
                 } else {
                     checkbox.checked = false; // Jangan centang checkbox jika menu tidak ada
@@ -193,6 +197,7 @@ if (!empty($kantin_id)) {
 
         document.getElementById("kantin").addEventListener("change", function() {
             let kantinId = this.value;
+            localStorage.setItem(kantinKey, kantinId); // Simpan kantin_id hanya sekali
             let menuContainer = document.getElementById("menu-container");
             let menuList = document.getElementById("menu-list");
 
@@ -228,18 +233,16 @@ if (!empty($kantin_id)) {
                 let menuItem = e.target.closest('li');
                 let menuName = menuItem.querySelector('h4').textContent;
                 let menuPrice = menuItem.querySelector('p').textContent;
-                let kantinId = document.getElementById("kantin").value; // Ambil kantin_id yang dipilih
 
                 if (e.target.checked) {
                     // Tambahkan menu ke dalam array jika checkbox dipilih
                     selectedMenus.push({
                         name: menuName,
-                        price: menuPrice,
-                        kantin_id: kantinId // Simpan kantin_id bersama dengan menu
+                        price: menuPrice
                     });
                 } else {
-                    // Hapus hanya menu yang di-unchecklist dan terkait dengan kantin_id yang dipilih
-                    selectedMenus = selectedMenus.filter(item => !(item.name === menuName && item.kantin_id === kantinId));
+                    // Hapus menu yang di-unchecklist
+                    selectedMenus = selectedMenus.filter(item => item.name !== menuName);
                 }
 
                 // Simpan data yang telah diperbarui ke localStorage dengan kunci unik
