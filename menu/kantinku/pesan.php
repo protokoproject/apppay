@@ -290,29 +290,45 @@
                                 $row_user = mysqli_fetch_assoc($result_user);
                                 $id_user = $row_user['id_user'];
 
-                                // Query untuk mengambil nama siswa (nm_murid) dari t_murid berdasarkan id_user
-                                $query_murid = "SELECT nm_murid FROM t_murid WHERE id_user = '$id_user'";
+                                // Query untuk mengambil nama siswa (nm_murid) dan id_mrd dari t_murid berdasarkan id_user
+                                $query_murid = "SELECT nm_murid, id_mrd FROM t_murid WHERE id_user = '$id_user'";
                                 $result_murid = mysqli_query($koneksi, $query_murid);
 
                                 if ($result_murid && mysqli_num_rows($result_murid) > 0) {
                                     $row_murid = mysqli_fetch_assoc($result_murid);
                                     $nama_siswa = $row_murid['nm_murid'];
-                                }
+                                    $id_mrd = $row_murid['id_mrd'];
 
-                                // Query untuk mengambil kelas dari t_klsmrd dan t_kelas berdasarkan id_user
-                                $query_kelas = "
-            SELECT tk.nm_kelas AS kelas
-            FROM t_klsmrd tkm
-            JOIN t_kelas tk ON tkm.id_kls = tk.id_kls
-            JOIN t_murid tm ON tkm.id_mrd = tm.id_mrd
-            WHERE tm.id_user = '$id_user'
-        ";
-                                $result_kelas = mysqli_query($koneksi, $query_kelas);
+                                    // Query untuk mengambil id_kls dari t_klsmrd berdasarkan id_mrd
+                                    $query_klsmrd = "SELECT id_kls FROM t_klsmrd WHERE id_mrd = '$id_mrd'";
+                                    $result_klsmrd = mysqli_query($koneksi, $query_klsmrd);
 
-                                if ($result_kelas && mysqli_num_rows($result_kelas) > 0) {
-                                    $row_kelas = mysqli_fetch_assoc($result_kelas);
-                                    $kelas = $row_kelas['kelas'];
+                                    if ($result_klsmrd && mysqli_num_rows($result_klsmrd) > 0) {
+                                        $row_klsmrd = mysqli_fetch_assoc($result_klsmrd);
+                                        $id_kls = $row_klsmrd['id_kls'];
+
+                                        // Query untuk mengambil nm_kelas dari t_kelas berdasarkan id_kls
+                                        $query_kelas = "SELECT nm_kls FROM t_kelas WHERE id_kls = '$id_kls'";
+                                        $result_kelas = mysqli_query($koneksi, $query_kelas);
+
+                                        if ($result_kelas && mysqli_num_rows($result_kelas) > 0) {
+                                            $row_kelas = mysqli_fetch_assoc($result_kelas);
+                                            $kelas = $row_kelas['nm_kls'];
+                                        } else {
+                                            // Jika nm_kelas tidak ditemukan
+                                            $kelas = "Kelas Tidak Ditemukan (t_kelas)";
+                                        }
+                                    } else {
+                                        // Jika id_kls tidak ditemukan
+                                        $kelas = "Kelas Tidak Ditemukan (t_klsmrd)";
+                                    }
+                                } else {
+                                    // Jika nm_murid atau id_mrd tidak ditemukan
+                                    $nama_siswa = "Nama Siswa Tidak Ditemukan (t_murid)";
                                 }
+                            } else {
+                                // Jika id_user tidak ditemukan
+                                $nama_siswa = "Nama Siswa Tidak Ditemukan (tb_user)";
                             }
                         }
                         ?>
