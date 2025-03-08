@@ -142,17 +142,24 @@ if (!empty($kantin_id)) {
         let urlParams = new URLSearchParams(window.location.search);
         let kantinId = urlParams.get('kantin_id');
 
-        // Kunci untuk localStorage berdasarkan username dan kantin_id
-        let storageKey = `selectedMenus_${username}_${kantinId}`;
+        // Simpan kantin_id di localStorage dengan kunci khusus
+        localStorage.setItem(`currentKantinId_${username}`, kantinId);
+
+        // Tampilkan kantin_id yang dipilih di console
+        console.log(`Kantin yang dipilih: ID = ${kantinId}`);
+
+        // Kunci untuk localStorage berdasarkan username (tanpa kantin_id)
+        let storageKey = `selectedMenus_${username}`;
 
         // Cek apakah session masih ada (dengan AJAX request ke check_session.php)
         fetch('check_session.php')
             .then(response => response.json())
             .then(data => {
                 if (!data.session_exists) {
-                    // Jika session tidak ada, hapus localStorage yang terkait dengan username dan kantin_id
+                    // Jika session tidak ada, hapus localStorage yang terkait dengan username
                     localStorage.removeItem(storageKey);
-                    console.log(`LocalStorage untuk ${username} dan kantin ${kantinId} telah dihapus karena session tidak ada.`);
+                    localStorage.removeItem(`currentKantinId_${username}`);
+                    console.log(`LocalStorage untuk ${username} telah dihapus karena session tidak ada.`);
                 }
             })
             .catch(error => {
@@ -163,7 +170,7 @@ if (!empty($kantin_id)) {
         let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
 
         // Tampilkan data yang tersimpan di localStorage di console
-        console.log(`Menu yang tersimpan untuk ${username} dan kantin ${kantinId}:`, selectedMenus);
+        console.log(`Menu yang tersimpan untuk ${username}:`, selectedMenus);
 
         // Fungsi untuk memulihkan status checkbox berdasarkan data di localStorage
         function restoreCheckedMenus() {
@@ -183,7 +190,7 @@ if (!empty($kantin_id)) {
             });
 
             // Tampilkan data yang dipulihkan di console
-            console.log(`Menu yang dipulihkan untuk ${username} dan kantin ${kantinId}:`, storedMenus);
+            console.log(`Menu yang dipulihkan untuk ${username}:`, storedMenus);
         }
 
         // Panggil restoreCheckedMenus saat halaman selesai dimuat
@@ -222,7 +229,7 @@ if (!empty($kantin_id)) {
                 localStorage.setItem(storageKey, JSON.stringify(selectedMenus));
 
                 // Tampilkan data yang diperbarui di console
-                console.log(`Menu yang tersimpan untuk ${username} dan kantin ${kantinId}:`, selectedMenus);
+                console.log(`Menu yang tersimpan untuk ${username}:`, selectedMenus);
             }
         });
 
