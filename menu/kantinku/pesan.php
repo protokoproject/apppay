@@ -301,23 +301,6 @@
                                 $kelas = $row['kelas'];
                             }
                         }
-
-                        // Jika ada request POST untuk mengambil nama kantin
-                        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['kantin_id'])) {
-                            $kantin_id = $_POST['kantin_id'];
-
-                            // Query untuk mengambil nama kantin berdasarkan kantin_id
-                            $query_kantin = "SELECT nm_kantin FROM t_kantin WHERE id_kantin = '$kantin_id'";
-                            $result_kantin = mysqli_query($koneksi, $query_kantin);
-
-                            if ($result_kantin && mysqli_num_rows($result_kantin) > 0) {
-                                $row_kantin = mysqli_fetch_assoc($result_kantin);
-                                echo $row_kantin['nm_kantin']; // Kembalikan nama kantin
-                            } else {
-                                echo "Nama Kantin Tidak Ditemukan";
-                            }
-                            exit; // Hentikan eksekusi script setelah mengembalikan data
-                        }
                         ?>
 
                         <div class="main-topup">
@@ -342,7 +325,7 @@
                                     <li>
                                         <h4 class="secondary_color fw_4 d-flex justify-content-between align-items-center">
                                             Nama Kantin
-                                            <a href="#" class="on_surface_color fw_7"><?php echo htmlspecialchars($nama_kantin); ?></a>
+                                            <a href="#" class="on_surface_color fw_7" id="nama-kantin"><?php echo htmlspecialchars($nama_kantin); ?></a>
                                         </h4>
                                     </li>
                                     <li>
@@ -360,6 +343,34 @@
                                 </div>
                             </div>
                         </div>
+                        <script>
+                            // Ambil username dari session PHP
+                            const usernameFromPHP = "<?php echo $username; ?>";
+
+                            // Ambil kantin_id dari localStorage
+                            const kantinId = localStorage.getItem(`currentKantinId_${usernameFromPHP}`);
+
+                            if (kantinId) {
+                                // Kirim kantin_id ke server untuk mendapatkan nama kantin
+                                fetch('get_nama_kantin.php', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/x-www-form-urlencoded',
+                                        },
+                                        body: `kantin_id=${kantinId}`
+                                    })
+                                    .then(response => response.text())
+                                    .then(namaKantin => {
+                                        // Tampilkan nama kantin di halaman
+                                        document.getElementById('nama-kantin').textContent = namaKantin;
+                                    })
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                                    });
+                            } else {
+                                console.log('Kantin ID tidak ditemukan di localStorage.');
+                            }
+                        </script>  
                     </div>
                 </div>
             </div>
