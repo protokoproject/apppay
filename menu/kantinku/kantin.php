@@ -144,6 +144,20 @@ if (!empty($kantin_id)) {
         // Kunci untuk localStorage berdasarkan username
         let storageKey = `selectedMenus_${username}`;
 
+        // Cek apakah session masih ada (dengan AJAX request ke check_session.php)
+        fetch('check_session.php')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.session_exists) {
+                    // Jika session tidak ada, hapus localStorage yang terkait dengan username
+                    localStorage.removeItem(storageKey);
+                    console.log(`LocalStorage untuk ${username} telah dihapus karena session tidak ada.`);
+                }
+            })
+            .catch(error => {
+                console.error('Error saat memeriksa session:', error);
+            });
+
         // Ambil data dari localStorage atau inisialisasi array kosong
         let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
 

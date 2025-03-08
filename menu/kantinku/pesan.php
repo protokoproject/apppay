@@ -192,25 +192,29 @@
                         totalPrice += price * menu.quantity;
 
                         orderList.innerHTML += `
-                <li class="list-card-invoice">
-                    <div class="content-left">
-                        <span class="order-quantity-text">${menu.quantity}x</span>
-                        <div class="menu-info">
-                            <h4>${menu.name}</h4>
-                            <p>${menu.price}</p>
-                        </div>
+            <li class="list-card-invoice">
+                <div class="content-left">
+                    <span class="order-quantity-text">${menu.quantity}x</span>
+                    <div class="menu-info">
+                        <h4>${menu.name}</h4>
+                        <p>${menu.price}</p>
                     </div>
-                    <div class="quantity-control">
-                        <button class="btn-minus" onclick="changeQuantity('${menu.name}', -1)">−</button>
-                        <span class="order-quantity">${menu.quantity}</span>
-                        <button class="btn-plus" onclick="changeQuantity('${menu.name}', 1)">+</button>
-                    </div>
-                </li>
-            `;
+                </div>
+                <div class="quantity-control">
+                    <button class="btn-minus" onclick="changeQuantity('${menu.name}', -1)">−</button>
+                    <span class="order-quantity">${menu.quantity}</span>
+                    <button class="btn-plus" onclick="changeQuantity('${menu.name}', 1)">+</button>
+                </div>
+            </li>
+        `;
                     });
 
                     // Menampilkan total harga
                     document.getElementById('total-price').textContent = formatRupiah(totalPrice);
+
+                    // Update jumlah dan total di Detail Pembayaran
+                    document.getElementById('jumlah-pembayaran').textContent = formatRupiah(totalPrice);
+                    document.getElementById('total-pembayaran').textContent = formatRupiah(totalPrice);
                 }
 
                 // Fungsi untuk mengubah jumlah pesanan
@@ -260,6 +264,48 @@
                                 </div>
                             </div>
                         </div>
+
+                        <?php
+                        include '../../conn/koneksi.php'; // Pastikan file koneksi database sudah terhubung
+
+                        // Mengambil data dari session
+                        $username = $_SESSION['username'];
+                        $kd_sts_user = $_SESSION['kd_sts_user'];
+
+                        // Inisialisasi variabel
+                        $nama_siswa = "Nama Siswa Tidak Ditemukan";
+                        $kelas = "Kelas Tidak Ditemukan";
+                        $nama_kantin = "Nama Kantin Tidak Ditemukan";
+
+                        // Jika pengguna adalah admin
+                        if ($kd_sts_user == 1) {
+                            $nama_siswa = "Admin";
+                            $kelas = "Admin";
+                        } else {
+                            // Query untuk mengambil data siswa dan kelas
+                            $query = "
+        SELECT 
+            tm.nm_murid AS nama_siswa, 
+            tk.nm_kelas AS kelas, 
+            tkn.nm_kantin AS nama_kantin
+        FROM t_user tu
+        JOIN t_murid tm ON tu.id_user = tm.id_user
+        JOIN t_klsmrd tkm ON tm.id_mrd = tkm.id_mrd
+        JOIN t_kelas tk ON tkm.id_kls = tk.id_kls
+        LEFT JOIN t_kantin tkn ON tm.id_kantin = tkn.id_kantin
+        WHERE tu.username = '$username'
+    ";
+                            $result = mysqli_query($koneksi, $query);
+
+                            if ($result && mysqli_num_rows($result) > 0) {
+                                $row = mysqli_fetch_assoc($result);
+                                $nama_siswa = $row['nama_siswa'];
+                                $kelas = $row['kelas'];
+                                $nama_kantin = $row['nama_kantin'];
+                            }
+                        }
+                        ?>
+
                         <div class="main-topup">
                             <div class="tf-container">
                                 <h3>Detail Pembayaran</h3>
@@ -269,8 +315,8 @@
                                             <img src="images/logo-banks/card-visa3.png" alt="image" />
                                         </div>
                                         <div class="content">
-                                            <h4><a href="#" class="fw_6">Nama Siswa</a></h4>
-                                            <p>Kelas</p>
+                                            <h4><a href="#" class="fw_6"><?php echo htmlspecialchars($nama_siswa); ?></a></h4>
+                                            <p><?php echo htmlspecialchars($kelas); ?></p>
                                         </div>
                                     </div>
                                     <i class="icon-right"></i>
@@ -279,13 +325,13 @@
                                     <li>
                                         <h4 class="secondary_color fw_4 d-flex justify-content-between align-items-center">
                                             Jumlah
-                                            <a href="#" class="on_surface_color fw_7">Rp. 100.000</a>
+                                            <a href="#" class="on_surface_color fw_7" id="jumlah-pembayaran">Rp. 0</a>
                                         </h4>
                                     </li>
                                     <li>
                                         <h4 class="secondary_color fw_4 d-flex justify-content-between align-items-center">
                                             Nama Kantin
-                                            <a href="#" class="on_surface_color fw_7">Warung ABC</a>
+                                            <a href="#" class="on_surface_color fw_7"><?php echo htmlspecialchars($nama_kantin); ?></a>
                                         </h4>
                                     </li>
                                     <li>
@@ -297,7 +343,7 @@
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="total">
                                         <h4 class="secondary_color fw_4">Total</h4>
-                                        <h2>Rp. 100.000</h2>
+                                        <h2 id="total-pembayaran">Rp. 0</h2>
                                     </div>
                                     <a href="struk.php" class="tf-btn accent large"><i class="icon-secure1"></i>Bayar</a>
                                 </div>
