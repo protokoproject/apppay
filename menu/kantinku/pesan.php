@@ -166,10 +166,10 @@
                     </div>
                     <input type="hidden" id="username" value="<?php echo $_SESSION['username']; ?>">
                 </div>
-                <div class="group-input">
+                <!-- <div class="group-input">
                     <label>Message</label>
                     <input type="text" placeholder="Placeholder">
-                </div>
+                </div> -->
             </div>
 
             <script>
@@ -281,24 +281,38 @@
                         if ($kd_sts_user == 1) {
                             $nama_siswa = "Admin";
                             $kelas = "Admin";
-                        } else {
-                            // Query untuk mengambil data siswa dan kelas
-                            $query = "
-        SELECT 
-            tm.nm_murid AS nama_siswa, 
-            tk.nm_kelas AS kelas
-        FROM tb_user tu
-        JOIN t_murid tm ON tu.id_user = tm.id_user
-        JOIN t_klsmrd tkm ON tm.id_mrd = tkm.id_mrd
-        JOIN t_kelas tk ON tkm.id_kls = tk.id_kls
-        WHERE tu.username = '$username'
-    ";
-                            $result = mysqli_query($koneksi, $query);
+                        } else if ($kd_sts_user == 7) {
+                            // Query untuk mengambil id_user dari tb_user berdasarkan username
+                            $query_user = "SELECT id_user FROM tb_user WHERE username = '$username'";
+                            $result_user = mysqli_query($koneksi, $query_user);
 
-                            if ($result && mysqli_num_rows($result) > 0) {
-                                $row = mysqli_fetch_assoc($result);
-                                $nama_siswa = $row['nama_siswa'];
-                                $kelas = $row['kelas'];
+                            if ($result_user && mysqli_num_rows($result_user) > 0) {
+                                $row_user = mysqli_fetch_assoc($result_user);
+                                $id_user = $row_user['id_user'];
+
+                                // Query untuk mengambil nama siswa (nm_murid) dari t_murid berdasarkan id_user
+                                $query_murid = "SELECT nm_murid FROM t_murid WHERE id_user = '$id_user'";
+                                $result_murid = mysqli_query($koneksi, $query_murid);
+
+                                if ($result_murid && mysqli_num_rows($result_murid) > 0) {
+                                    $row_murid = mysqli_fetch_assoc($result_murid);
+                                    $nama_siswa = $row_murid['nm_murid'];
+                                }
+
+                                // Query untuk mengambil kelas dari t_klsmrd dan t_kelas berdasarkan id_user
+                                $query_kelas = "
+            SELECT tk.nm_kelas AS kelas
+            FROM t_klsmrd tkm
+            JOIN t_kelas tk ON tkm.id_kls = tk.id_kls
+            JOIN t_murid tm ON tkm.id_mrd = tm.id_mrd
+            WHERE tm.id_user = '$id_user'
+        ";
+                                $result_kelas = mysqli_query($koneksi, $query_kelas);
+
+                                if ($result_kelas && mysqli_num_rows($result_kelas) > 0) {
+                                    $row_kelas = mysqli_fetch_assoc($result_kelas);
+                                    $kelas = $row_kelas['kelas'];
+                                }
                             }
                         }
                         ?>
@@ -343,6 +357,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <script>
                             // Ambil username dari session PHP
                             const usernameFromPHP = "<?php echo $username; ?>";
@@ -370,7 +385,7 @@
                             } else {
                                 console.log('Kantin ID tidak ditemukan di localStorage.');
                             }
-                        </script>  
+                        </script>
                     </div>
                 </div>
             </div>
