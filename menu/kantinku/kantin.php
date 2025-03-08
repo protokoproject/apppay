@@ -138,19 +138,21 @@ if (!empty($kantin_id)) {
         // Ambil username dari elemen HTML
         let username = document.getElementById("username").value;
 
-        // Kunci untuk localStorage berdasarkan username
-        let storageKey = `selectedMenus_${username}`;
-        let kantinKey = `selectedKantin_${username}`;
+        // Ambil kantin_id dari URL
+        let urlParams = new URLSearchParams(window.location.search);
+        let kantinId = urlParams.get('kantin_id');
+
+        // Kunci untuk localStorage berdasarkan username dan kantin_id
+        let storageKey = `selectedMenus_${username}_${kantinId}`;
 
         // Cek apakah session masih ada (dengan AJAX request ke check_session.php)
         fetch('check_session.php')
             .then(response => response.json())
             .then(data => {
                 if (!data.session_exists) {
-                    // Jika session tidak ada, hapus localStorage yang terkait dengan username
+                    // Jika session tidak ada, hapus localStorage yang terkait dengan username dan kantin_id
                     localStorage.removeItem(storageKey);
-                    localStorage.removeItem(kantinKey);
-                    console.log(`LocalStorage untuk ${username} telah dihapus karena session tidak ada.`);
+                    console.log(`LocalStorage untuk ${username} dan kantin ${kantinId} telah dihapus karena session tidak ada.`);
                 }
             })
             .catch(error => {
@@ -159,17 +161,14 @@ if (!empty($kantin_id)) {
 
         // Ambil data dari localStorage atau inisialisasi array kosong
         let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
-        let selectedKantin = localStorage.getItem(kantinKey);
 
         // Tampilkan data yang tersimpan di localStorage di console
-        console.log(`Menu yang tersimpan untuk ${username}:`, selectedMenus);
-        console.log(`Kantin yang tersimpan untuk ${username}:`, selectedKantin);
+        console.log(`Menu yang tersimpan untuk ${username} dan kantin ${kantinId}:`, selectedMenus);
 
         // Fungsi untuk memulihkan status checkbox berdasarkan data di localStorage
         function restoreCheckedMenus() {
             let checkboxes = document.querySelectorAll('.tf-checkbox');
             let storedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
-            let kantinId = document.getElementById("kantin").value;
 
             checkboxes.forEach(checkbox => {
                 let menuItem = checkbox.closest('li');
@@ -184,36 +183,13 @@ if (!empty($kantin_id)) {
             });
 
             // Tampilkan data yang dipulihkan di console
-            console.log(`Menu yang dipulihkan untuk ${username}:`, storedMenus);
+            console.log(`Menu yang dipulihkan untuk ${username} dan kantin ${kantinId}:`, storedMenus);
         }
 
         // Panggil restoreCheckedMenus saat halaman selesai dimuat
         window.onload = function() {
             restoreCheckedMenus();
         };
-
-        document.getElementById("kantin").addEventListener("change", function() {
-            let kantinId = this.value;
-            localStorage.setItem(kantinKey, kantinId); // Simpan kantin_id hanya sekali
-            let menuContainer = document.getElementById("menu-container");
-            let menuList = document.getElementById("menu-list");
-
-            if (kantinId) {
-                window.location.href = "kantin.php?kantin_id=" + kantinId;
-                let xhr = new XMLHttpRequest();
-                xhr.open("GET", "kantin.php?kantin_id=" + kantinId, true);
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState == 4 && xhr.status == 200) {
-                        menuList.innerHTML = xhr.responseText;
-                        menuContainer.style.display = "block";
-                        restoreCheckedMenus(); // Memulihkan status checkbox yang sebelumnya dipilih
-                    }
-                };
-                xhr.send();
-            } else {
-                menuContainer.style.display = "none";
-            }
-        });
 
         document.getElementById("search-menu").addEventListener("input", function() {
             let searchText = this.value.toLowerCase();
@@ -246,7 +222,7 @@ if (!empty($kantin_id)) {
                 localStorage.setItem(storageKey, JSON.stringify(selectedMenus));
 
                 // Tampilkan data yang diperbarui di console
-                console.log(`Menu yang tersimpan untuk ${username}:`, selectedMenus);
+                console.log(`Menu yang tersimpan untuk ${username} dan kantin ${kantinId}:`, selectedMenus);
             }
         });
 
