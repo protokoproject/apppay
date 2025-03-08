@@ -92,33 +92,30 @@ if (!empty($kantin_id)) {
                     <h3>Rp. 3.000.000</h3>
                 </div>
                 <div class="tf-spacing-16"></div>
-                <div class="tf-form">
-                    <div class="group-input input-field">
-                        <select id="kantin">
-                            <option value="">Pilih Kantin</option>
-                            <?php
-                            $sql = "SELECT id_kantin, nm_kantin FROM t_kantin";
-                            $result = $koneksi->query($sql);
-                            while ($row = $result->fetch_assoc()) {
-                                $selected = ($row["id_kantin"] == $kantin_id) ? "selected" : "";
-                                echo '<option value="' . $row["id_kantin"] . '" ' . $selected . '>' . htmlspecialchars($row["nm_kantin"]) . '</option>';
-                            }
-                            ?>
-                        </select>
-                        <script>
-                            new TomSelect("#kantin", {
-                                maxOptions: null, // Tidak membatasi jumlah opsi yang bisa dipilih
-                                dropdownParent: 'body', // Memastikan dropdown tidak terpotong
-                                render: {
-                                    option: function(data, escape) {
-                                        return `<div class="custom-option">${escape(data.text)}</div>`;
-                                    }
-                                }
-                            });
-                        </script>
+                <div class="d-flex justify-content-between align-items-center">
+                    <?php
+                    // Pastikan file koneksi.php sudah di-include
+                    include '../../conn/koneksi.php';
+
+                    // Ambil id_kantin dari URL
+                    $id_kantin = isset($_GET['kantin_id']) ? intval($_GET['kantin_id']) : 0;
+
+                    // Query untuk mengambil nama kantin berdasarkan id_kantin
+                    $query = "SELECT nm_kantin FROM t_kantin WHERE id_kantin = ?";
+                    $stmt = $koneksi->prepare($query);
+                    $stmt->bind_param("i", $id_kantin);
+                    $stmt->execute();
+                    $stmt->bind_result($nm_kantin);
+                    $stmt->fetch();
+                    $stmt->close();
+                    ?>
+
+                    <div class="inner-left d-flex justify-content-between align-items-center">
+                        <p class="fw_7 on_surface_color">Nama Kantin: <?php echo htmlspecialchars($nm_kantin); ?></p>
                     </div>
                 </div>
             </div>
+
         </div>
         <div class="bottom-navigation-bar">
             <div class="tf-container">
