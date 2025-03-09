@@ -103,103 +103,60 @@ $result_status_user = mysqli_query($koneksi, $query_status_user);
     <link rel="manifest" href="../../_manifest.json" data-pwa-version="set_in_manifest_and_pwa_js">
     <link rel="apple-touch-icon" sizes="192x192" href="../../app/icons/icon-192x192.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Select2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
-    <!-- Select2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css">
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* Menyamakan TomSelect dengan input */
+        .tomselect {
+            width: 100% !important;
+            height: 40px !important;
+            /* Sesuaikan dengan input */
+            border-radius: 8px !important;
+            border: 1px solid #ccc !important;
+            font-size: 14px !important;
+            /* Ukuran font lebih kecil */
+            padding: 8px 12px !important;
+            background-color: white !important;
+            box-sizing: border-box !important;
+            position: relative;
         }
 
-        .tf-trading-history {
-            display: block;
-            text-decoration: none;
-            color: inherit;
-            width: 100%;
-            padding: 15px;
-        }
-
-        .container {
+        /* Memastikan dropdown TomSelect juga memiliki gaya yang seragam */
+        .ts-control {
+            border-radius: 8px !important;
+            height: 40px !important;
+            padding: 8px 12px !important;
+            font-size: 14px !important;
+            border: 1px solid #ccc !important;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            position: relative;
         }
 
-        .inner-left {
-            display: flex;
-            align-items: center;
-        }
-
-        .icon-box {
-            margin-right: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background-color: #f2f2f2;
-            border-radius: 50%;
-        }
-
-        .icon-box i {
-            font-size: 20px;
-            color: #333;
-        }
-
-        .content h4 {
-            margin: 0;
-            font-size: 16px;
-        }
-
-        .content p {
-            margin: 0;
-            font-size: 14px;
-            color: #888;
-        }
-
-        .num-val {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            /* Space between edit and delete buttons */
-        }
-
-        .num-val a {
-            color: #333;
-            font-size: 18px;
-            text-decoration: none;
-        }
-
-        .num-val a i {
-            cursor: pointer;
-        }
-
-        .tf-navigation-bar {
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-top: 1px solid #ddd;
-            background-color: #fff;
-        }
-
-        .tf-navigation-bar li {
-            list-style: none;
-        }
-
-        .tf-navigation-bar a {
-            text-align: center;
-            color: #717171;
+        /* Menambahkan ikon dropdown di sebelah kanan */
+        .ts-control::after {
+            content: "▼";
+            /* Icon dropdown */
             font-size: 12px;
-            text-decoration: none;
+            /* Ukuran lebih kecil */
+            position: absolute;
+            right: 12px;
+            color: #888;
+            pointer-events: none;
+            /* Supaya tidak bisa diklik */
         }
 
-        .tf-navigation-bar .active a {
-            color: #000;
-            font-weight: bold;
+        /* Menyamakan tampilan dropdown list */
+        .ts-dropdown {
+            border-radius: 8px !important;
+            font-size: 14px !important;
+            border: 1px solid #ccc !important;
+        }
+
+        /* Mengatur item dalam dropdown */
+        .ts-dropdown .option {
+            font-size: 14px !important;
+            padding: 8px 12px !important;
         }
     </style>
 </head>
@@ -244,7 +201,7 @@ $result_status_user = mysqli_query($koneksi, $query_status_user);
                                 </div>
                                 <div>
                                     <label for="kd_bgn">Bagian</label>
-                                    <select id="kd_bgn" name="kd_bgn" class="select2" required>
+                                    <select id="kd_bgn" name="kd_bgn" class="select-wrapper" required>
                                         <option value="">--Pilih Bagian--</option>
                                         <?php while ($row = mysqli_fetch_assoc($result_bagian)) : ?>
                                             <option value="<?= $row['kd_bgn']; ?>" <?= ($user['kd_bgn'] == $row['kd_bgn']) ? 'selected' : ''; ?>>
@@ -256,7 +213,7 @@ $result_status_user = mysqli_query($koneksi, $query_status_user);
 
                                 <div>
                                     <label for="id_app">App</label>
-                                    <select id="id_app" name="id_app" class="select2" required>
+                                    <select id="id_app" name="id_app" class="select-wrapper" required>
                                         <option value="">--Pilih App--</option>
                                         <?php while ($row = mysqli_fetch_assoc($result_app)) : ?>
                                             <option value="<?= $row['id_app']; ?>" <?= ($user['id_app'] == $row['id_app']) ? 'selected' : ''; ?>>
@@ -268,7 +225,7 @@ $result_status_user = mysqli_query($koneksi, $query_status_user);
 
                                 <div>
                                     <label for="kd_sts_user">Status User</label>
-                                    <select id="kd_sts_user" name="kd_sts_user" class="select2" required>
+                                    <select id="kd_sts_user" name="kd_sts_user" class="select-wrapper" required>
                                         <option value="">--Pilih Status User--</option>
                                         <?php while ($row = mysqli_fetch_assoc($result_status_user)) : ?>
                                             <option value="<?= $row['kd_sts_user']; ?>" <?= ($user['kd_sts_user'] == $row['kd_sts_user']) ? 'selected' : ''; ?>>
@@ -277,15 +234,6 @@ $result_status_user = mysqli_query($koneksi, $query_status_user);
                                         <?php endwhile; ?>
                                     </select>
                                 </div>
-                                <script>
-                                    $(document).ready(function() {
-                                        $('.select2').select2({
-                                            placeholder: "--Pilih Opsi--",
-                                            allowClear: true,
-                                            minimumResultsForSearch: 0 // Tetap aktifkan pencarian meskipun opsi sedikit
-                                        });
-                                    });
-                                </script>
                                 <div class="form-group">
                                     <button type="submit" class="mt-3 tf-btn accent small" style="width: 20%;" name="simpan">Simpan</button>
                                 </div>
@@ -390,6 +338,29 @@ $result_status_user = mysqli_query($koneksi, $query_status_user);
     <script type="text/javascript" src="../../javascript/swiper-bundle.min.js"></script>
     <script type="text/javascript" src="../../javascript/swiper.js"></script>
     <script type="text/javascript" src="../../javascript/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll("select").forEach(function(select) {
+                let ts = new TomSelect(select, {
+                    placeholder: "Pilih salah satu...",
+                    create: false,
+                    allowEmptyOption: true, // Tetap biarkan opsi kosong
+                    maxItems: 1,
+                    hideSelected: true,
+                    dropdownParent: "body", // Pastikan dropdown tidak berantakan
+                });
+
+                // Tambahkan scrollbar jika lebih dari 4 opsi
+                let optionCount = select.options.length;
+                if (optionCount > 4) {
+                    let dropdown = ts.dropdown_content;
+                    dropdown.style.maxHeight = "150px"; // Batasi tinggi dropdown
+                    dropdown.style.overflowY = "auto"; // Tambahkan scrollbar jika lebih dari 4 opsi
+                }
+            });
+        });
+    </script>
 
 </body>
 
