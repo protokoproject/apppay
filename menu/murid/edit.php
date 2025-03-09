@@ -88,9 +88,9 @@ if (isset($_POST['update'])) {
             }
 
             if ($queryKlsMrd) {
-                echo "<script>alert('Data murid berhasil diperbarui!'); window.location.href='murid.php';</script>";
+                echo "<script>alert('Data berhasil diperbarui!'); window.location.href='murid.php';</script>";
             } else {
-                echo "<script>alert('Gagal memperbarui kelas di t_klsmrd: " . mysqli_error($koneksi) . "'); window.history.back();</script>";
+                echo "<script>alert('Data gagal memperbarui kelas di t_klsmrd: " . mysqli_error($koneksi) . "'); window.history.back();</script>";
             }
         } else {
             echo "<script>alert('Gagal memperbarui data di t_murid: " . mysqli_error($koneksi) . "'); window.history.back();</script>";
@@ -123,6 +123,62 @@ if (isset($_POST['update'])) {
     <link rel="manifest" href="../../_manifest.json" data-pwa-version="set_in_manifest_and_pwa_js">
     <link rel="apple-touch-icon" sizes="192x192" href="../../app/icons/icon-192x192.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css">
+
+    <style>
+        /* Menyamakan TomSelect dengan input */
+        .tomselect {
+            width: 100% !important;
+            height: 40px !important;
+            /* Sesuaikan dengan input */
+            border-radius: 8px !important;
+            border: 1px solid #ccc !important;
+            font-size: 14px !important;
+            /* Ukuran font lebih kecil */
+            padding: 8px 12px !important;
+            background-color: white !important;
+            box-sizing: border-box !important;
+            position: relative;
+        }
+
+        /* Memastikan dropdown TomSelect juga memiliki gaya yang seragam */
+        .ts-control {
+            border-radius: 8px !important;
+            height: 40px !important;
+            padding: 8px 12px !important;
+            font-size: 14px !important;
+            border: 1px solid #ccc !important;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Menambahkan ikon dropdown di sebelah kanan */
+        .ts-control::after {
+            content: "▼";
+            /* Icon dropdown */
+            font-size: 12px;
+            /* Ukuran lebih kecil */
+            position: absolute;
+            right: 12px;
+            color: #888;
+            pointer-events: none;
+            /* Supaya tidak bisa diklik */
+        }
+
+        /* Menyamakan tampilan dropdown list */
+        .ts-dropdown {
+            border-radius: 8px !important;
+            font-size: 14px !important;
+            border: 1px solid #ccc !important;
+        }
+
+        /* Mengatur item dalam dropdown */
+        .ts-dropdown .option {
+            font-size: 14px !important;
+            padding: 8px 12px !important;
+        }
+    </style>
 </head>
 
 <body class="bg_surface_color">
@@ -156,7 +212,7 @@ if (isset($_POST['update'])) {
                         </div>
                         <div class="group-input">
                             <label for="nm_ortu">Nama Orang Tua</label>
-                            <select name="id_ortu" id="id_ortu" class="form-control" required>
+                            <select name="id_ortu" id="id_ortu" class="select-wrapper" required>
                                 <option value="" disabled>Pilih Nama Orang Tua</option>
                                 <?php while ($ortu = mysqli_fetch_assoc($queryOrtu)) {
                                     echo "<option value='{$ortu['id_ortu']}' " . ($ortu['id_ortu'] == $id_ortu ? 'selected' : '') . ">{$ortu['nm_ortu']}</option>";
@@ -165,7 +221,7 @@ if (isset($_POST['update'])) {
                         </div>
                         <div class="group-input">
                             <label for="kls_aktif">Kelas</label>
-                            <select name="kls_aktif" id="kls_aktif" class="form-control" required>
+                            <select name="kls_aktif" id="kls_aktif" class="select-wrapper" required>
                                 <option value="" disabled>Pilih Kelas</option>
                                 <?php while ($kelas = mysqli_fetch_assoc($queryKelas)) {
                                     echo "<option value='{$kelas['id_kls']}' " . ($kelas['id_kls'] == $kls_aktif ? 'selected' : '') . ">{$kelas['nm_kls']}</option>";
@@ -202,6 +258,29 @@ if (isset($_POST['update'])) {
     <script type="text/javascript" src="../../javascript/swiper-bundle.min.js"></script>
     <script type="text/javascript" src="../../javascript/swiper.js"></script>
     <script type="text/javascript" src="../../javascript/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll("select").forEach(function(select) {
+                let ts = new TomSelect(select, {
+                    placeholder: "Pilih salah satu...",
+                    create: false,
+                    allowEmptyOption: true, // Tetap biarkan opsi kosong
+                    maxItems: 1,
+                    hideSelected: true,
+                    dropdownParent: "body", // Pastikan dropdown tidak berantakan
+                });
+
+                // Tambahkan scrollbar jika lebih dari 4 opsi
+                let optionCount = select.options.length;
+                if (optionCount > 4) {
+                    let dropdown = ts.dropdown_content;
+                    dropdown.style.maxHeight = "150px"; // Batasi tinggi dropdown
+                    dropdown.style.overflowY = "auto"; // Tambahkan scrollbar jika lebih dari 4 opsi
+                }
+            });
+        });
+    </script>
 
 </body>
 
