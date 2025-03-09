@@ -72,6 +72,62 @@ if(isset($_POST['update'])){
     <link rel="manifest" href="../../_manifest.json" data-pwa-version="set_in_manifest_and_pwa_js">
     <link rel="apple-touch-icon" sizes="192x192" href="../../app/icons/icon-192x192.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css">
+
+    <style>
+        /* Menyamakan TomSelect dengan input */
+        .tomselect {
+            width: 100% !important;
+            height: 40px !important;
+            /* Sesuaikan dengan input */
+            border-radius: 8px !important;
+            border: 1px solid #ccc !important;
+            font-size: 14px !important;
+            /* Ukuran font lebih kecil */
+            padding: 8px 12px !important;
+            background-color: white !important;
+            box-sizing: border-box !important;
+            position: relative;
+        }
+
+        /* Memastikan dropdown TomSelect juga memiliki gaya yang seragam */
+        .ts-control {
+            border-radius: 8px !important;
+            height: 40px !important;
+            padding: 8px 12px !important;
+            font-size: 14px !important;
+            border: 1px solid #ccc !important;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Menambahkan ikon dropdown di sebelah kanan */
+        .ts-control::after {
+            content: "▼";
+            /* Icon dropdown */
+            font-size: 12px;
+            /* Ukuran lebih kecil */
+            position: absolute;
+            right: 12px;
+            color: #888;
+            pointer-events: none;
+            /* Supaya tidak bisa diklik */
+        }
+
+        /* Menyamakan tampilan dropdown list */
+        .ts-dropdown {
+            border-radius: 8px !important;
+            font-size: 14px !important;
+            border: 1px solid #ccc !important;
+        }
+
+        /* Mengatur item dalam dropdown */
+        .ts-dropdown .option {
+            font-size: 14px !important;
+            padding: 8px 12px !important;
+        }
+    </style>
 </head>
 
 <body class="bg_surface_color">
@@ -103,7 +159,7 @@ if(isset($_POST['update'])){
                         <!-- Select Wali Kelas -->
                         <div class="group-input">
                             <label>Wali Kelas</label>
-                            <select name="wali_kelas">
+                            <select name="wali_kelas" class="select-wrapper">
                                 <option value="" disabled>Pilih Wali Kelas</option>
                                 <?php
                                 // Menampilkan opsi wali kelas
@@ -118,7 +174,7 @@ if(isset($_POST['update'])){
                         <!-- Select Tahun Ajaran -->
                         <div class="group-input">
                             <label>Tahun Ajaran</label>
-                            <select name="tahun_ajaran">
+                            <select name="tahun_ajaran" class="select-wrapper">
                                 <option value="" disabled>Pilih Tahun Ajaran</option>
                                 <?php
                                 // Menampilkan opsi tahun ajaran
@@ -155,6 +211,29 @@ if(isset($_POST['update'])){
     <script type="text/javascript" src="../../javascript/swiper-bundle.min.js"></script>
     <script type="text/javascript" src="../../javascript/swiper.js"></script>
     <script type="text/javascript" src="../../javascript/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll("select").forEach(function(select) {
+                let ts = new TomSelect(select, {
+                    placeholder: "Pilih salah satu...",
+                    create: false,
+                    allowEmptyOption: true, // Tetap biarkan opsi kosong
+                    maxItems: 1,
+                    hideSelected: true,
+                    dropdownParent: "body", // Pastikan dropdown tidak berantakan
+                });
+
+                // Tambahkan scrollbar jika lebih dari 4 opsi
+                let optionCount = select.options.length;
+                if (optionCount > 4) {
+                    let dropdown = ts.dropdown_content;
+                    dropdown.style.maxHeight = "150px"; // Batasi tinggi dropdown
+                    dropdown.style.overflowY = "auto"; // Tambahkan scrollbar jika lebih dari 4 opsi
+                }
+            });
+        });
+    </script>
 
 </body>
 

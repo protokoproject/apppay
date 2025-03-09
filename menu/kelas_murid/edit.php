@@ -161,7 +161,62 @@ if (isset($_POST['update'])) {
                         <!-- Pilih Kelas -->
                         <div class="group-input mb-3">
                             <label for="kelas" class="form-label">Pilih Kelas</label>
-                            <select class="select-wrapper" id="kelas" name="kelas" required>
+                            <select <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css">
+
+<style>
+    /* Menyamakan TomSelect dengan input */
+    .tomselect {
+        width: 100% !important;
+        height: 40px !important;
+        /* Sesuaikan dengan input */
+        border-radius: 8px !important;
+        border: 1px solid #ccc !important;
+        font-size: 14px !important;
+        /* Ukuran font lebih kecil */
+        padding: 8px 12px !important;
+        background-color: white !important;
+        box-sizing: border-box !important;
+        position: relative;
+    }
+
+    /* Memastikan dropdown TomSelect juga memiliki gaya yang seragam */
+    .ts-control {
+        border-radius: 8px !important;
+        height: 40px !important;
+        padding: 8px 12px !important;
+        font-size: 14px !important;
+        border: 1px solid #ccc !important;
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    /* Menambahkan ikon dropdown di sebelah kanan */
+    .ts-control::after {
+        content: "▼";
+        /* Icon dropdown */
+        font-size: 12px;
+        /* Ukuran lebih kecil */
+        position: absolute;
+        right: 12px;
+        color: #888;
+        pointer-events: none;
+        /* Supaya tidak bisa diklik */
+    }
+
+    /* Menyamakan tampilan dropdown list */
+    .ts-dropdown {
+        border-radius: 8px !important;
+        font-size: 14px !important;
+        border: 1px solid #ccc !important;
+    }
+
+    /* Mengatur item dalam dropdown */
+    .ts-dropdown .option {
+        font-size: 14px !important;
+        padding: 8px 12px !important;
+    }
+</style> id="kelas" name="kelas" required>
                                 <option value="" disabled>Pilih Kelas</option>
                                 <?php
                                 $kelas_query = mysqli_query($koneksi, "SELECT id_kls, nm_kls FROM t_kelas");
