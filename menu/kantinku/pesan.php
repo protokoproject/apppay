@@ -172,83 +172,6 @@
                 </div> -->
             </div>
 
-            <script>
-                // Ambil username dari elemen HTML
-                let username = document.getElementById("username").value;
-
-                // Kunci untuk localStorage berdasarkan username
-                let storageKey = `selectedMenus_${username}`;
-
-                // Fungsi untuk memperbarui daftar pesanan
-                function updateOrderList() {
-                    let orderList = document.getElementById('order-list');
-                    let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
-                    orderList.innerHTML = '';
-                    let totalPrice = 0;
-
-                    selectedMenus.forEach(menu => {
-                        // Menghitung total harga setiap item berdasarkan jumlah dan harga
-                        let price = parseInt(menu.price.replace(/[^0-9]/g, ''));
-                        totalPrice += price * menu.quantity;
-
-                        orderList.innerHTML += `
-            <li class="list-card-invoice">
-                <div class="content-left">
-                    <span class="order-quantity-text">${menu.quantity}x</span>
-                    <div class="menu-info">
-                        <h4>${menu.name}</h4>
-                        <p>${menu.price}</p>
-                    </div>
-                </div>
-                <div class="quantity-control">
-                    <button class="btn-minus" onclick="changeQuantity('${menu.name}', -1)">−</button>
-                    <span class="order-quantity">${menu.quantity}</span>
-                    <button class="btn-plus" onclick="changeQuantity('${menu.name}', 1)">+</button>
-                </div>
-            </li>
-        `;
-                    });
-
-                    // Menampilkan total harga
-                    document.getElementById('total-price').textContent = formatRupiah(totalPrice);
-
-                    // Update jumlah dan total di Detail Pembayaran
-                    document.getElementById('jumlah-pembayaran').textContent = formatRupiah(totalPrice);
-                    document.getElementById('total-pembayaran').textContent = formatRupiah(totalPrice);
-                }
-
-                // Fungsi untuk mengubah jumlah pesanan
-                function changeQuantity(menuName, delta) {
-                    let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
-                    selectedMenus = selectedMenus.map(menu => {
-                        if (menu.name === menuName) {
-                            menu.quantity = Math.max(1, menu.quantity + delta);
-                        }
-                        return menu;
-                    });
-                    localStorage.setItem(storageKey, JSON.stringify(selectedMenus));
-                    updateOrderList();
-                }
-
-                // Set quantity default ke 1 untuk setiap item baru yang dipilih
-                window.onload = function() {
-                    let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
-                    selectedMenus = selectedMenus.map(menu => {
-                        if (!menu.quantity) {
-                            menu.quantity = 1; // Tetapkan quantity default menjadi 1
-                        }
-                        return menu;
-                    });
-                    localStorage.setItem(storageKey, JSON.stringify(selectedMenus));
-                    updateOrderList();
-                };
-
-                // Fungsi untuk memformat angka menjadi format Rupiah
-                function formatRupiah(angka) {
-                    return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                }
-            </script>
-
             <div class="bottom-navigation-bar bottom-btn-fixed">
                 <div class="tf-container">
                     <a href="#" id="btn-popup-up" class="tf-btn accent large">Selanjutnya</a>
@@ -375,6 +298,81 @@
                         </div>
 
                         <script>
+                            // Ambil username dari elemen HTML
+                            let username = document.getElementById("username").value;
+
+                            // Kunci untuk localStorage berdasarkan username
+                            let storageKey = `selectedMenus_${username}`;
+
+                            // Fungsi untuk memperbarui daftar pesanan
+                            function updateOrderList() {
+                                let orderList = document.getElementById('order-list');
+                                let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
+                                orderList.innerHTML = '';
+                                let totalPrice = 0;
+
+                                selectedMenus.forEach(menu => {
+                                    // Menghitung total harga setiap item berdasarkan jumlah dan harga
+                                    let price = parseInt(menu.price.replace(/[^0-9]/g, ''));
+                                    totalPrice += price * menu.quantity;
+
+                                    orderList.innerHTML += `
+<li class="list-card-invoice">
+<div class="content-left">
+    <span class="order-quantity-text">${menu.quantity}x</span>
+    <div class="menu-info">
+        <h4>${menu.name}</h4>
+        <p>${menu.price}</p>
+    </div>
+</div>
+<div class="quantity-control">
+    <button class="btn-minus" onclick="changeQuantity('${menu.name}', -1)">−</button>
+    <span class="order-quantity">${menu.quantity}</span>
+    <button class="btn-plus" onclick="changeQuantity('${menu.name}', 1)">+</button>
+</div>
+</li>
+`;
+                                });
+
+                                // Menampilkan total harga
+                                document.getElementById('total-price').textContent = formatRupiah(totalPrice);
+
+                                // Update jumlah dan total di Detail Pembayaran
+                                document.getElementById('jumlah-pembayaran').textContent = formatRupiah(totalPrice);
+                                document.getElementById('total-pembayaran').textContent = formatRupiah(totalPrice);
+                            }
+
+                            // Fungsi untuk mengubah jumlah pesanan
+                            function changeQuantity(menuName, delta) {
+                                let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
+                                selectedMenus = selectedMenus.map(menu => {
+                                    if (menu.name === menuName) {
+                                        menu.quantity = Math.max(1, menu.quantity + delta);
+                                    }
+                                    return menu;
+                                });
+                                localStorage.setItem(storageKey, JSON.stringify(selectedMenus));
+                                updateOrderList();
+                            }
+
+                            // Set quantity default ke 1 untuk setiap item baru yang dipilih
+                            window.onload = function() {
+                                let selectedMenus = JSON.parse(localStorage.getItem(storageKey)) || [];
+                                selectedMenus = selectedMenus.map(menu => {
+                                    if (!menu.quantity) {
+                                        menu.quantity = 1; // Tetapkan quantity default menjadi 1
+                                    }
+                                    return menu;
+                                });
+                                localStorage.setItem(storageKey, JSON.stringify(selectedMenus));
+                                updateOrderList();
+                            };
+
+                            // Fungsi untuk memformat angka menjadi format Rupiah
+                            function formatRupiah(angka) {
+                                return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                            }
+
                             // Ambil username dari session PHP
                             const usernameFromPHP = "<?php echo $username; ?>";
 
