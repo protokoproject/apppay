@@ -292,7 +292,7 @@
                                         <h4 class="secondary_color fw_4">Total</h4>
                                         <h2 id="total-pembayaran">Rp. 0</h2>
                                     </div>
-                                    <a href="struk.php" class="tf-btn accent large"><i class="icon-secure1"></i>Bayar</a>
+                                    <a href="" id="bayar-btn" class="tf-btn accent large"><i class="icon-secure1"></i>Bayar</a>
                                 </div>
                             </div>
                         </div>
@@ -399,6 +399,58 @@
                             } else {
                                 console.log('Kantin ID tidak ditemukan di localStorage.');
                             }
+
+                            document.getElementById("bayar-btn").addEventListener("click", function(event) {
+                                event.preventDefault(); // Mencegah reload jika tombol ada dalam form
+
+                                let username = document.getElementById("username").value;
+                                let kantinId = localStorage.getItem(`currentKantinId_${username}`);
+                                let selectedMenus = JSON.parse(localStorage.getItem(`selectedMenus_${username}`)) || [];
+
+                                if (!kantinId) {
+                                    alert("Kantin ID tidak ditemukan!");
+                                    return;
+                                }
+
+                                if (selectedMenus.length === 0) {
+                                    alert("Tidak ada menu yang dipilih!");
+                                    return;
+                                }
+
+                                console.log("Mengirim data ke server:", {
+                                    kantin_id: kantinId,
+                                    menus: selectedMenus
+                                });
+
+                                fetch("proses_pembayaran.php", {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({
+                                            kantin_id: kantinId,
+                                            menus: selectedMenus
+                                        })
+                                    })
+                                    .then(response => response.json()) // Pastikan respons diubah menjadi JSON
+                                    .then(data => {
+                                        console.log("Response dari server:", data);
+
+                                        if (data.status === "success") {
+                                            alert(data.message); // Tampilkan alert sukses
+                                            localStorage.removeItem(`selectedMenus_${username}`);
+                                            setTimeout(() => {
+                                                window.location.href = data.redirect; // Redirect setelah alert
+                                            }, 1000); // Delay 1 detik untuk memberi waktu alert tampil
+                                        } else {
+                                            alert("Error: " + data.message); // Alert untuk pesan error
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error("Terjadi kesalahan:", error);
+                                        alert("Terjadi kesalahan saat memproses pembayaran.");
+                                    });
+                            });
                         </script>
                     </div>
                 </div>
