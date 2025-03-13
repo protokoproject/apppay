@@ -417,6 +417,13 @@
                                     return;
                                 }
 
+                                // Membersihkan format harga sebelum dikirim
+                                selectedMenus = selectedMenus.map(menu => ({
+                                    name: menu.name,
+                                    quantity: menu.quantity,
+                                    price: menu.price.replace(/\D/g, '') // Menghapus karakter selain angka
+                                }));
+
                                 console.log("Mengirim data ke server:", {
                                     kantin_id: kantinId,
                                     menus: selectedMenus
@@ -432,18 +439,19 @@
                                             menus: selectedMenus
                                         })
                                     })
-                                    .then(response => response.json()) // Pastikan respons diubah menjadi JSON
+                                    .then(response => response.text()) // Ubah ke .text() untuk debugging
+                                    .then(text => {
+                                        console.log("Raw response:", text);
+                                        return JSON.parse(text); // Parse setelah memastikan responsnya JSON
+                                    })
                                     .then(data => {
                                         console.log("Response dari server:", data);
-
                                         if (data.status === "success") {
-                                            alert(data.message); // Tampilkan alert sukses
+                                            alert(data.message);
                                             localStorage.removeItem(`selectedMenus_${username}`);
-                                            setTimeout(() => {
-                                                window.location.href = data.redirect; // Redirect setelah alert
-                                            }, 1000); // Delay 1 detik untuk memberi waktu alert tampil
+                                            setTimeout(() => window.location.href = data.redirect, 1000);
                                         } else {
-                                            alert("Error: " + data.message); // Alert untuk pesan error
+                                            alert("Error: " + data.message);
                                         }
                                     })
                                     .catch(error => {
