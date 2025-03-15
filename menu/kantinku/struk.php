@@ -20,9 +20,9 @@
     <link rel="apple-touch-icon" sizes="192x192" href="../../app/icons/icon-192x192.png">
 </head>
 
-<body>
-       <!-- preloade -->
-       <div class="preload preload-container">
+<body class="bg_surface_color">
+     <!-- preloade -->
+     <div class="preload preload-container">
         <div class="preload-logo">
           <div class="spinner"></div>
         </div>
@@ -31,65 +31,111 @@
     <div class="app-header st1">
         <div class="tf-container">
             <div class="tf-topbar d-flex justify-content-center align-items-center">
-                <a href="#" class="back-btn"><i class="icon-left white_color"></i></a>
-                <h3 class="white_color">Transfer</h3>
+                <a href="#" class="back-btn"> <i class="icon-left white_color"></i></a>
+                <h3 class="white_color">Struk Pembayaran</h3>
             </div>
+            <h4 class="text-center white_color fw_4 mt-5">Total</h4>
+            <h1 class="text-center white_color mt-2">Rp. 9.000,-</h1>
         </div>
     </div>
     <div class="card-secton transfer-section">
         <div class="tf-container">
-            <div class="tf-balance-box">
-                <div class="d-flex justify-content-between align-items-center">
-                    <p>Your Balance:</p>
-                    <h3>$3.466,9</h3>
-                </div>
-                <div class="tf-spacing-16"></div>
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="inner-left d-flex justify-content-between align-items-center">
-                        <img src="images/user/user15.jpg" alt="images">
-                        <p class="fw_7 on_surface_color">Themesflat</p>
+            <div class="tf-balance-box transfer-confirm" style="height: 100%;">
+                <div class="top">
+                    <p>From</p>
+                    <div class="tf-card-block d-flex align-items-center">
+                        <div class="logo-img">
+                            <img src="../../images/logo-banks/card-visa2.png" alt="images">
+                        </div>
+                        <div class="info">
+                            <h4><a href="#">Nama Murid</a></h4>
+                            <p>****  ****  ****  4234</p>
+                        </div>
                     </div>
-                    <i class="icon-down on_surface_color"></i>
                 </div>
+                <div class="line"></div>
+                <div class="bottom">
+                    <p>To</p>
+                    <div class="tf-card-block d-flex align-items-center">
+                        <img src="../../images/user/user15.jpg" alt="images">
+                        <div class="info">
+                            <h4><a href="#">Nama Kantin</a></h4>
+                            <p>****  ****  ****  2424</p>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
            
         </div>
     </div>
-    <div class="tf-spacing-20"></div>
-    <div class="transfer-content">
-            <form class="tf-form">
-                <div class="tf-container">
-
-                    <div class="group-input input-field input-money">
-                    <label for="">Amout Of Money</label>
-                    <input type="text" value="$ 5" required class="search-field value_input st1" type="text">
-                    <span class="icon-clear"></span>
-                    <div class="money">
-                       <a class="tag-money" href="#">$ 50</a>
-                       <a class="tag-money" href="#">$ 100</a> 
-                       <a class="tag-money" href="#">$ 150</a> 
-                    </div>
-                    </div>
-                    <div class="group-input">
-                    <label>Message</label>
-                    <input type="text" placeholder="Placeholder">
-                    </div>
-                </div>
-
-                <div class="bottom-navigation-bar bottom-btn-fixed">
-                    <div class="tf-container">
-                        <a href="18_payment-source.html" class="tf-btn accent large">Continue</a>
-                    </div>
-                </div>
-            </form>
-        
-      
+    <div class="transfer-list mt-5">
+        <div class="tf-container">
+            <ul class="list-view">
+                <li>
+                    Nomor Transaksi
+                    <span>TRX20250315</span>
+                </li>
+                <li>
+                   Pesanan
+                    <span>1x Air Mineral <br>1x Chiki Balls</span>
+                </li>
+                <li>
+                    Tanggal
+                    <span>15-03-2025</span>
+                </li>
+            </ul>  
+        </div>
     </div>
-  
+    <div class="bottom-navigation-bar st1 bottom-btn-fixed">
+        <div class="tf-container">
+            <a href="#" id="btn-popup-down" class="tf-btn accent large">Confirm</a>
+        </div>
+    </div>
+    
+    <div class="tf-panel down">
+        <div class="panel_overlay"></div>
+        <div class="panel-box panel-down">
+            <div class="header">
+                <div class="tf-container">
+                    <div class="tf-statusbar br-none d-flex justify-content-center align-items-center">
+                        <a href="#" class="clear-panel"> <i class="icon-close1"></i> </a>
+                        <h3>Verification OTP</h3>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="mt-5">
+                <div class="tf-container">
+                    <form class="tf-form tf-form-verify" action="22_successful.html">
+                        <div class="d-flex group-input-verify">
+                                <input type="tel" maxlength="1" pattern="[0-9]" class="input-verify" value="1">
+                                <input type="tel" maxlength="1" pattern="[0-9]" class="input-verify" value="2">
+                                <input type="tel" maxlength="1" pattern="[0-9]" class="input-verify" value="3">
+                                <input type="tel" maxlength="1" pattern="[0-9]" class="input-verify" value="4">
+                        </div>
+                        <div class="text-send-code">
+                                <p class="fw_4">A code has been sent to your phone</p>
+                                <p class="primary_color fw_7">Resend in&nbsp;<span class="js-countdown" data-timer="60" data-labels=" :  ,  : , : , "></span></p>
+                        </div>
+                        <div class="mt-7 mb-6">
+                            <button type="submit" class="tf-btn accent large">Continue</button>
+                        </div>
+                    </form>
+                </div>
+        
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript" src="../../javascript/jquery.min.js"></script>
     <script type="text/javascript" src="../../javascript/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../javascript/count-down.js"></script>
+    <script type="text/javascript" src="../../javascript/verify-input.js"></script>
     <script type="text/javascript" src="../../javascript/main.js"></script>
     <script type="text/javascript" src="../../javascript/init.js"></script>
+
     
 </body>
 
