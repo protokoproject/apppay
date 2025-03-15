@@ -1,3 +1,73 @@
+<?php
+// Include file koneksi.php
+require_once '../../conn/koneksi.php';
+
+// Ambil id_jual dari URL
+$id_jual = isset($_GET['id_jual']) ? $_GET['id_jual'] : null;
+
+if (!$id_jual) {
+    die("ID Jual tidak ditemukan!");
+}
+
+// Query untuk mengambil data dari t_jual, t_jualdtl, t_murid, t_kantin, dan t_brg
+$sql = "
+    SELECT 
+        j.nt_jual, 
+        j.tgl_jual, 
+        m.nm_murid, 
+        k.nm_kantin, 
+        b.nm_brg, 
+        jd.qty,
+        jd.hrgj
+    FROM 
+        t_jual j
+    JOIN 
+        t_murid m ON j.id_user = m.id_user
+    JOIN 
+        t_kantin k ON j.id_kantin = k.id_kantin
+    JOIN 
+        t_jualdtl jd ON j.id_jual = jd.id_jual
+    JOIN 
+        t_brg b ON jd.kd_brg = b.kd_brg
+    WHERE 
+        j.id_jual = ?
+";
+
+$stmt = $koneksi->prepare($sql);
+$stmt->bind_param("i", $id_jual);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$data = [];
+$items = [];
+$total = 0; // Inisialisasi total harga
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        // Hitung total harga berdasarkan hrgj dan qty
+        $total += intval($row['hrgj']) * intval($row['qty']);
+
+        // Simpan data lainnya
+        $data['nt_jual'] = $row['nt_jual'];
+        $data['tgl_jual'] = $row['tgl_jual'];
+        $data['nm_murid'] = $row['nm_murid'];
+        $data['nm_kantin'] = $row['nm_kantin'];
+        $items[] = [
+            'nm_brg' => $row['nm_brg'],
+            'qty' => $row['qty'],
+            'hrgj' => $row['hrgj']
+        ];
+    }
+    $data['items'] = $items;
+    $data['total'] = $total; // Simpan total harga
+} else {
+    die("Data tidak ditemukan untuk ID Jual ini.");
+}
+
+$stmt->close();
+$koneksi->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,7 +105,7 @@
                 <h3 class="white_color">Struk Pembayaran</h3>
             </div>
             <h4 class="text-center white_color fw_4 mt-5">Total</h4>
-            <h1 class="text-center white_color mt-2">Rp. 9.000,-</h1>
+            <h1 class="text-center white_color mt-2">Rp. <?= number_format($data['total'], 0, ',', '.') ?>,-</h1>
         </div>
     </div>
     <div class="card-secton transfer-section">
@@ -48,7 +118,7 @@
                             <img src="../../images/logo-banks/card-visa2.png" alt="images">
                         </div>
                         <div class="info">
-                            <h4><a href="#">Nama Murid</a></h4>
+                            <h4><a href="#"><?= $data['nm_murid'] ?></a></h4>
                             <p>****  ****  ****  4234</p>
                         </div>
                     </div>
@@ -59,14 +129,12 @@
                     <div class="tf-card-block d-flex align-items-center">
                         <img src="../../images/user/user15.jpg" alt="images">
                         <div class="info">
-                            <h4><a href="#">Nama Kantin</a></h4>
+                            <h4><a href="#"><?= $data['nm_kantin'] ?></a></h4>
                             <p>****  ****  ****  2424</p>
                         </div>
                     </div>
                 </div>
-                
             </div>
-           
         </div>
     </div>
     <div class="transfer-list mt-5">
@@ -74,15 +142,17 @@
             <ul class="list-view">
                 <li>
                     Nomor Transaksi
-                    <span>TRX20250315</span>
+                    <span><?= $data['nt_jual'] ?></span>
                 </li>
                 <li>
-                   Pesanan
-                    <span>1x Air Mineral <br>1x Chiki Balls</span>
+                    Pesanan
+                    <span><?= implode("<br>", array_map(function($item) {
+                        return "{$item['qty']}x {$item['nm_brg']} (Rp. " . number_format($item['hrgj'], 0, ',', '.') . ")";
+                    }, $data['items'])) ?></span>
                 </li>
                 <li>
                     Tanggal
-                    <span>15-03-2025</span>
+                    <span><?= $data['tgl_jual'] ?></span>
                 </li>
             </ul>  
         </div>
