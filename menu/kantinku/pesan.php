@@ -112,15 +112,56 @@
     <div class="card-secton transfer-section">
         <div class="tf-container">
             <div class="tf-balance-box">
+                <?php
+                session_start();
+                include '../../conn/koneksi.php'; // Pastikan file koneksi database sudah benar
+
+                // Pastikan user sudah login
+                if (!isset($_SESSION['username'])) {
+                    echo "<p>Silakan login terlebih dahulu.</p>";
+                    exit;
+                }
+
+                $username = $_SESSION['username'];
+
+                // Ambil id_user dari tb_user berdasarkan username
+                $queryUser = "SELECT id_user FROM tb_user WHERE username = ?";
+                $stmtUser = $koneksi->prepare($queryUser);
+                $stmtUser->bind_param("s", $username);
+                $stmtUser->execute();
+                $resultUser = $stmtUser->get_result();
+
+                if ($resultUser->num_rows > 0) {
+                    $rowUser = $resultUser->fetch_assoc();
+                    $id_user = $rowUser['id_user'];
+
+                    // Ambil saldo dari t_murid berdasarkan id_user
+                    $querySaldo = "SELECT saldo FROM t_murid WHERE id_user = ?";
+                    $stmtSaldo = $koneksi->prepare($querySaldo);
+                    $stmtSaldo->bind_param("i", $id_user);
+                    $stmtSaldo->execute();
+                    $resultSaldo = $stmtSaldo->get_result();
+
+                    if ($resultSaldo->num_rows > 0) {
+                        $rowSaldo = $resultSaldo->fetch_assoc();
+                        $saldo = number_format($rowSaldo['saldo'], 0, ',', '.');
+                    } else {
+                        $saldo = "0";
+                    }
+                } else {
+                    $saldo = "0";
+                }
+                ?>
+
                 <div class="d-flex justify-content-between align-items-center">
                     <p>Saldo:</p>
-                    <h3>3.000.000</h3>
+                    <h3>Rp. <?php echo $saldo; ?></h3>
                 </div>
+
                 <div class="tf-spacing-16"></div>
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="inner-left d-flex justify-content-between align-items-center">
                         <?php
-                        session_start();
                         include '../../conn/koneksi.php'; // Pastikan file koneksi database sudah terhubung
 
                         // Mengambil data dari session
