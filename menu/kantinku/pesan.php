@@ -448,7 +448,13 @@
                                         console.log("Response dari server:", data);
                                         if (data.status === "success") {
                                             alert(data.message);
+
+                                            // Simpan id_jual di localStorage
+                                            localStorage.setItem(`id_jual_${username}`, data.id_jual);
+
+                                            // Hapus data pesanan di localStorage
                                             localStorage.removeItem(`selectedMenus_${username}`);
+
                                             setTimeout(() => window.location.href = data.redirect, 1000);
                                         } else {
                                             alert("Error: " + data.message);

@@ -132,5 +132,6 @@ if (!$updateSaldo->execute()) {
 $updateSaldo->close();
 $koneksi->close();
 
-echo json_encode(["status" => "success", "message" => "Pembayaran berhasil!", "redirect" => "struk.php"]);
+echo json_encode(["status" => "success", "message" => "Pembayaran berhasil!", "redirect" => "struk.php", "id_jual" => $id_jual]);
+
 ?>
