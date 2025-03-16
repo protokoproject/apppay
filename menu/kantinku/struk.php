@@ -88,15 +88,16 @@ $koneksi->close();
     <link rel="stylesheet" type="text/css" href="../../styles/styles.css" />
     <link rel="manifest" href="../../_manifest.json" data-pwa-version="set_in_manifest_and_pwa_js">
     <link rel="apple-touch-icon" sizes="192x192" href="../../app/icons/icon-192x192.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body class="bg_surface_color">
-     <!-- preloade -->
-     <div class="preload preload-container">
+    <!-- preloade -->
+    <div class="preload preload-container">
         <div class="preload-logo">
-          <div class="spinner"></div>
+            <div class="spinner"></div>
         </div>
-      </div>
+    </div>
     <!-- /preload -->
     <div class="app-header st1">
         <div class="tf-container">
@@ -113,24 +114,24 @@ $koneksi->close();
             <div class="tf-balance-box transfer-confirm" style="height: 100%;">
                 <div class="top">
                     <p>From</p>
-                    <div class="tf-card-block d-flex align-items-center">
+                    <div class="tf-card-block d-flex align-items-center" style="gap: 1px;">
                         <div class="logo-img">
-                            <img src="../../images/logo-banks/card-visa2.png" alt="images">
+                            <i class="fas fa-user-graduate fa-2x"></i>
                         </div>
                         <div class="info">
                             <h4><a href="#"><?= $data['nm_murid'] ?></a></h4>
-                            <p>****  ****  ****  4234</p>
+                            <p>**** **** **** 4234</p>
                         </div>
                     </div>
                 </div>
                 <div class="line"></div>
                 <div class="bottom">
                     <p>To</p>
-                    <div class="tf-card-block d-flex align-items-center">
-                        <img src="../../images/user/user15.jpg" alt="images">
+                    <div class="tf-card-block d-flex align-items-center" style="gap: 3%;">
+                        <i class="fa-solid fa-store fa-2x"></i> <!-- Ikon Font Awesome -->
                         <div class="info">
                             <h4><a href="#"><?= $data['nm_kantin'] ?></a></h4>
-                            <p>****  ****  ****  2424</p>
+                            <p>**** **** **** 2424</p>
                         </div>
                     </div>
                 </div>
@@ -146,23 +147,23 @@ $koneksi->close();
                 </li>
                 <li>
                     Pesanan
-                    <span><?= implode("<br>", array_map(function($item) {
-                        return "{$item['qty']}x {$item['nm_brg']} (Rp. " . number_format($item['hrgj'], 0, ',', '.') . ")";
-                    }, $data['items'])) ?></span>
+                    <span><?= implode("<br>", array_map(function ($item) {
+                                return "{$item['qty']}x {$item['nm_brg']} (Rp. " . number_format($item['hrgj'], 0, ',', '.') . ")";
+                            }, $data['items'])) ?></span>
                 </li>
                 <li>
                     Tanggal
                     <span><?= $data['tgl_jual'] ?></span>
                 </li>
-            </ul>  
+            </ul>
         </div>
     </div>
     <div class="bottom-navigation-bar st1 bottom-btn-fixed">
         <div class="tf-container">
-            <a href="#" id="btn-popup-down" class="tf-btn accent large">Confirm</a>
+            <a href="../../home.php" class="tf-btn accent large">Kembali </a>
         </div>
     </div>
-    
+
     <div class="tf-panel down">
         <div class="panel_overlay"></div>
         <div class="panel-box panel-down">
@@ -172,29 +173,29 @@ $koneksi->close();
                         <a href="#" class="clear-panel"> <i class="icon-close1"></i> </a>
                         <h3>Verification OTP</h3>
                     </div>
-                    
+
                 </div>
             </div>
-            
+
             <div class="mt-5">
                 <div class="tf-container">
                     <form class="tf-form tf-form-verify" action="22_successful.html">
                         <div class="d-flex group-input-verify">
-                                <input type="tel" maxlength="1" pattern="[0-9]" class="input-verify" value="1">
-                                <input type="tel" maxlength="1" pattern="[0-9]" class="input-verify" value="2">
-                                <input type="tel" maxlength="1" pattern="[0-9]" class="input-verify" value="3">
-                                <input type="tel" maxlength="1" pattern="[0-9]" class="input-verify" value="4">
+                            <input type="tel" maxlength="1" pattern="[0-9]" class="input-verify" value="1">
+                            <input type="tel" maxlength="1" pattern="[0-9]" class="input-verify" value="2">
+                            <input type="tel" maxlength="1" pattern="[0-9]" class="input-verify" value="3">
+                            <input type="tel" maxlength="1" pattern="[0-9]" class="input-verify" value="4">
                         </div>
                         <div class="text-send-code">
-                                <p class="fw_4">A code has been sent to your phone</p>
-                                <p class="primary_color fw_7">Resend in&nbsp;<span class="js-countdown" data-timer="60" data-labels=" :  ,  : , : , "></span></p>
+                            <p class="fw_4">A code has been sent to your phone</p>
+                            <p class="primary_color fw_7">Resend in&nbsp;<span class="js-countdown" data-timer="60" data-labels=" :  ,  : , : , "></span></p>
                         </div>
                         <div class="mt-7 mb-6">
                             <button type="submit" class="tf-btn accent large">Continue</button>
                         </div>
                     </form>
                 </div>
-        
+
             </div>
         </div>
     </div>
@@ -206,7 +207,7 @@ $koneksi->close();
     <script type="text/javascript" src="../../javascript/main.js"></script>
     <script type="text/javascript" src="../../javascript/init.js"></script>
 
-    
+
 </body>
 
 </html>
