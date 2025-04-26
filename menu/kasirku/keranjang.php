@@ -250,7 +250,7 @@
                                         <h4 class="secondary_color fw_4">Total</h4>
                                         <h2 id="total-pembayaran">Rp. 0</h2>
                                     </div>
-                                    <a href="" id="bayar-btn" class="tf-btn accent large"><i class="icon-secure1"></i>Bayar</a>
+                                    <a href="bayar.php" id="bayar-btn" class="tf-btn accent large"><i class="icon-secure1"></i>Bayar</a>
                                 </div>
                             </div>
                         </div>
