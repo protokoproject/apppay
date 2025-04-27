@@ -113,29 +113,58 @@
     </div>
 
     <script>
-        // Handle klik menu item
+        // Dapatkan username dari PHP (inject ke JS)
+        const username = "<?php echo $_SESSION['username']; ?>";
+
+        // Function untuk menyimpan menu ke localStorage
+        function saveMenuToLocalStorage(menuName) {
+            let selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
+
+            if (!selectedData[username]) {
+                selectedData[username] = {}; // Buatkan tempat untuk user ini kalau belum ada
+            }
+
+            if (!selectedData[username][menuName]) {
+                selectedData[username][menuName] = 1; // Set jumlah default 1
+            }
+
+            localStorage.setItem('selectedData', JSON.stringify(selectedData));
+
+            // Tambahkan console.log setelah simpan
+            console.log('Isi localStorage setelah memilih menu:', selectedData);
+        }
+
+        // Handle klik menu item - hanya bisa pilih sekali
         const items = document.querySelectorAll('.menu-item');
         items.forEach(item => {
             item.addEventListener('click', () => {
-                item.classList.toggle('selected');
+                if (!item.classList.contains('selected')) {
+                    item.classList.add('selected');
+
+                    const menuName = item.textContent.trim();
+                    saveMenuToLocalStorage(menuName);
+                }
+                // Jika sudah selected, klik lagi tidak mengubah apa-apa
             });
         });
 
         // Handle search menu
         const searchInput = document.getElementById('searchMenu');
-        searchInput.addEventListener('input', function() {
-            const filter = this.value.toLowerCase();
-            const menuItems = document.querySelectorAll('#menu-list .menu-item');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const filter = this.value.toLowerCase();
+                const menuItems = document.querySelectorAll('#menu-list .menu-item');
 
-            menuItems.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                if (text.includes(filter)) {
-                    item.style.display = ''; // tampilkan
-                } else {
-                    item.style.display = 'none'; // sembunyikan
-                }
+                menuItems.forEach(item => {
+                    const text = item.textContent.toLowerCase();
+                    if (text.includes(filter)) {
+                        item.style.display = ''; // tampilkan
+                    } else {
+                        item.style.display = 'none'; // sembunyikan
+                    }
+                });
             });
-        });
+        }
     </script>
 
     <script type="text/javascript" src="../../javascript/jquery.min.js"></script>
