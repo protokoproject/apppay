@@ -22,7 +22,7 @@
     <style>
         .receipt {
             width: 300px;
-            margin: 20px auto;
+            margin: 80px auto 50px; /* Atur jarak atas dan bawah */
             padding: 20px;
             border: 1px dashed #ccc;
             font-family: Arial, sans-serif;
