@@ -134,6 +134,20 @@
             console.log('Isi localStorage setelah memilih menu:', selectedData);
         }
 
+        // Function untuk mengupdate tampilan menu berdasarkan pilihan di localStorage
+        function updateMenuHighlight() {
+            const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
+            const userSelected = selectedData[username] || {};
+
+            // Menambahkan 'selected' class pada menu yang sudah dipilih sebelumnya
+            document.querySelectorAll('.menu-item').forEach(item => {
+                const menuName = item.textContent.trim();
+                if (userSelected[menuName]) {
+                    item.classList.add('selected');
+                }
+            });
+        }
+
         // Handle klik menu item - hanya bisa pilih sekali
         const items = document.querySelectorAll('.menu-item');
         items.forEach(item => {
@@ -147,6 +161,11 @@
                 // Jika sudah selected, klik lagi tidak mengubah apa-apa
             });
         });
+
+        // Memanggil updateMenuHighlight saat halaman dimuat untuk memeriksa menu yang sudah dipilih
+        window.onload = function() {
+            updateMenuHighlight();
+        }
 
         // Handle search menu
         const searchInput = document.getElementById('searchMenu');
