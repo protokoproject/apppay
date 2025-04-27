@@ -68,10 +68,8 @@
             </div>
 
         </div>
-        <div class="bottom-navigation-bar">
-            <div class="tf-container">
-                <a href="keranjang.php" class="tf-btn accent large">Keranjang</a>
-            </div>
+        <div class="bottom-navigation-bar" id="cart-container">
+            <!-- Tombol Keranjang akan dihasilkan oleh JS jika ada menu yang dipilih -->
         </div>
     </div>
 
@@ -132,6 +130,9 @@
 
             // Tambahkan console.log setelah simpan
             console.log('Isi localStorage setelah memilih menu:', selectedData);
+
+            // Periksa status tombol Keranjang
+            updateCartButtonStatus();
         }
 
         // Function untuk mengupdate tampilan menu berdasarkan pilihan di localStorage
@@ -146,6 +147,37 @@
                     item.classList.add('selected');
                 }
             });
+
+            // Periksa status tombol Keranjang
+            updateCartButtonStatus();
+        }
+
+        // Function untuk memeriksa status tombol Keranjang
+        function updateCartButtonStatus() {
+            const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
+            const userSelected = selectedData[username] || {};
+
+            // Dapatkan tombol Keranjang
+            const cartContainer = document.getElementById('cart-container');
+
+            // Jika ada menu yang dipilih, tampilkan tombol, jika tidak, sembunyikan
+            if (Object.keys(userSelected).length > 0) {
+                // Jika tombol belum ada, buat dan tampilkan
+                if (!document.getElementById('keranjangButton')) {
+                    const cartButton = document.createElement('a');
+                    cartButton.href = 'keranjang.php';
+                    cartButton.className = 'tf-btn accent large';
+                    cartButton.id = 'keranjangButton';
+                    cartButton.innerText = 'Keranjang';
+                    cartContainer.appendChild(cartButton);
+                }
+            } else {
+                // Jika tidak ada menu yang dipilih, hapus tombol keranjang jika ada
+                const cartButton = document.getElementById('keranjangButton');
+                if (cartButton) {
+                    cartButton.remove();
+                }
+            }
         }
 
         // Handle klik menu item - hanya bisa pilih sekali
