@@ -99,6 +99,7 @@
     <div class="amount-money mt-5" id="menu-container" style="display: block;">
         <div class="tf-container">
             <h3>Pilih Menu</h3>
+
             <ul class="box-card" id="menu-list" style="max-height: 300px; overflow-y: auto;">
                 <?php if ($jumlahMenu > 0) : ?>
                     <?php while ($menu = mysqli_fetch_assoc($queryMenu)) : ?>
@@ -112,14 +113,30 @@
     </div>
 
     <script>
+        // Handle klik menu item
         const items = document.querySelectorAll('.menu-item');
         items.forEach(item => {
             item.addEventListener('click', () => {
                 item.classList.toggle('selected');
             });
         });
-    </script>
 
+        // Handle search menu
+        const searchInput = document.getElementById('searchMenu');
+        searchInput.addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            const menuItems = document.querySelectorAll('#menu-list .menu-item');
+
+            menuItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(filter)) {
+                    item.style.display = ''; // tampilkan
+                } else {
+                    item.style.display = 'none'; // sembunyikan
+                }
+            });
+        });
+    </script>
 
     <script type="text/javascript" src="../../javascript/jquery.min.js"></script>
     <script type="text/javascript" src="../../javascript/bootstrap.min.js"></script>
