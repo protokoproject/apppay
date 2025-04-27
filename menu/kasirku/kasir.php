@@ -75,23 +75,42 @@
         </div>
     </div>
 
+    <?php
+    session_start();
+    include "../../conn/koneksi.php"; // file koneksi ke database
+
+    $username = $_SESSION['username'];
+
+    // Ambil id_user dari username
+    $queryUser = mysqli_query($koneksi, "SELECT id_user FROM tb_user WHERE username = '$username'");
+    $dataUser = mysqli_fetch_assoc($queryUser);
+    $id_user = $dataUser['id_user'];
+
+    // Ambil id_kantin dari id_user
+    $queryKantin = mysqli_query($koneksi, "SELECT id_kantin FROM t_kantin WHERE id_user = '$id_user'");
+    $dataKantin = mysqli_fetch_assoc($queryKantin);
+    $id_kantin = $dataKantin['id_kantin'];
+
+    // Ambil menu dari t_brg berdasarkan id_kantin
+    $queryMenu = mysqli_query($koneksi, "SELECT nm_brg FROM t_brg WHERE id_kantin = '$id_kantin'");
+    $jumlahMenu = mysqli_num_rows($queryMenu); // hitung jumlah baris data
+    ?>
+
     <div class="amount-money mt-5" id="menu-container" style="display: block;">
         <div class="tf-container">
             <h3>Pilih Menu</h3>
             <ul class="box-card" id="menu-list" style="max-height: 300px; overflow-y: auto;">
-                <li class="card p-2 mb-2 menu-item">Nasi Goreng</li>
-                <li class="card p-2 mb-2 menu-item">Mie Goreng</li>
-                <li class="card p-2 mb-2 menu-item">Bakso</li>
-                <li class="card p-2 mb-2 menu-item">Soto Ayam</li>
-                <li class="card p-2 mb-2 menu-item">Nasi Kuning</li>
-                <li class="card p-2 mb-2 menu-item">Ayam Geprek</li>
-                <li class="card p-2 mb-2 menu-item">Es Teh</li>
-                <li class="card p-2 mb-2 menu-item">Es Jeruk</li>
-                <li class="card p-2 mb-2 menu-item">Air Mineral</li>
-                <li class="card p-2 mb-2 menu-item">Gorengan</li>
+                <?php if ($jumlahMenu > 0) : ?>
+                    <?php while ($menu = mysqli_fetch_assoc($queryMenu)) : ?>
+                        <li class="card p-2 mb-2 menu-item"><?php echo htmlspecialchars($menu['nm_brg']); ?></li>
+                    <?php endwhile; ?>
+                <?php else : ?>
+                    <li class="card p-2 mb-2 text-center">Belum ada menu yang ditambahkan</li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>
+
     <script>
         const items = document.querySelectorAll('.menu-item');
         items.forEach(item => {
@@ -100,6 +119,8 @@
             });
         });
     </script>
+
+
     <script type="text/javascript" src="../../javascript/jquery.min.js"></script>
     <script type="text/javascript" src="../../javascript/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../javascript/main.js"></script>
