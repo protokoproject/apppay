@@ -83,7 +83,7 @@
         <form class="tf-form">
             <div class="tf-container">
                 <div class="group-input input-field input-money">
-                    <h3 class="fw_6 d-flex justify-content-between mt-3">Pembayaran</h3>
+                    <h3 class="fw_6 d-flex justify-content-between mt-3"></h3>
 
                     <!-- Tampilan QR Code -->
                     <div class="payment-qr text-center my-4">
@@ -99,10 +99,6 @@
                         <h3>Total: Rp. <span id="total-price">0</span></h3>
                     </div>
                 </div>
-                <!-- <div class="group-input">
-                    <label>Message</label>
-                    <input type="text" placeholder="Placeholder">
-                </div> -->
             </div>
 
             <div class="bottom-navigation-bar bottom-btn-fixed">
