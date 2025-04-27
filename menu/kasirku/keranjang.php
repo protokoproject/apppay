@@ -204,10 +204,10 @@ session_start();
                         // Function untuk menampilkan pesanan yang tersimpan di localStorage
                         function displayOrderList() {
                             const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
-                            const userOrder = selectedData[username] || {}; // Ambil pesanan user jika ada
+                            const userOrder = selectedData[username] || {};
                             const orderList = document.getElementById('order-list');
 
-                            orderList.innerHTML = ''; // Kosongkan daftar pesanan
+                            orderList.innerHTML = '';
 
                             for (const menuName in userOrder) {
                                 const qty = userOrder[menuName];
@@ -216,12 +216,9 @@ session_start();
                                 li.textContent = `${menuName} (x${qty})`;
                                 li.dataset.name = menuName;
                                 li.dataset.quantity = qty;
-
-                                // Menambahkan item ke dalam daftar
                                 orderList.appendChild(li);
                             }
 
-                            // Menambahkan event listener setelah menu-item dibuat
                             document.querySelectorAll('.menu-item').forEach(item => {
                                 item.addEventListener('click', () => {
                                     currentItem = item;
@@ -233,9 +230,55 @@ session_start();
                                     modal.show();
                                 });
                             });
+
+                            calculateTotal(); // Hitung total setelah tampilkan order
                         }
 
-                        // Memanggil fungsi displayOrderList saat halaman dimuat
+                        // Fungsi menghitung total harga
+                        function calculateTotal() {
+                            const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
+                            const userOrder = selectedData[username] || {};
+                            let total = 0;
+
+                            if (Object.keys(userOrder).length === 0) {
+                                document.getElementById('total-price').textContent = '0';
+                                return;
+                            }
+
+                            const promises = [];
+
+                            for (const menuName in userOrder) {
+                                const qty = parseInt(userOrder[menuName]);
+
+                                const promise = fetch('get_price.php?name=' + encodeURIComponent(menuName))
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Gagal mengambil harga untuk ' + menuName);
+                                        }
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        if (data && data.price !== undefined) {
+                                            const price = parseInt(data.price);
+                                            total += price * qty;
+                                        } else {
+                                            console.warn('Harga tidak ditemukan untuk menu:', menuName);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error saat fetch harga:', error);
+                                    });
+
+                                promises.push(promise);
+                            }
+
+                            Promise.all(promises).then(() => {
+                                document.getElementById('total-price').textContent = total.toLocaleString('id-ID');
+                            });
+                        }
+
+
+                        // Saat halaman dimuat
                         window.onload = function() {
                             displayOrderList();
                         };
@@ -243,13 +286,13 @@ session_start();
                         // Fungsi untuk menghapus item pesanan
                         document.getElementById('btn-hapus').addEventListener('click', () => {
                             if (currentItem) {
-                                currentItem.remove();
-
                                 const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
                                 if (selectedData[username] && selectedData[username][currentItem.dataset.name]) {
-                                    delete selectedData[username][currentItem.dataset.name]; // Hapus dari localStorage
+                                    delete selectedData[username][currentItem.dataset.name];
                                     localStorage.setItem('selectedData', JSON.stringify(selectedData));
                                 }
+                                currentItem.remove();
+                                calculateTotal(); // Update total
                             }
                             const modal = bootstrap.Modal.getInstance(document.getElementById('menuModal'));
                             modal.hide();
@@ -262,14 +305,13 @@ session_start();
                                 currentItem.dataset.quantity = qty;
                                 currentItem.textContent = `${currentItem.dataset.name} (x${qty})`;
 
-                                // Simpan perubahan jumlah pesanan ke localStorage
                                 const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
                                 if (!selectedData[username]) {
                                     selectedData[username] = {};
                                 }
                                 selectedData[username][currentItem.dataset.name] = qty;
-
                                 localStorage.setItem('selectedData', JSON.stringify(selectedData));
+                                calculateTotal(); // Update total
                             }
                         });
                     </script>
@@ -278,6 +320,7 @@ session_start();
                         <h3>Total: Rp. <span id="total-price">0</span></h3>
                     </div>
                 </div>
+
 
                 <div class="bottom-navigation-bar bottom-btn-fixed">
                     <div class="tf-container">
