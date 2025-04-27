@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -169,10 +172,7 @@
                     <h3 class="fw_6 d-flex justify-content-between mt-3">Detail Pesanan <p>Jumlah</p>
                     </h3>
                     <!-- List Menu Kantin -->
-                    <ul class="order-list" id="order-list">
-                        <li class="menu-item card p-2 mb-2" data-name="Nasi Goreng">Nasi Goreng</li>
-                        <li class="menu-item card p-2 mb-2" data-name="Es Teh">Es Teh</li>
-                    </ul>
+                    <ul class="order-list" id="order-list"></ul>
 
                     <!-- Modal -->
                     <div class="modal fade" id="menuModal" tabindex="-1" aria-labelledby="menuModalLabel" aria-hidden="true">
@@ -194,104 +194,148 @@
                             </div>
                         </div>
                     </div>
+
                     <script>
                         let currentItem = null;
 
-                        document.querySelectorAll('.menu-item').forEach(item => {
-                            item.addEventListener('click', () => {
-                                currentItem = item;
-                                const name = item.dataset.name;
-                                document.getElementById('selected-menu-name').textContent = name;
-                                document.getElementById('quantity').value = item.dataset.quantity || 1;
+                        // Pastikan username di-escape dengan benar
+                        const username = "<?php echo htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8'); ?>"; // Escape username
 
-                                const modal = new bootstrap.Modal(document.getElementById('menuModal'));
-                                modal.show();
+                        // Function untuk menampilkan pesanan yang tersimpan di localStorage
+                        function displayOrderList() {
+                            const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
+                            const userOrder = selectedData[username] || {}; // Ambil pesanan user jika ada
+                            const orderList = document.getElementById('order-list');
+
+                            orderList.innerHTML = ''; // Kosongkan daftar pesanan
+
+                            for (const menuName in userOrder) {
+                                const qty = userOrder[menuName];
+                                const li = document.createElement('li');
+                                li.classList.add('menu-item', 'card', 'p-2', 'mb-2');
+                                li.textContent = `${menuName} (x${qty})`;
+                                li.dataset.name = menuName;
+                                li.dataset.quantity = qty;
+
+                                // Menambahkan item ke dalam daftar
+                                orderList.appendChild(li);
+                            }
+
+                            // Menambahkan event listener setelah menu-item dibuat
+                            document.querySelectorAll('.menu-item').forEach(item => {
+                                item.addEventListener('click', () => {
+                                    currentItem = item;
+                                    const name = item.dataset.name;
+                                    document.getElementById('selected-menu-name').textContent = name;
+                                    document.getElementById('quantity').value = item.dataset.quantity || 1;
+
+                                    const modal = new bootstrap.Modal(document.getElementById('menuModal'));
+                                    modal.show();
+                                });
                             });
-                        });
+                        }
 
+                        // Memanggil fungsi displayOrderList saat halaman dimuat
+                        window.onload = function() {
+                            displayOrderList();
+                        };
+
+                        // Fungsi untuk menghapus item pesanan
                         document.getElementById('btn-hapus').addEventListener('click', () => {
                             if (currentItem) {
                                 currentItem.remove();
+
+                                const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
+                                if (selectedData[username] && selectedData[username][currentItem.dataset.name]) {
+                                    delete selectedData[username][currentItem.dataset.name]; // Hapus dari localStorage
+                                    localStorage.setItem('selectedData', JSON.stringify(selectedData));
+                                }
                             }
                             const modal = bootstrap.Modal.getInstance(document.getElementById('menuModal'));
                             modal.hide();
                         });
 
+                        // Fungsi untuk memperbarui jumlah pesanan
                         document.getElementById('btn-oke').addEventListener('click', () => {
                             if (currentItem) {
                                 const qty = document.getElementById('quantity').value;
                                 currentItem.dataset.quantity = qty;
                                 currentItem.textContent = `${currentItem.dataset.name} (x${qty})`;
+
+                                // Simpan perubahan jumlah pesanan ke localStorage
+                                const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
+                                if (!selectedData[username]) {
+                                    selectedData[username] = {};
+                                }
+                                selectedData[username][currentItem.dataset.name] = qty;
+
+                                localStorage.setItem('selectedData', JSON.stringify(selectedData));
                             }
                         });
                     </script>
+
                     <div class="total">
                         <h3>Total: Rp. <span id="total-price">0</span></h3>
                     </div>
                 </div>
-                <!-- <div class="group-input">
-                    <label>Message</label>
-                    <input type="text" placeholder="Placeholder">
-                </div> -->
-            </div>
 
-            <div class="bottom-navigation-bar bottom-btn-fixed">
-                <div class="tf-container">
-                    <a href="#" id="btn-popup-up" class="tf-btn accent large">Selanjutnya</a>
-                </div>
-                <div class="tf-panel up">
-                    <div class="panel_overlay"></div>
-                    <div class="panel-box panel-up wrap-content-panel">
-                        <div class="heading">
-                            <div class="tf-container">
-                                <div class="d-flex align-items-center position-relative justify-content-center">
-                                    <i class="icon-close1 clear-panel"></i>
-                                    <h3>Konfirmasi Pembayaran</h3>
+                <div class="bottom-navigation-bar bottom-btn-fixed">
+                    <div class="tf-container">
+                        <a href="#" id="btn-popup-up" class="tf-btn accent large">Selanjutnya</a>
+                    </div>
+                    <div class="tf-panel up">
+                        <div class="panel_overlay"></div>
+                        <div class="panel-box panel-up wrap-content-panel">
+                            <div class="heading">
+                                <div class="tf-container">
+                                    <div class="d-flex align-items-center position-relative justify-content-center">
+                                        <i class="icon-close1 clear-panel"></i>
+                                        <h3>Konfirmasi Pembayaran</h3>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="main-topup">
-                            <div class="tf-container">
-                                <h3>Detail Pembayaran</h3>
-                                <div class="tf-card-block d-flex align-items-center justify-content-between">
-                                    <div class="inner d-flex align-items-center">
-                                        <div class="content">
-                                            <h4><a href="#" class="fw_6">Nama pembeli: Budi</a></h4>
+                            <div class="main-topup">
+                                <div class="tf-container">
+                                    <h3>Detail Pembayaran</h3>
+                                    <div class="tf-card-block d-flex align-items-center justify-content-between">
+                                        <div class="inner d-flex align-items-center">
+                                            <div class="content">
+                                                <h4><a href="#" class="fw_6">Nama pembeli: Budi</a></h4>
+                                            </div>
                                         </div>
+                                        <i class="icon-right"></i>
                                     </div>
-                                    <i class="icon-right"></i>
-                                </div>
-                                <ul class="info">
-                                    <li>
-                                        <h4 class="secondary_color fw_4 d-flex justify-content-between align-items-center">
-                                            Jumlah
-                                            <a href="#" class="on_surface_color fw_7" id="jumlah-pembayaran">Rp. 0</a>
-                                        </h4>
-                                    </li>
-                                    <li>
-                                        <h4 class="secondary_color fw_4 d-flex justify-content-between align-items-center">
-                                            Nama Kantin
-                                            <a href="#" class="on_surface_color fw_7" id="nama-kantin">Warung bu siti</a>
-                                        </h4>
-                                    </li>
-                                    <li>
-                                        <h4 class="secondary_color fw_4 d-flex justify-content-between align-items-center">
-                                            Biaya admin <a href="#" class="success_color fw_7">Gratis</a>
-                                        </h4>
-                                    </li>
-                                </ul>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="total">
-                                        <h4 class="secondary_color fw_4">Total</h4>
-                                        <h2 id="total-pembayaran">Rp. 0</h2>
+                                    <ul class="info">
+                                        <li>
+                                            <h4 class="secondary_color fw_4 d-flex justify-content-between align-items-center">
+                                                Jumlah
+                                                <a href="#" class="on_surface_color fw_7" id="jumlah-pembayaran">Rp. 0</a>
+                                            </h4>
+                                        </li>
+                                        <li>
+                                            <h4 class="secondary_color fw_4 d-flex justify-content-between align-items-center">
+                                                Nama Kantin
+                                                <a href="#" class="on_surface_color fw_7" id="nama-kantin">Warung bu siti</a>
+                                            </h4>
+                                        </li>
+                                        <li>
+                                            <h4 class="secondary_color fw_4 d-flex justify-content-between align-items-center">
+                                                Biaya admin <a href="#" class="success_color fw_7">Gratis</a>
+                                            </h4>
+                                        </li>
+                                    </ul>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="total">
+                                            <h4 class="secondary_color fw_4">Total</h4>
+                                            <h2 id="total-pembayaran">Rp. 0</h2>
+                                        </div>
+                                        <a href="bayar.php" id="bayar-btn" class="tf-btn accent large"><i class="icon-secure1"></i>Bayar</a>
                                     </div>
-                                    <a href="bayar.php" id="bayar-btn" class="tf-btn accent large"><i class="icon-secure1"></i>Bayar</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </form>
     </div>
     <script type="text/javascript" src="../../javascript/jquery.min.js"></script>
