@@ -112,20 +112,55 @@
     <div class="card-secton transfer-section">
         <div class="tf-container">
             <div class="tf-balance-box">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="form-group position-relative" style="width: 100%;">
                     <label for="nama-siswa" class="me-2 mb-0">Nama Siswa:</label>
                     <input type="text" id="nama-siswa" class="form-control" placeholder="Masukkan nama siswa...">
+                    <!-- Tempat hasil autosuggest -->
+                    <div id="list-siswa" class="list-group" style="position: absolute; width: 100%; z-index: 1000; top: 100%;"></div>
                 </div>
+
                 <div class="tf-spacing-16"></div>
+
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="inner-left d-flex justify-content-between align-items-center">
-
+                        <!-- Bagian lain jika ada -->
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $("#nama-siswa").keyup(function() {
+                var query = $(this).val();
+                if (query != '') {
+                    $.ajax({
+                        url: "search_siswa.php",
+                        method: "POST",
+                        data: {
+                            query: query
+                        },
+                        success: function(data) {
+                            $("#list-siswa").fadeIn();
+                            $("#list-siswa").html(data);
+                        }
+                    });
+                } else {
+                    $("#list-siswa").fadeOut();
+                }
+            });
+
+            $(document).on('click', '.list-group-item', function() {
+                $('#nama-siswa').val($(this).text());
+                $('#list-siswa').fadeOut();
+            });
+        });
+    </script>
+
     <div class="tf-spacing-20"></div>
     <div class="transfer-content">
         <form class="tf-form">
