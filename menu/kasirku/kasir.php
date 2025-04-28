@@ -90,7 +90,7 @@
     $id_kantin = $dataKantin['id_kantin'];
 
     // Ambil menu dari t_brg berdasarkan id_kantin
-    $queryMenu = mysqli_query($koneksi, "SELECT nm_brg FROM t_brg WHERE id_kantin = '$id_kantin'");
+    $queryMenu = mysqli_query($koneksi, "SELECT nm_brg, hrg_jual FROM t_brg WHERE id_kantin = '$id_kantin'");
     $jumlahMenu = mysqli_num_rows($queryMenu); // hitung jumlah baris data
     ?>
 
@@ -101,7 +101,16 @@
             <ul class="box-card" id="menu-list" style="max-height: 300px; overflow-y: auto;">
                 <?php if ($jumlahMenu > 0) : ?>
                     <?php while ($menu = mysqli_fetch_assoc($queryMenu)) : ?>
-                        <li class="card p-2 mb-2 menu-item"><?php echo htmlspecialchars($menu['nm_brg']); ?></li>
+                        <li class="card p-2 mb-2 menu-item">
+                            <div class="row w-100">
+                                <div class="col-8">
+                                    <strong><?php echo htmlspecialchars($menu['nm_brg']); ?></strong>
+                                </div>
+                                <div class="col-4 text-end">
+                                    Rp <?php echo number_format($menu['hrg_jual'], 0, ',', '.'); ?>
+                                </div>
+                            </div>
+                        </li>
                     <?php endwhile; ?>
                 <?php else : ?>
                     <li class="card p-2 mb-2 text-center">Belum ada menu yang ditambahkan</li>
