@@ -150,6 +150,16 @@ if (!isset($_SESSION["login"])) {
                 </div>
                 <div class="trading-month">
                     <div class="group-trading-history">
+                        <form method="GET" class="mb-3" style="max-width: 250px;">
+                            <label for="filter_status" class="form-label mb-1">Filter Status:</label>
+                            <select name="filter_status" id="filter_status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                <option value="">-- Semua Status --</option>
+                                <option value="0" <?= isset($_GET['filter_status']) && $_GET['filter_status'] === '0' ? 'selected' : '' ?>>Belum diproses</option>
+                                <option value="1" <?= isset($_GET['filter_status']) && $_GET['filter_status'] === '1' ? 'selected' : '' ?>>Sedang diproses</option>
+                                <option value="2" <?= isset($_GET['filter_status']) && $_GET['filter_status'] === '2' ? 'selected' : '' ?>>Selesai</option>
+                            </select>
+                        </form>
+
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -166,13 +176,23 @@ if (!isset($_SESSION["login"])) {
                                 include "../../conn/koneksi.php";
                                 $no = 1;
 
-                                $sql = mysqli_query($koneksi, "
-        SELECT h.id_hisdp, h.nom_dp, h.tgl_dp, h.stsdp, m.nm_murid 
-        FROM t_hisdepo h
-        INNER JOIN tb_user u ON h.id_user = u.id_user
-        INNER JOIN t_murid m ON u.id_user = m.id_user
-        ORDER BY h.tgl_dp DESC
-    ");
+                                $filter_status = isset($_GET['filter_status']) ? $_GET['filter_status'] : '';
+
+                                $query = "
+    SELECT h.id_hisdp, h.nom_dp, h.tgl_dp, h.stsdp, m.nm_murid 
+    FROM t_hisdepo h
+    INNER JOIN tb_user u ON h.id_user = u.id_user
+    INNER JOIN t_murid m ON u.id_user = m.id_user
+";
+
+                                if ($filter_status !== '') {
+                                    $query .= " WHERE h.stsdp = '" . mysqli_real_escape_string($koneksi, $filter_status) . "'";
+                                }
+
+                                $query .= " ORDER BY h.tgl_dp DESC";
+
+                                $sql = mysqli_query($koneksi, $query);
+
 
                                 if (mysqli_num_rows($sql) > 0) {
                                     while ($hasil = mysqli_fetch_array($sql)) {
@@ -202,29 +222,34 @@ if (!isset($_SESSION["login"])) {
                                             <td><?= $tanggal ?></td>
                                             <td><?= $status ?></td>
                                             <td>
-                                                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalSetujui<?= $id ?>">
-                                                    <i class="fas fa-check"></i> Setujui
-                                                </button>
+                                                <?php if ($hasil['stsdp'] === '0') : ?>
+                                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalSetujui<?= $id ?>">
+                                                        <i class="fas fa-check"></i> Setujui
+                                                    </button>
 
-                                                <!-- Modal -->
-                                                <div class="modal fade" id="modalSetujui<?= $id ?>" tabindex="-1" aria-labelledby="modalLabel<?= $id ?>" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="modalLabel<?= $id ?>">Konfirmasi Topup</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                Apakah Anda yakin ingin menyetujui topup sebesar <strong><?= $nominal ?></strong> untuk murid <strong><?= $nama ?></strong>?
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                                <a href="setujui_topup.php?id=<?= $id ?>" class="btn btn-success">Konfirmasi</a>
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="modalSetujui<?= $id ?>" tabindex="-1" aria-labelledby="modalLabel<?= $id ?>" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="modalLabel<?= $id ?>">Konfirmasi Topup</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    Apakah Anda yakin ingin menyetujui topup sebesar <strong><?= $nominal ?></strong> untuk murid <strong><?= $nama ?></strong>?
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                                    <a href="setujui_topup.php?id=<?= $id ?>" class="btn btn-success">Konfirmasi</a>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                <?php else : ?>
+                                                    <span class="text-muted">-</span>
+                                                <?php endif; ?>
                                             </td>
+
                                         </tr>
                                 <?php
                                     }
