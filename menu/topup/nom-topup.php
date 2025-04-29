@@ -80,6 +80,36 @@
         </div>
       </div>
       <div class="main-topup">
+        <?php
+        include '../../conn/koneksi.php'; // memuat koneksi dari file terpisah
+
+        $id_mrd = $_GET['id_mrd'];
+
+        // Query untuk mengambil data murid, orang tua, dan kelas
+        $sql = "SELECT 
+          m.nm_murid, 
+          o.nm_ortu, 
+          k.nm_kls
+        FROM t_murid m
+        LEFT JOIN t_ortu o ON m.id_ortu = o.id_ortu
+        LEFT JOIN t_klsmrd km ON m.id_mrd = km.id_mrd
+        LEFT JOIN t_kelas k ON km.id_kls = k.id_kls
+        WHERE m.id_mrd = '$id_mrd'";
+
+        $query = mysqli_query($koneksi, $sql);
+
+        if ($data = mysqli_fetch_assoc($query)) {
+          $namaMurid = $data['nm_murid'];
+          $namaOrtu  = $data['nm_ortu'];
+          $kelas     = $data['nm_kls'];
+          $inisial   = strtoupper(substr($namaMurid, 0, 1));
+        } else {
+          $namaMurid = "Tidak ditemukan";
+          $namaOrtu  = "-";
+          $kelas     = "-";
+          $inisial   = "-";
+        }
+        ?>
         <div class="tf-container">
           <h3>Detail Topup</h3>
           <div class="tf-card-block d-flex align-items-center justify-content-between">
@@ -96,11 +126,11 @@
         justify-content: center;
         border-radius: 50%;
       ">
-                A
+                <?= $inisial ?>
               </div>
               <div class="content ms-3">
-                <h4 class="fw_6">Ahmad Fauzan</h4>
-                <p>Kelas 6A</p>
+                <h4 class="fw_6"><?= $namaMurid ?></h4>
+                <p>Kelas <?= $kelas ?></p>
               </div>
             </div>
           </div>
@@ -109,7 +139,7 @@
             <li>
               <h4 class="secondary_color fw_4 d-flex justify-content-between align-items-center">
                 Orang Tua/Wali
-                <span class="on_surface_color fw_6">Rudi Hartono</span>
+                <span class="on_surface_color fw_6"><?= $namaOrtu ?></span>
               </h4>
             </li>
             <li>
