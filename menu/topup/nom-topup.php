@@ -41,9 +41,8 @@
       <div class="tf-balance-box">
         <div class="tf-form">
           <div class="group-input input-field input-money">
-            <label for="">Jumlah Top Up</label>
-            <input type="number" value="0" required class="search-field value_input st1" type="text" />
-            <span class="icon-clear"></span>
+            <label for="input-topup">Jumlah Top Up</label>
+            <input id="input-topup" type="text" value="0" required class="search-field value_input st1" />
           </div>
         </div>
       </div>
@@ -139,6 +138,17 @@
       </div>
     </div>
   </div>
+
+  <script>
+    const inputTopup = document.getElementById('input-topup');
+
+    inputTopup.addEventListener('input', function(e) {
+      let value = this.value.replace(/\D/g, ''); // Hanya angka
+      value = new Intl.NumberFormat('id-ID').format(value); // Format ribuan dengan titik
+      this.value = value;
+    });
+  </script>
+
 
   <script type="text/javascript" src="../../javascript/jquery.min.js"></script>
   <script type="text/javascript" src="../../javascript/bootstrap.min.js"></script>
