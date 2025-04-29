@@ -160,9 +160,9 @@
               <h4 class="secondary_color fw_4">Total Bayar</h4>
               <h2 id="display-total">Rp. 0</h2>
             </div>
-            <a href="enter-pin.html" class="tf-btn accent large">
+            <button id="btn-confirm" class="tf-btn accent large">
               <i class="icon-secure1"></i> Konfirmasi & Lanjut
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -203,6 +203,28 @@
 
       // Tampilkan panel (kalau pakai panel slide-up misalnya)
       document.querySelector('.tf-panel.up').classList.add('active'); // pastikan class ini sesuai logikamu
+    });
+
+    const btnConfirm = document.getElementById('btn-confirm');
+
+    btnConfirm.addEventListener('click', function() {
+      let rawValue = inputTopup.value.replace(/\D/g, ''); // Ambil hanya angka
+
+      fetch(`simpan_topup.php?id_mrd=<?= $id_mrd ?>`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: "jumlah_topup=" + rawValue
+        })
+        .then(response => response.text())
+        .then(data => {
+          alert(data); // tampilkan respon dari server
+        })
+        .catch(error => {
+          alert("Terjadi kesalahan saat menyimpan top up.");
+          console.error("Error:", error);
+        });
     });
   </script>
 
