@@ -145,7 +145,7 @@
             <li>
               <h4 class="secondary_color fw_4 d-flex justify-content-between align-items-center">
                 Jumlah Top Up
-                <span class="on_surface_color fw_7">Rp. 200.000</span>
+                <span class="on_surface_color fw_7" id="display-topup">Rp. 0</span>
               </h4>
             </li>
             <li>
@@ -158,7 +158,7 @@
           <div class="d-flex justify-content-between align-items-center">
             <div class="total">
               <h4 class="secondary_color fw_4">Total Bayar</h4>
-              <h2>Rp. 200.000</h2>
+              <h2 id="display-total">Rp. 0</h2>
             </div>
             <a href="enter-pin.html" class="tf-btn accent large">
               <i class="icon-secure1"></i> Konfirmasi & Lanjut
@@ -171,14 +171,40 @@
 
   <script>
     const inputTopup = document.getElementById('input-topup');
+    const btnNext = document.getElementById('btn-popup-up');
+    const displayTopup = document.getElementById('display-topup');
+    const displayTotal = document.getElementById('display-total');
 
-    inputTopup.addEventListener('input', function(e) {
-      let value = this.value.replace(/\D/g, ''); // Hanya angka
-      value = new Intl.NumberFormat('id-ID').format(value); // Format ribuan dengan titik
-      this.value = value;
+    // Format angka ke format Rupiah (IDR)
+    function formatRupiah(angka) {
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0
+      }).format(angka);
+    }
+
+    // Format input saat diketik
+    inputTopup.addEventListener('input', function() {
+      let value = this.value.replace(/\D/g, ''); // Ambil hanya angka
+      if (value === '') value = '0';
+      this.value = new Intl.NumberFormat('id-ID').format(value); // Tampilkan dengan titik
+    });
+
+    // Update nilai di panel konfirmasi saat tombol ditekan
+    btnNext.addEventListener('click', function(e) {
+      e.preventDefault();
+
+      let rawValue = inputTopup.value.replace(/\D/g, ''); // Ambil angka saja
+      let numericValue = parseInt(rawValue || '0');
+
+      displayTopup.textContent = formatRupiah(numericValue);
+      displayTotal.textContent = formatRupiah(numericValue);
+
+      // Tampilkan panel (kalau pakai panel slide-up misalnya)
+      document.querySelector('.tf-panel.up').classList.add('active'); // pastikan class ini sesuai logikamu
     });
   </script>
-
 
   <script type="text/javascript" src="../../javascript/jquery.min.js"></script>
   <script type="text/javascript" src="../../javascript/bootstrap.min.js"></script>
