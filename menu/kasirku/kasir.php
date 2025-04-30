@@ -151,7 +151,7 @@
 
             // Menambahkan 'selected' class pada menu yang sudah dipilih sebelumnya
             document.querySelectorAll('.menu-item').forEach(item => {
-                const menuName = item.textContent.trim();
+                const menuName = item.querySelector('.col-8 strong').textContent.trim();
                 if (userSelected[menuName]) {
                     item.classList.add('selected');
                 }
@@ -196,10 +196,9 @@
                 if (!item.classList.contains('selected')) {
                     item.classList.add('selected');
 
-                    const menuName = item.textContent.trim();
+                    const menuName = item.querySelector('.col-8 strong').textContent.trim();
                     saveMenuToLocalStorage(menuName);
                 }
-                // Jika sudah selected, klik lagi tidak mengubah apa-apa
             });
         });
 
@@ -216,7 +215,7 @@
                 const menuItems = document.querySelectorAll('#menu-list .menu-item');
 
                 menuItems.forEach(item => {
-                    const text = item.textContent.toLowerCase();
+                    const text = item.querySelector('.col-8 strong').textContent.toLowerCase();
                     if (text.includes(filter)) {
                         item.style.display = ''; // tampilkan
                     } else {
