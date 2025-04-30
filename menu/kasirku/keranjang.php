@@ -169,7 +169,7 @@ session_start();
         <form class="tf-form">
             <div class="tf-container">
                 <div class="group-input input-field input-money">
-                    <h3 class="fw_6 d-flex justify-content-between mt-3">Detail Pesanan <p>Jumlah</p>
+                    <h3 class="fw_6 d-flex justify-content-between mt-3">Detail Pesanan <p>Subtotal</p>
                     </h3>
                     <!-- List Menu Kantin -->
                     <ul class="order-list" id="order-list"></ul>
@@ -209,29 +209,64 @@ session_start();
 
                             orderList.innerHTML = '';
 
+                            let total = 0;
+                            const promises = [];
+
                             for (const menuName in userOrder) {
-                                const qty = userOrder[menuName];
-                                const li = document.createElement('li');
-                                li.classList.add('menu-item', 'card', 'p-2', 'mb-2');
-                                li.textContent = `${menuName} (x${qty})`;
-                                li.dataset.name = menuName;
-                                li.dataset.quantity = qty;
-                                orderList.appendChild(li);
+                                const qty = parseInt(userOrder[menuName]);
+
+                                const promise = fetch('get_price.php?name=' + encodeURIComponent(menuName))
+                                    .then(response => {
+                                        if (!response.ok) throw new Error('Gagal mengambil harga');
+                                        return response.json();
+                                    })
+                                    .then(data => {
+                                        const price = parseInt(data.price);
+                                        const subtotal = price * qty;
+                                        total += subtotal;
+
+                                        const li = document.createElement('li');
+                                        li.classList.add('menu-item', 'card', 'p-2', 'mb-2');
+                                        li.dataset.name = menuName;
+                                        li.dataset.quantity = qty;
+
+                                        // Container baris
+                                        const itemRow = document.createElement('div');
+                                        itemRow.classList.add('d-flex', 'justify-content-between', 'align-items-start', 'fs-5');
+
+                                        // Kolom kiri: nama + qty
+                                        const itemNameQty = document.createElement('div');
+                                        itemNameQty.textContent = `${menuName} (x${qty})`;
+
+                                        // Kolom kanan: subtotal
+                                        const itemSubtotal = document.createElement('div');
+                                        itemSubtotal.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+                                        itemSubtotal.classList.add('text-end', 'text-muted', 'small');
+
+                                        itemRow.appendChild(itemNameQty);
+                                        itemRow.appendChild(itemSubtotal);
+
+                                        li.appendChild(itemRow);
+                                        orderList.appendChild(li);
+
+                                        li.addEventListener('click', () => {
+                                            currentItem = li;
+                                            document.getElementById('selected-menu-name').textContent = menuName;
+                                            document.getElementById('quantity').value = qty;
+                                            const modal = new bootstrap.Modal(document.getElementById('menuModal'));
+                                            modal.show();
+                                        });
+                                    })
+                                    .catch(err => {
+                                        console.error('Gagal fetch harga:', err);
+                                    });
+
+                                promises.push(promise);
                             }
 
-                            document.querySelectorAll('.menu-item').forEach(item => {
-                                item.addEventListener('click', () => {
-                                    currentItem = item;
-                                    const name = item.dataset.name;
-                                    document.getElementById('selected-menu-name').textContent = name;
-                                    document.getElementById('quantity').value = item.dataset.quantity || 1;
-
-                                    const modal = new bootstrap.Modal(document.getElementById('menuModal'));
-                                    modal.show();
-                                });
+                            Promise.all(promises).then(() => {
+                                document.getElementById('total-price').textContent = total.toLocaleString('id-ID');
                             });
-
-                            calculateTotal(); // Hitung total setelah tampilkan order
                         }
 
                         // Fungsi menghitung total harga
