@@ -374,8 +374,15 @@ session_start();
                                     alert('Silakan isi nama siswa terlebih dahulu.');
                                     return false;
                                 } else {
+                                    // Isi data konfirmasi pembayaran
+                                    $('#selected-menu-name').text('');
+                                    $('#jumlah-pembayaran').text('Rp. ' + $('#total-price').text());
+                                    $('#total-pembayaran').text('Rp. ' + $('#total-price').text());
+                                    $('.main-topup h4 a.fw_6').text('Nama pembeli: ' + namaSiswa);
+
                                     $('.tf-panel.up').addClass('active');
                                 }
+
                             });
 
                             // Tutup panel
@@ -389,6 +396,28 @@ session_start();
                         <h3>Total: Rp. <span id="total-price">0</span></h3>
                     </div>
                 </div>
+
+                <?php
+                include '../../conn/koneksi.php'; // pastikan file ini berisi koneksi ke database
+
+                $nm_kantin = 'Kantin Tidak Ditemukan';
+
+                if (isset($_SESSION['username'])) {
+                    $username = $_SESSION['username'];
+
+                    // Ambil id_user dari tb_user
+                    $query_user = mysqli_query($koneksi, "SELECT id_user FROM tb_user WHERE username = '$username'");
+                    if ($row_user = mysqli_fetch_assoc($query_user)) {
+                        $id_user = $row_user['id_user'];
+
+                        // Ambil nm_kantin dari t_kantin berdasarkan id_user
+                        $query_kantin = mysqli_query($koneksi, "SELECT nm_kantin FROM t_kantin WHERE id_user = '$id_user'");
+                        if ($row_kantin = mysqli_fetch_assoc($query_kantin)) {
+                            $nm_kantin = $row_kantin['nm_kantin'];
+                        }
+                    }
+                }
+                ?>
 
 
                 <div class="bottom-navigation-bar bottom-btn-fixed">
@@ -412,7 +441,7 @@ session_start();
                                     <div class="tf-card-block d-flex align-items-center justify-content-between">
                                         <div class="inner d-flex align-items-center">
                                             <div class="content">
-                                                <h4><a href="#" class="fw_6">Nama pembeli: Budi</a></h4>
+                                                <h4><a href="#" class="fw_6">Nama pembeli: User</a></h4>
                                             </div>
                                         </div>
                                         <i class="icon-right"></i>
@@ -427,7 +456,7 @@ session_start();
                                         <li>
                                             <h4 class="secondary_color fw_4 d-flex justify-content-between align-items-center">
                                                 Nama Kantin
-                                                <a href="#" class="on_surface_color fw_7" id="nama-kantin">Warung bu siti</a>
+                                                <a href="#" class="on_surface_color fw_7" id="nama-kantin"><?php echo htmlspecialchars($nm_kantin); ?></a>
                                             </h4>
                                         </li>
                                         <li>
