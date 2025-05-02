@@ -349,6 +349,40 @@ session_start();
                                 calculateTotal(); // Update total
                             }
                         });
+
+                        $(document).ready(function() {
+                            // Sembunyikan tombol saat halaman dimuat
+                            $('#btn-popup-up').hide();
+
+                            // Pantau perubahan pada input nama siswa
+                            $('#nama-siswa').on('input', function() {
+                                const namaSiswa = $(this).val().trim();
+
+                                if (namaSiswa === '') {
+                                    $('#btn-popup-up').hide();
+                                } else {
+                                    $('#btn-popup-up').show();
+                                }
+                            });
+
+                            // Validasi saat tombol diklik
+                            $('#btn-popup-up').click(function(e) {
+                                const namaSiswa = $('#nama-siswa').val().trim();
+
+                                if (namaSiswa === '') {
+                                    e.preventDefault();
+                                    alert('Silakan isi nama siswa terlebih dahulu.');
+                                    return false;
+                                } else {
+                                    $('.tf-panel.up').addClass('active');
+                                }
+                            });
+
+                            // Tutup panel
+                            $('.clear-panel').click(function() {
+                                $('.tf-panel.up').removeClass('active');
+                            });
+                        });
                     </script>
 
                     <div class="total">
@@ -359,7 +393,7 @@ session_start();
 
                 <div class="bottom-navigation-bar bottom-btn-fixed">
                     <div class="tf-container">
-                        <a href="#" id="btn-popup-up" class="tf-btn accent large">Selanjutnya</a>
+                        <a href="#" id="btn-popup-up" class="tf-btn accent large" style="display: none;">Selanjutnya</a>
                     </div>
                     <div class="tf-panel up">
                         <div class="panel_overlay"></div>
