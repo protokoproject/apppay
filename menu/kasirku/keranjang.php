@@ -282,6 +282,8 @@ session_start();
                             }
 
                             document.getElementById('total-price').textContent = total.toLocaleString('id-ID');
+                            localStorage.setItem('total_harga', total); // simpan total ke localStorage
+                            console.log('Total harga disimpan ke localStorage:', total); // ✅ log ke console
                         }
 
                         // Saat halaman dimuat
