@@ -202,6 +202,7 @@ session_start();
                         const username = "<?php echo htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8'); ?>"; // Escape username
 
                         // Function untuk menampilkan pesanan yang tersimpan di localStorage
+                        // Fungsi untuk menampilkan pesanan yang tersimpan di localStorage
                         function displayOrderList() {
                             const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
                             const userOrder = selectedData[username] || {};
@@ -210,108 +211,66 @@ session_start();
                             orderList.innerHTML = '';
 
                             let total = 0;
-                            const promises = [];
 
                             for (const menuName in userOrder) {
-                                const qty = parseInt(userOrder[menuName]);
+                                const itemData = userOrder[menuName];
+                                const qty = parseInt(itemData.jumlah);
+                                const price = parseInt(itemData.harga);
+                                const subtotal = price * qty;
+                                total += subtotal;
 
-                                const promise = fetch('get_price.php?name=' + encodeURIComponent(menuName))
-                                    .then(response => {
-                                        if (!response.ok) throw new Error('Gagal mengambil harga');
-                                        return response.json();
-                                    })
-                                    .then(data => {
-                                        const price = parseInt(data.price);
-                                        const subtotal = price * qty;
-                                        total += subtotal;
+                                const li = document.createElement('li');
+                                li.classList.add('menu-item', 'card', 'p-2', 'mb-2');
+                                li.dataset.name = menuName;
+                                li.dataset.quantity = qty;
 
-                                        const li = document.createElement('li');
-                                        li.classList.add('menu-item', 'card', 'p-2', 'mb-2');
-                                        li.dataset.name = menuName;
-                                        li.dataset.quantity = qty;
+                                // Container baris
+                                const itemRow = document.createElement('div');
+                                itemRow.classList.add('d-flex', 'justify-content-between', 'align-items-start', 'fs-5');
 
-                                        // Container baris
-                                        const itemRow = document.createElement('div');
-                                        itemRow.classList.add('d-flex', 'justify-content-between', 'align-items-start', 'fs-5');
+                                // Kolom kiri: nama + qty
+                                const itemNameQty = document.createElement('div');
+                                itemNameQty.textContent = `${menuName} (x${qty})`;
 
-                                        // Kolom kiri: nama + qty
-                                        const itemNameQty = document.createElement('div');
-                                        itemNameQty.textContent = `${menuName} (x${qty})`;
+                                // Kolom kanan: subtotal
+                                const itemSubtotal = document.createElement('div');
+                                itemSubtotal.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+                                itemSubtotal.classList.add('text-end', 'text-muted', 'small');
 
-                                        // Kolom kanan: subtotal
-                                        const itemSubtotal = document.createElement('div');
-                                        itemSubtotal.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
-                                        itemSubtotal.classList.add('text-end', 'text-muted', 'small');
+                                itemRow.appendChild(itemNameQty);
+                                itemRow.appendChild(itemSubtotal);
 
-                                        itemRow.appendChild(itemNameQty);
-                                        itemRow.appendChild(itemSubtotal);
+                                li.appendChild(itemRow);
+                                orderList.appendChild(li);
 
-                                        li.appendChild(itemRow);
-                                        orderList.appendChild(li);
-
-                                        li.addEventListener('click', () => {
-                                            currentItem = li;
-                                            document.getElementById('selected-menu-name').textContent = menuName;
-                                            document.getElementById('quantity').value = qty;
-                                            const modal = new bootstrap.Modal(document.getElementById('menuModal'));
-                                            modal.show();
-                                        });
-                                    })
-                                    .catch(err => {
-                                        console.error('Gagal fetch harga:', err);
-                                    });
-
-                                promises.push(promise);
+                                // Event untuk menampilkan modal
+                                li.addEventListener('click', () => {
+                                    currentItem = li;
+                                    document.getElementById('selected-menu-name').textContent = menuName;
+                                    document.getElementById('quantity').value = qty;
+                                    const modal = new bootstrap.Modal(document.getElementById('menuModal'));
+                                    modal.show();
+                                });
                             }
 
-                            Promise.all(promises).then(() => {
-                                document.getElementById('total-price').textContent = total.toLocaleString('id-ID');
-                            });
+                            document.getElementById('total-price').textContent = total.toLocaleString('id-ID');
                         }
 
-                        // Fungsi menghitung total harga
+                        // Fungsi untuk menghitung total harga dari localStorage
                         function calculateTotal() {
                             const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
                             const userOrder = selectedData[username] || {};
                             let total = 0;
 
-                            if (Object.keys(userOrder).length === 0) {
-                                document.getElementById('total-price').textContent = '0';
-                                return;
-                            }
-
-                            const promises = [];
-
                             for (const menuName in userOrder) {
-                                const qty = parseInt(userOrder[menuName]);
-
-                                const promise = fetch('get_price.php?name=' + encodeURIComponent(menuName))
-                                    .then(response => {
-                                        if (!response.ok) {
-                                            throw new Error('Gagal mengambil harga untuk ' + menuName);
-                                        }
-                                        return response.json();
-                                    })
-                                    .then(data => {
-                                        if (data && data.price !== undefined) {
-                                            const price = parseInt(data.price);
-                                            total += price * qty;
-                                        } else {
-                                            console.warn('Harga tidak ditemukan untuk menu:', menuName);
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error('Error saat fetch harga:', error);
-                                    });
-
-                                promises.push(promise);
+                                const itemData = userOrder[menuName];
+                                const qty = parseInt(itemData.jumlah);
+                                const price = parseInt(itemData.harga);
+                                total += price * qty;
                             }
 
-                            Promise.all(promises).then(() => {
-                                document.getElementById('total-price').textContent = total.toLocaleString('id-ID');
-                            });
+                            document.getElementById('total-price').textContent = total.toLocaleString('id-ID');
                         }
-
 
                         // Saat halaman dimuat
                         window.onload = function() {
@@ -336,19 +295,52 @@ session_start();
                         // Fungsi untuk memperbarui jumlah pesanan
                         document.getElementById('btn-oke').addEventListener('click', () => {
                             if (currentItem) {
-                                const qty = document.getElementById('quantity').value;
-                                currentItem.dataset.quantity = qty;
-                                currentItem.textContent = `${currentItem.dataset.name} (x${qty})`;
+                                const qty = parseInt(document.getElementById('quantity').value);
+                                const menuName = currentItem.dataset.name;
 
                                 const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
-                                if (!selectedData[username]) {
-                                    selectedData[username] = {};
+                                const userOrder = selectedData[username] || {};
+
+                                if (userOrder[menuName]) {
+                                    const harga = parseInt(userOrder[menuName].harga); // ambil harga lama
+
+                                    // Update data dengan jumlah baru
+                                    userOrder[menuName] = {
+                                        jumlah: qty,
+                                        harga: harga
+                                    };
+
+                                    selectedData[username] = userOrder;
+                                    localStorage.setItem('selectedData', JSON.stringify(selectedData));
+
+                                    // Update tampilan item di daftar
+                                    const subtotal = harga * qty;
+                                    currentItem.dataset.quantity = qty;
+
+                                    currentItem.innerHTML = ''; // kosongkan dulu
+
+                                    const itemRow = document.createElement('div');
+                                    itemRow.classList.add('d-flex', 'justify-content-between', 'align-items-start', 'fs-5');
+
+                                    const itemNameQty = document.createElement('div');
+                                    itemNameQty.textContent = `${menuName} (x${qty})`;
+
+                                    const itemSubtotal = document.createElement('div');
+                                    itemSubtotal.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
+                                    itemSubtotal.classList.add('text-end', 'text-muted', 'small');
+
+                                    itemRow.appendChild(itemNameQty);
+                                    itemRow.appendChild(itemSubtotal);
+                                    currentItem.appendChild(itemRow);
+
+                                    calculateTotal(); // Update total harga
                                 }
-                                selectedData[username][currentItem.dataset.name] = qty;
-                                localStorage.setItem('selectedData', JSON.stringify(selectedData));
-                                calculateTotal(); // Update total
+
+                                const modal = bootstrap.Modal.getInstance(document.getElementById('menuModal'));
+                                modal.hide();
                             }
                         });
+
 
                         $(document).ready(function() {
                             // Sembunyikan tombol saat halaman dimuat
