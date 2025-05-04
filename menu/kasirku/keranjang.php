@@ -158,8 +158,20 @@ session_start();
             });
 
             $(document).on('click', '.list-group-item', function() {
-                $('#nama-siswa').val($(this).text());
+                const fullText = $(this).text(); // "John Doe - X IPA"
+                const nmMurid = $(this).data('nama'); // dari atribut data-nama
+                const idUser = $(this).data('id'); // dari atribut data-id
+
+                $('#nama-siswa').val(fullText);
                 $('#list-siswa').fadeOut();
+
+                // Simpan ke localStorage
+                localStorage.setItem('nm_murid', nmMurid);
+                localStorage.setItem('id_user', idUser);
+
+                // ✅ Debug: cek hasilnya di console
+                console.log("Nama murid tersimpan:", nmMurid);
+                console.log("ID User tersimpan:", idUser);
             });
         });
     </script>
@@ -381,6 +393,15 @@ session_start();
                             $('.clear-panel').click(function() {
                                 $('.tf-panel.up').removeClass('active');
                             });
+                        });
+
+                        $('#bayar-btn').click(function(e) {
+                            const idUser = localStorage.getItem('id_user');
+
+                            if (!idUser) {
+                                e.preventDefault();
+                                alert('Silakan pilih nama siswa dari daftar yang tersedia.');
+                            }
                         });
                     </script>
 
