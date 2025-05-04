@@ -120,58 +120,55 @@
     </div>
 
     <script>
-        // Dapatkan username dari PHP (inject ke JS)
         const username = "<?php echo $_SESSION['username']; ?>";
 
-        // Function untuk menyimpan menu ke localStorage
-        function saveMenuToLocalStorage(menuName) {
+        // Fungsi menyimpan menu ke localStorage
+        function saveMenuToLocalStorage(menuName, itemElement) {
             let selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
 
             if (!selectedData[username]) {
-                selectedData[username] = {}; // Buatkan tempat untuk user ini kalau belum ada
+                selectedData[username] = {};
             }
 
             if (!selectedData[username][menuName]) {
-                selectedData[username][menuName] = 1; // Set jumlah default 1
+                const priceText = itemElement.querySelector('.col-4').textContent.replace(/[^\d]/g, '');
+                const price = parseInt(priceText);
+
+                selectedData[username][menuName] = {
+                    jumlah: 1,
+                    harga: price
+                };
             }
 
             localStorage.setItem('selectedData', JSON.stringify(selectedData));
-
-            // Tambahkan console.log setelah simpan
             console.log('Isi localStorage setelah memilih menu:', selectedData);
-
-            // Periksa status tombol Keranjang
             updateCartButtonStatus();
         }
 
-        // Function untuk mengupdate tampilan menu berdasarkan pilihan di localStorage
+        // Highlight menu yang sudah dipilih
         function updateMenuHighlight() {
             const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
             const userSelected = selectedData[username] || {};
 
-            // Menambahkan 'selected' class pada menu yang sudah dipilih sebelumnya
             document.querySelectorAll('.menu-item').forEach(item => {
                 const menuName = item.querySelector('.col-8 strong').textContent.trim();
                 if (userSelected[menuName]) {
                     item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
                 }
             });
 
-            // Periksa status tombol Keranjang
             updateCartButtonStatus();
         }
 
-        // Function untuk memeriksa status tombol Keranjang
+        // Periksa tombol keranjang
         function updateCartButtonStatus() {
             const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
             const userSelected = selectedData[username] || {};
-
-            // Dapatkan tombol Keranjang
             const cartContainer = document.getElementById('cart-container');
 
-            // Jika ada menu yang dipilih, tampilkan tombol, jika tidak, sembunyikan
             if (Object.keys(userSelected).length > 0) {
-                // Jika tombol belum ada, buat dan tampilkan
                 if (!document.getElementById('keranjangButton')) {
                     const cartButton = document.createElement('a');
                     cartButton.href = 'keranjang.php';
@@ -181,7 +178,6 @@
                     cartContainer.appendChild(cartButton);
                 }
             } else {
-                // Jika tidak ada menu yang dipilih, hapus tombol keranjang jika ada
                 const cartButton = document.getElementById('keranjangButton');
                 if (cartButton) {
                     cartButton.remove();
@@ -189,25 +185,27 @@
             }
         }
 
-        // Handle klik menu item - hanya bisa pilih sekali
-        const items = document.querySelectorAll('.menu-item');
-        items.forEach(item => {
-            item.addEventListener('click', () => {
-                if (!item.classList.contains('selected')) {
-                    item.classList.add('selected');
-
-                    const menuName = item.querySelector('.col-8 strong').textContent.trim();
-                    saveMenuToLocalStorage(menuName);
-                }
+        // Event listener klik menu
+        function attachMenuClickHandlers() {
+            const items = document.querySelectorAll('.menu-item');
+            items.forEach(item => {
+                item.addEventListener('click', () => {
+                    if (!item.classList.contains('selected')) {
+                        item.classList.add('selected');
+                        const menuName = item.querySelector('.col-8 strong').textContent.trim();
+                        saveMenuToLocalStorage(menuName, item);
+                    }
+                });
             });
-        });
+        }
 
-        // Memanggil updateMenuHighlight saat halaman dimuat untuk memeriksa menu yang sudah dipilih
+        // Panggil semua saat halaman siap
         window.onload = function() {
+            attachMenuClickHandlers();
             updateMenuHighlight();
         }
 
-        // Handle search menu
+        // Pencarian menu
         const searchInput = document.getElementById('searchMenu');
         if (searchInput) {
             searchInput.addEventListener('input', function() {
@@ -216,11 +214,7 @@
 
                 menuItems.forEach(item => {
                     const text = item.querySelector('.col-8 strong').textContent.toLowerCase();
-                    if (text.includes(filter)) {
-                        item.style.display = ''; // tampilkan
-                    } else {
-                        item.style.display = 'none'; // sembunyikan
-                    }
+                    item.style.display = text.includes(filter) ? '' : 'none';
                 });
             });
         }
