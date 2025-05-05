@@ -158,21 +158,32 @@ session_start();
             });
 
             $(document).on('click', '.list-group-item', function() {
-                const fullText = $(this).text(); // "John Doe - X IPA"
-                const nmMurid = $(this).data('nama'); // dari atribut data-nama
-                const idUser = $(this).data('id'); // dari atribut data-id
+                const fullText = $(this).text();
+                const nmMurid = $(this).data('nama');
+                const idUser = $(this).data('id');
 
                 $('#nama-siswa').val(fullText);
                 $('#list-siswa').fadeOut();
 
-                // Simpan ke localStorage
                 localStorage.setItem('nm_murid', nmMurid);
                 localStorage.setItem('id_user', idUser);
 
-                // ✅ Debug: cek hasilnya di console
-                console.log("Nama murid tersimpan:", nmMurid);
-                console.log("ID User tersimpan:", idUser);
+                const username = "<?php echo htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8'); ?>";
+
+                // Simpan juga ke dalam selectedData[username]
+                let selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
+                if (!selectedData[username]) selectedData[username] = {};
+
+                selectedData[username]["id_user"] = idUser;
+                selectedData[username]["nm_murid"] = nmMurid;
+
+                localStorage.setItem('selectedData', JSON.stringify(selectedData));
+
+                // Hitung total dan tampilkan data
+                calculateTotal();
+                tampilkanDataSetelahNamaMuridDipilih();
             });
+
         });
     </script>
 
@@ -226,6 +237,12 @@ session_start();
 
                             for (const menuName in userOrder) {
                                 const itemData = userOrder[menuName];
+
+                                // Skip entri yang bukan menu (id_user, nm_murid, total_harga)
+                                if (typeof itemData !== 'object' || itemData.jumlah === undefined || itemData.harga === undefined) {
+                                    continue;
+                                }
+
                                 const qty = parseInt(itemData.jumlah);
                                 const price = parseInt(itemData.harga);
                                 const subtotal = price * qty;
@@ -283,7 +300,6 @@ session_start();
 
                             document.getElementById('total-price').textContent = total.toLocaleString('id-ID');
                             localStorage.setItem('total_harga', total); // simpan total ke localStorage
-                            console.log('Total harga disimpan ke localStorage:', total); // ✅ log ke console
                         }
 
                         // Saat halaman dimuat
@@ -355,6 +371,27 @@ session_start();
                             }
                         });
 
+
+                        function tampilkanDataSetelahNamaMuridDipilih() {
+                            const username = "<?php echo htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8'); ?>";
+                            const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
+
+                            if (selectedData[username]) {
+                                const userData = selectedData[username];
+                                console.log(`${username} {`);
+                                for (const key in userData) {
+                                    if (typeof userData[key] === 'object' && userData[key].harga !== undefined) {
+                                        console.log(`  ${key}: {jumlah: ${userData[key].jumlah}, harga: ${userData[key].harga}}`);
+                                    }
+                                }
+                                console.log(`  id_user: ${userData.id_user}`);
+                                console.log(`  nm_murid: ${userData.nm_murid}`);
+                                console.log(`  total_harga: ${userData.total_harga}`);
+                                console.log(`}`);
+                            } else {
+                                console.log("Data tidak ditemukan. Pastikan nama murid telah dipilih.");
+                            }
+                        }
 
                         $(document).ready(function() {
                             // Sembunyikan tombol saat halaman dimuat
