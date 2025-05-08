@@ -232,13 +232,12 @@ session_start();
                             const orderList = document.getElementById('order-list');
 
                             orderList.innerHTML = '';
-
                             let total = 0;
 
                             for (const menuName in userOrder) {
                                 const itemData = userOrder[menuName];
 
-                                // Skip entri yang bukan menu (id_user, nm_murid, total_harga)
+                                // Skip entri non-menu
                                 if (typeof itemData !== 'object' || itemData.jumlah === undefined || itemData.harga === undefined) {
                                     continue;
                                 }
@@ -253,15 +252,12 @@ session_start();
                                 li.dataset.name = menuName;
                                 li.dataset.quantity = qty;
 
-                                // Container baris
                                 const itemRow = document.createElement('div');
                                 itemRow.classList.add('d-flex', 'justify-content-between', 'align-items-start', 'fs-5');
 
-                                // Kolom kiri: nama + qty
                                 const itemNameQty = document.createElement('div');
                                 itemNameQty.textContent = `${menuName} (x${qty})`;
 
-                                // Kolom kanan: subtotal
                                 const itemSubtotal = document.createElement('div');
                                 itemSubtotal.textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
                                 itemSubtotal.classList.add('text-end', 'text-muted', 'small');
@@ -272,7 +268,6 @@ session_start();
                                 li.appendChild(itemRow);
                                 orderList.appendChild(li);
 
-                                // Event untuk menampilkan modal
                                 li.addEventListener('click', () => {
                                     currentItem = li;
                                     document.getElementById('selected-menu-name').textContent = menuName;
@@ -282,8 +277,10 @@ session_start();
                                 });
                             }
 
+                            // Pastikan hanya isi angka di #total-price (tanpa tambahan "Rp" karena sudah di HTML)
                             document.getElementById('total-price').textContent = total.toLocaleString('id-ID');
                         }
+
 
                         // Fungsi untuk menghitung total harga dari localStorage
                         function calculateTotal() {
@@ -293,14 +290,20 @@ session_start();
 
                             for (const menuName in userOrder) {
                                 const itemData = userOrder[menuName];
+
+                                if (typeof itemData !== 'object' || itemData.jumlah === undefined || itemData.harga === undefined) {
+                                    continue;
+                                }
+
                                 const qty = parseInt(itemData.jumlah);
                                 const price = parseInt(itemData.harga);
                                 total += price * qty;
                             }
 
                             document.getElementById('total-price').textContent = total.toLocaleString('id-ID');
-                            localStorage.setItem('total_harga', total); // simpan total ke localStorage
+                            localStorage.setItem('total_harga', total); // simpan total harga
                         }
+
 
                         // Saat halaman dimuat
                         window.onload = function() {
@@ -447,6 +450,7 @@ session_start();
                     <div class="total">
                         <h3>Total: Rp. <span id="total-price">0</span></h3>
                     </div>
+
                 </div>
 
                 <?php
