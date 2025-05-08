@@ -201,9 +201,18 @@
 
         // Panggil semua saat halaman siap
         window.onload = function() {
+            const selectedData = JSON.parse(localStorage.getItem('selectedData')) || {};
+            if (selectedData[username]) {
+                delete selectedData[username]['id_user'];
+                delete selectedData[username]['nm_murid'];
+                delete selectedData[username]['total_harga'];
+                localStorage.setItem('selectedData', JSON.stringify(selectedData));
+            }
+
             attachMenuClickHandlers();
             updateMenuHighlight();
-        }
+        };
+
 
         // Pencarian menu
         const searchInput = document.getElementById('searchMenu');
