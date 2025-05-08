@@ -300,10 +300,14 @@ session_start();
                                 total += price * qty;
                             }
 
+                            // Simpan total harga ke tampilan dan ke localStorage
                             document.getElementById('total-price').textContent = total.toLocaleString('id-ID');
-                            localStorage.setItem('total_harga', total); // simpan total harga
-                        }
 
+                            // Tambahkan total ke dalam data user dan simpan ulang ke localStorage
+                            if (!selectedData[username]) selectedData[username] = {};
+                            selectedData[username]['total_harga'] = total;
+                            localStorage.setItem('selectedData', JSON.stringify(selectedData));
+                        }
 
                         // Saat halaman dimuat
                         window.onload = function() {
